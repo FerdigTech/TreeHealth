@@ -16,6 +16,9 @@ import {
 } from 'react-native';
 
 export class MapDisplay extends React.Component {
+  static navigationOptions = {
+    title: 'Map',
+  };
   // initalize the default values in state
   constructor(props) {
     super(props);
