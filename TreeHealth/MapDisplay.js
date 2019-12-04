@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-map-clustering';
-import { Marker, Callout } from 'react-native-maps';
+import { Marker } from 'react-native-maps';
 import {
   StyleSheet,
   View,
@@ -9,7 +9,7 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
-import {MarkerModal} from "./MarkerModal"
+import { MarkerModal } from './MarkerModal';
 
 export class MapDisplay extends React.Component {
   static navigationOptions = {
@@ -117,4 +117,3 @@ const styles = StyleSheet.create({
     zIndex: -1,
   },
 });
-
