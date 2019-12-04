@@ -101,7 +101,7 @@ class MarkerModal extends React.Component {
           <Button style={styles.modalButton} onPress={this.props.handleClose} title={"Close"}/>
           <Image
             style={styles.modalImg}
-            source={{uri: 'https://facebook.github.io/react-native/img/tiny_logo.png'}}
+            source={require('./assets/treehouse-default.png')}
           />
           <Text style={styles.modalText}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
