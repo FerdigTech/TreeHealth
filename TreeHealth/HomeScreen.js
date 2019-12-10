@@ -1,6 +1,6 @@
 import React from 'react';
-import { Button, View, Image, StyleSheet } from 'react-native';
-
+import { View, Image, StyleSheet } from 'react-native';
+import {HomeList} from "./HomeList"
 export class HomeScreen extends React.Component {
   static navigationOptions = {
     // Use logo instead of text
@@ -9,8 +9,11 @@ export class HomeScreen extends React.Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <View>
-        <Button title="Go to Map" onPress={() => navigate('Map')} />
+      <View style={styles.listLayout}>
+        <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="About Us"/>
+        <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Introduction"/>
+        <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Projects"/>
+        <HomeList menuAction={() => navigate('Map')} iconName="help-circle" menuName="Project Questions"/>
       </View>
     );
   }
@@ -33,5 +36,9 @@ const styles = StyleSheet.create({
     height: 30,
     marginLeft: 'auto',
     marginRight: 'auto',
+  },
+  listLayout: {
+    justifyContent: 'space-around',
+    flex: 1,
   },
 });
