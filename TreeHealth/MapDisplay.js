@@ -34,10 +34,14 @@ export class MapDisplay extends React.Component {
   // Get all the map points from the site
   async componentDidMount() {
     StatusBar.setNetworkActivityIndicatorVisible(true);
-    const res = await fetch(
-      'https://parkapps.kent.edu/demo/adminpoints/Indexpoints.geojson'
-    );
-    const { points } = await res.json();
+
+    const points = await fetch("https://127.0.0.1:8000/Indexpoints.geojson")
+    .then((response) => response.json())
+    .catch(function(error) {
+      console.log(error.message);
+      throw error;
+    });
+
     StatusBar.setNetworkActivityIndicatorVisible(false);
     await this.setStateAsync({ mapPts: points });
   }
