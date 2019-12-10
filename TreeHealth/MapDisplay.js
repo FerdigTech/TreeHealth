@@ -33,8 +33,10 @@ export class MapDisplay extends React.Component {
 
   // Get all the map points from the site
   async componentDidMount() {
-    StatusBar.setNetworkActivityIndicatorVisible(true);
-
+    if (Platform.OS === "ios") {
+      StatusBar.setNetworkActivityIndicatorVisible(true);
+    }
+      
     const points = await fetch("https://127.0.0.1:8000/Indexpoints.geojson")
     .then((response) => response.json())
     .catch(function(error) {
@@ -42,7 +44,9 @@ export class MapDisplay extends React.Component {
       throw error;
     });
 
-    StatusBar.setNetworkActivityIndicatorVisible(false);
+    if (Platform.OS === "ios") {
+      StatusBar.setNetworkActivityIndicatorVisible(false);
+    }
     await this.setStateAsync({ mapPts: points });
   }
 
