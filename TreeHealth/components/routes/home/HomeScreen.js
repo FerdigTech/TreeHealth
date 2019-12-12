@@ -11,13 +11,16 @@ export class HomeScreen extends React.Component {
   render() {
     const { navigate } = this.props.navigation;
     return (
-      <View style={styles.listLayout}>
+      <View style={{flex: 1}}>
         <Button title="Logout" onPress={this._signOutAsync} />
-        <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="About Us"/>
-        <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Introduction"/>
-        <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Projects"/>
-        <HomeList menuAction={() => navigate('Map')} iconName="help-circle" menuName="Project Questions"/>
+        <View style={styles.listLayout}>
+          <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="About Us"/>
+          <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Introduction"/>
+          <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Projects"/>
+          <HomeList menuAction={() => navigate('Map')} iconName="help-circle" menuName="Project Questions"/>
+        </View>
       </View>
+
     );
   }
   _signOutAsync = async () => {

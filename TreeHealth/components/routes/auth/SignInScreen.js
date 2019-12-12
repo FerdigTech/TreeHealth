@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, AsyncStorage, StyleSheet } from 'react-native';
+import { View, SafeAreaView, AsyncStorage, StyleSheet } from 'react-native';
 import {
   Button,
   Text,
@@ -19,7 +19,7 @@ export class SignInScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.signInView}>
+      <SafeAreaView style={styles.signInView}>
         <Form style={styles.signInForm}>
           <Item floatingLabel>
             <Label>Email</Label>
@@ -38,10 +38,10 @@ export class SignInScreen extends React.Component {
             </Button>
           </View>
         </Form>
-        <Button rounded block light onPress={this._signInTrial}>
+        <Button style={styles.trialBtn} rounded block light onPress={this._signInTrial}>
           <Text> Try Us Out! </Text>
         </Button>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -54,15 +54,19 @@ export class SignInScreen extends React.Component {
 const styles = StyleSheet.create({
   signInView: {
     flex: 1,
-    justifyContent: 'center',
+    margin: 20,
   },
   signInForm: {
     padding: 5,
-    margin: 5,
+    justifyContent: 'center',
+    flex: 1,
   },
   signInBtns: {
     flexDirection:'row',
     justifyContent: 'space-around',
     padding: 15,
+  },
+  trialBtn: {
+    marginBottom: 50,
   }
 });

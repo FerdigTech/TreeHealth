@@ -45,7 +45,6 @@ const bottomNavigator = createBottomTabNavigator(
   },
 );
 
-const App = createAppContainer(MainNavigator);
 const Tabs = createAppContainer(bottomNavigator);
 
 const AuthStack = createStackNavigator(
