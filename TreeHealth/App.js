@@ -1,7 +1,10 @@
+import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { createBottomTabNavigator } from 'react-navigation-tabs';
 import { HomeScreen } from './components/routes/home/HomeScreen';
 import { MapDisplay } from './components/routes/map/MapDisplay';
+import {Icon} from 'native-base';
 
 const MainNavigator = createStackNavigator(
   {
@@ -25,6 +28,20 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-const App = createAppContainer(MainNavigator);
+const bottomNavigator =createBottomTabNavigator(
+  {
+    Home: { screen: HomeScreen },
+    Map: { screen: MapDisplay },
+  },
+  {
+    defaultNavigationOptions: ({ navigation }) => ({
+      tabBarIcon: ({ focused, tintColor }) => {
+        return <Icon name="navigate" />;
+      },
+    }),
+  },
+);
+
+const App = createAppContainer(MainNavigator, bottomNavigator);
 
 export default App;
