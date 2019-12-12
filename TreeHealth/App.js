@@ -1,9 +1,12 @@
 import React from 'react';
-import { createAppContainer } from 'react-navigation';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createBottomTabNavigator } from 'react-navigation-tabs';
+import {LoadingScreen} from './components/routes/auth/LoadingScreen';
+import {SignInScreen} from './components/routes/auth/SignInScreen';
 import { HomeScreen } from './components/routes/home/HomeScreen';
 import { MapDisplay } from './components/routes/map/MapDisplay';
+
 import {Icon} from 'native-base';
 
 const MainNavigator = createStackNavigator(
@@ -28,10 +31,10 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-const bottomNavigator =createBottomTabNavigator(
+const bottomNavigator = createBottomTabNavigator(
   {
-    Home: { screen: HomeScreen },
-    Map: { screen: MapDisplay },
+    Home: HomeScreen,
+    Map: MapDisplay,
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
@@ -42,6 +45,26 @@ const bottomNavigator =createBottomTabNavigator(
   },
 );
 
-const App = createAppContainer(MainNavigator, bottomNavigator);
+const App = createAppContainer(MainNavigator);
+const Tabs = createAppContainer(bottomNavigator);
 
-export default App;
+const AuthStack = createStackNavigator(
+  { SignIn: SignInScreen },
+  {
+    defaultNavigationOptions: {
+      headerStyle: {
+        backgroundColor: '#0f2834',
+      },
+    },
+  });
+
+export default createAppContainer(createSwitchNavigator(
+  {
+    Loading: LoadingScreen,
+    Home: MainNavigator,
+    Auth: AuthStack,
+  },
+  {
+    initialRouteName: 'Loading',
+  }
+));

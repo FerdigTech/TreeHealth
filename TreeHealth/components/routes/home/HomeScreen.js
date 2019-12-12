@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Image, StyleSheet } from 'react-native';
+import { View, StyleSheet, Button, AsyncStorage } from 'react-native';
 import {HomeList} from "./HomeList";
+import {LogoTitle} from "./../../reusable/LogoTitle"
 
 export class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -11,6 +12,7 @@ export class HomeScreen extends React.Component {
     const { navigate } = this.props.navigation;
     return (
       <View style={styles.listLayout}>
+        <Button title="Logout" onPress={this._signOutAsync} />
         <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="About Us"/>
         <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Introduction"/>
         <HomeList menuAction={() => navigate('Map')} iconName="map" menuName="Projects"/>
@@ -18,26 +20,14 @@ export class HomeScreen extends React.Component {
       </View>
     );
   }
+  _signOutAsync = async () => {
+    await AsyncStorage.clear();
+    this.props.navigation.navigate('Auth');
+  };
 }
 
-class LogoTitle extends React.Component {
-  render() {
-    return (
-      <Image
-        source={require("./../../../assets/logo.png")}
-        resizeMode={'contain'}
-        style={styles.titleImg}
-      />
-    );
-  }
-}
 
 const styles = StyleSheet.create({
-  titleImg: {
-    height: 30,
-    marginLeft: 'auto',
-    marginRight: 'auto',
-  },
   listLayout: {
     justifyContent: 'space-around',
     flex: 1,
