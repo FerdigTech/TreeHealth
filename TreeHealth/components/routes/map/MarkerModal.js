@@ -22,7 +22,7 @@ export class MarkerModal extends React.Component {
           />
           <Image
             style={styles.modalImg}
-            source={require('./assets/treehouse-default.png')}
+            source={require('./../../../assets/treehouse-default.png')}
           />
           <Text style={styles.modalText}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

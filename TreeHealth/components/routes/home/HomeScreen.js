@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
-import {HomeList} from "./HomeList"
+import {HomeList} from "./HomeList";
+
 export class HomeScreen extends React.Component {
   static navigationOptions = {
     // Use logo instead of text
@@ -23,7 +24,7 @@ class LogoTitle extends React.Component {
   render() {
     return (
       <Image
-        source={require('./assets/logo.png')}
+        source={require("./../../../assets/logo.png")}
         resizeMode={'contain'}
         style={styles.titleImg}
       />

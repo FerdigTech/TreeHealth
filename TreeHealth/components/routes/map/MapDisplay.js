@@ -1,6 +1,6 @@
 import React from 'react';
 import MapView from 'react-native-map-clustering';
-import { Marker } from 'react-native-maps';
+import { Marker, Callout } from 'react-native-maps';
 import {
   StyleSheet,
   View,
@@ -8,6 +8,7 @@ import {
   Platform,
   Dimensions,
   StatusBar,
+  TextInput,
 } from 'react-native';
 import { MarkerModal } from './MarkerModal';
 
@@ -93,6 +94,15 @@ export class MapDisplay extends React.Component {
             show={this.state.modalVisible}
             handleClose={() => this.toggleVisibility()}
           />
+          { !this.state.showSearch &&
+            <Callout>
+              <View style={styles.calloutView} >
+                <TextInput style={styles.calloutSearch}
+                  placeholder={"Search"}
+                />
+              </View>
+          </Callout>
+         }
         </View>
       </SafeAreaView>
     );
@@ -109,6 +119,22 @@ const zoomNEOhio = {
 };
 
 const styles = StyleSheet.create({
+  calloutView: {
+    flexDirection: "row",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderRadius: 10,
+    width: "40%",
+    marginLeft: "30%",
+    marginRight: "30%",
+    marginTop: 50,
+  },
+  calloutSearch: {
+    borderColor: "transparent",
+    marginLeft: 10,
+    marginRight: 10,
+    width: "90%",
+    height: 40, 
+  },
   statusBar: {
     height: Platform.OS === 'ios' ? 20 : 0,
     zIndex: 3,

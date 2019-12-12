@@ -1,7 +1,7 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { HomeScreen } from './HomeScreen';
-import { MapDisplay } from './MapDisplay';
+import { HomeScreen } from './components/routes/home/HomeScreen';
+import { MapDisplay } from './components/routes/map/MapDisplay';
 
 const MainNavigator = createStackNavigator(
   {
