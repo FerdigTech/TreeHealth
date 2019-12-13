@@ -16,12 +16,12 @@ export class HomeScreen extends React.Component {
         <View style={styles.listLayout}>
           <HomeList
             menuAction={() => navigate("Map")}
-            iconName="map"
+            iconName="people"
             menuName="About Us"
           />
           <HomeList
             menuAction={() => navigate("Map")}
-            iconName="map"
+            iconName="hand"
             menuName="Introduction"
           />
           <HomeList

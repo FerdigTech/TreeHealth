@@ -8,6 +8,7 @@ import {
 } from "react-native";
 
 export class LoadingScreen extends React.Component {
+  // used constructor as props navigation props are needed
   constructor() {
     super();
     this._bootstrapAsync();
