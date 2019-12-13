@@ -1,20 +1,13 @@
-import React from 'react';
-import { View, SafeAreaView, AsyncStorage, StyleSheet } from 'react-native';
-import {
-  Button,
-  Text,
-  Form,
-  Item,
-  Input,
-  Label
-} from 'native-base';
+import React from "react";
+import { View, SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
+import { Button, Text, Form, Item, Input, Label } from "native-base";
 
-import {LogoTitle} from '../../reusable/LogoTitle';
+import { LogoTitle } from "../../reusable/LogoTitle";
 
 export class SignInScreen extends React.Component {
   static navigationOptions = {
     // Use logo instead of text
-    headerTitle: () => <LogoTitle />,
+    headerTitle: () => <LogoTitle />
   };
 
   render() {
@@ -38,7 +31,13 @@ export class SignInScreen extends React.Component {
             </Button>
           </View>
         </Form>
-        <Button style={styles.trialBtn} rounded block light onPress={this._signInTrial}>
+        <Button
+          style={styles.trialBtn}
+          rounded
+          block
+          light
+          onPress={this._signInTrial}
+        >
           <Text> Try Us Out! </Text>
         </Button>
       </SafeAreaView>
@@ -46,27 +45,27 @@ export class SignInScreen extends React.Component {
   }
 
   _signInTrial = async () => {
-    await AsyncStorage.setItem('userToken', 'trial');
-    this.props.navigation.navigate('Loading');
+    await AsyncStorage.setItem("userToken", "trial");
+    this.props.navigation.navigate("Loading");
   };
 }
 
 const styles = StyleSheet.create({
   signInView: {
     flex: 1,
-    margin: 20,
+    margin: 20
   },
   signInForm: {
     padding: 5,
-    justifyContent: 'center',
-    flex: 1,
+    justifyContent: "center",
+    flex: 1
   },
   signInBtns: {
-    flexDirection:'row',
-    justifyContent: 'space-around',
-    padding: 30,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    padding: 30
   },
   trialBtn: {
-    marginBottom: 50,
+    marginBottom: 50
   }
 });

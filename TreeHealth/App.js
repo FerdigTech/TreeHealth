@@ -14,16 +14,13 @@ const bottomNavigator = createBottomTabNavigator(
     Map: {
       screen: MapDisplay,
       navigationOptions: {
-        tabBar: ({ state }) => ({
-          visible: false
-        })
+        tabBarVisible: false
       }
     }
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
-        const { routeName } = navigation.state;
         return <Icon name="navigate" />;
       }
     })
