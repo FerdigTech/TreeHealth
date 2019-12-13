@@ -1,0 +1,5 @@
+---
+JavaScript: # Enable language
+  beautifiers: ["Prettier"] # Enable beautifiers
+  indent_style: "space"
+  indent_size: 2

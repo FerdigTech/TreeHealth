@@ -1,6 +1,6 @@
-import React from 'react';
-import MapView from 'react-native-map-clustering';
-import { Marker, Callout } from 'react-native-maps';
+import React from "react";
+import MapView from "react-native-map-clustering";
+import { Marker, Callout } from "react-native-maps";
 import {
   StyleSheet,
   View,
@@ -8,20 +8,20 @@ import {
   Platform,
   Dimensions,
   StatusBar,
-  TextInput,
-} from 'react-native';
-import { MarkerModal } from './MarkerModal';
+  TextInput
+} from "react-native";
+import { MarkerModal } from "./MarkerModal";
 
 export class MapDisplay extends React.Component {
   static navigationOptions = {
-    title: 'Map',
+    title: "Map"
   };
   // initalize the default values in state
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
-      mapPts: {},
+      mapPts: {}
     };
   }
 
@@ -37,13 +37,13 @@ export class MapDisplay extends React.Component {
     if (Platform.OS === "ios") {
       StatusBar.setNetworkActivityIndicatorVisible(true);
     }
-      
+
     const points = await fetch("https://127.0.0.1:8000/Indexpoints.geojson")
-    .then((response) => response.json())
-    .catch(function(error) {
-      console.log(error.message);
-      throw error;
-    });
+      .then(response => response.json())
+      .catch(function(error) {
+        console.log(error.message);
+        throw error;
+      });
 
     if (Platform.OS === "ios") {
       StatusBar.setNetworkActivityIndicatorVisible(false);
@@ -68,25 +68,25 @@ export class MapDisplay extends React.Component {
             <Marker
               coordinate={{
                 longitude: -81.4899204,
-                latitude: 41.50191905,
+                latitude: 41.50191905
               }}
-              title={'Acacia Clubhouse'}
+              title={"Acacia Clubhouse"}
               onPress={() => this.toggleVisibility()}
             />
             <Marker
               coordinate={{
                 longitude: -81.52245312,
-                latitude: 41.53738951,
+                latitude: 41.53738951
               }}
-              title={'Euclid Creek Management Office'}
+              title={"Euclid Creek Management Office"}
               onPress={() => this.toggleVisibility()}
             />
             <Marker
               coordinate={{
                 longitude: -81.52248681,
-                latitude: 41.53940433,
+                latitude: 41.53940433
               }}
-              title={'Rear Quarry'}
+              title={"Rear Quarry"}
               onPress={() => this.toggleVisibility()}
             />
           </MapView>
@@ -94,15 +94,16 @@ export class MapDisplay extends React.Component {
             show={this.state.modalVisible}
             handleClose={() => this.toggleVisibility()}
           />
-          { !this.state.showSearch &&
+          {!this.state.showSearch && (
             <Callout>
-              <View style={styles.calloutView} >
-                <TextInput style={styles.calloutSearch}
+              <View style={styles.calloutView}>
+                <TextInput
+                  style={styles.calloutSearch}
                   placeholder={"Search"}
                 />
               </View>
-          </Callout>
-         }
+            </Callout>
+          )}
         </View>
       </SafeAreaView>
     );
@@ -114,8 +115,8 @@ const zoomNEOhio = {
     latitude: 41.215078,
     longitude: -81.562843,
     latitudeDelta: 3 / 4,
-    longitudeDelta: 3 / 4,
-  },
+    longitudeDelta: 3 / 4
+  }
 };
 
 const styles = StyleSheet.create({
@@ -126,28 +127,28 @@ const styles = StyleSheet.create({
     width: "40%",
     marginLeft: "30%",
     marginRight: "30%",
-    marginTop: 50,
+    marginTop: 50
   },
   calloutSearch: {
     borderColor: "transparent",
     marginLeft: 10,
     marginRight: 10,
     width: "90%",
-    height: 40, 
+    height: 40
   },
   statusBar: {
-    height: Platform.OS === 'ios' ? 20 : 0,
-    zIndex: 3,
+    height: Platform.OS === "ios" ? 20 : 0,
+    zIndex: 3
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
   },
   mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-    zIndex: -1,
-  },
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+    zIndex: -1
+  }
 });

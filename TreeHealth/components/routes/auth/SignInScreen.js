@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   signInBtns: {
     flexDirection:'row',
     justifyContent: 'space-around',
-    padding: 15,
+    padding: 30,
   },
   trialBtn: {
     marginBottom: 50,

@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 import {
   StyleSheet,
   ScrollView,
   Text,
   Modal,
   Image,
-  Button,
-} from 'react-native';
+  Button
+} from "react-native";
 
 export class MarkerModal extends React.Component {
   render() {
@@ -14,15 +14,16 @@ export class MarkerModal extends React.Component {
       <Modal style={styles.markerModal} visible={this.props.show}>
         <ScrollView
           stickyHeaderIndices={[0]}
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <Button
             style={styles.modalButton}
             onPress={this.props.handleClose}
-            title={'Close'}
+            title={"Close"}
           />
           <Image
             style={styles.modalImg}
-            source={require('./../../../assets/treehouse-default.png')}
+            source={require("./../../../assets/treehouse-default.png")}
           />
           <Text style={styles.modalText}>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -41,22 +42,22 @@ export class MarkerModal extends React.Component {
 
 const styles = StyleSheet.create({
   modalButton: {
-    width: '100%',
-    zIndex: 2,
+    width: "100%",
+    zIndex: 2
   },
   modalText: {
     fontSize: 20,
-    margin: '5%',
-    marginTop: 0,
+    margin: "5%",
+    marginTop: 0
   },
   modalImg: {
-    width: '90%',
-    margin: '5%',
+    width: "90%",
+    margin: "5%",
     marginTop: 15,
     paddingTop: 15,
-    flex: 1,
+    flex: 1
   },
   markerModal: {
-    zIndex: 1,
-  },
+    zIndex: 1
+  }
 });
