@@ -47,7 +47,7 @@ export class SignInScreen extends React.Component {
 
   _signInTrial = async () => {
     await AsyncStorage.setItem('userToken', 'trial');
-    this.props.navigation.navigate('Home');
+    this.props.navigation.navigate('Loading');
   };
 }
 

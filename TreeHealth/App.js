@@ -9,47 +9,45 @@ import { MapDisplay } from "./components/routes/map/MapDisplay";
 
 import { Icon } from "native-base";
 
-const MainNavigator = createStackNavigator(
-  {
-    Home: HomeScreen,
-    Map: MapDisplay
-  },
-  {
-    initialRouteName: "Home",
-    defaultNavigationOptions: {
-      headerStyle: {
-        backgroundColor: "#0f2834"
-      },
-      headerTitleStyle: {
-        fontWeight: "bold",
-        alignSelf: "center",
-        marginLeft: "auto",
-        marginRight: "auto"
-      },
-      headerTintColor: "white"
-    }
-  }
-);
-
 const bottomNavigator = createBottomTabNavigator(
   {
-    Home: HomeScreen,
-    Map: MapDisplay
+    Map: {
+      screen: MapDisplay,
+      navigationOptions: {
+        tabBar: ({ state }) => ({
+          visible: false
+        })
+      }
+    }
   },
   {
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
+        const { routeName } = navigation.state;
         return <Icon name="navigate" />;
       }
     })
   }
 );
 
-const Tabs = createAppContainer(bottomNavigator);
-
-const AuthStack = createStackNavigator(
-  { SignIn: SignInScreen },
+const MainNavigator = createStackNavigator(
   {
+    Home: HomeScreen,
+    Map: {
+      screen: bottomNavigator,
+      navigationOptions: {
+        title: "Map",
+        headerTitleStyle: {
+          fontWeight: "bold",
+          marginLeft: "auto",
+          marginRight: "auto"
+        },
+        headerTintColor: "white"
+      }
+    }
+  },
+  {
+    initialRouteName: "Home",
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: "#0f2834"
@@ -57,6 +55,17 @@ const AuthStack = createStackNavigator(
     }
   }
 );
+
+const AuthStack = createStackNavigator({
+  SignIn: {
+    screen: SignInScreen,
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: "#0f2834"
+      }
+    }
+  }
+});
 
 export default createAppContainer(
   createSwitchNavigator(
