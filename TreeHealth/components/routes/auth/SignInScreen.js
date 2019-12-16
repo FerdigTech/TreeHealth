@@ -1,6 +1,6 @@
 import React from "react";
 import { View, SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
-import { Button, Text, Form, Item, Input, Label } from "native-base";
+import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
 
 import { LogoTitle } from "../../reusable/LogoTitle";
 
@@ -22,24 +22,23 @@ export class SignInScreen extends React.Component {
             <Label>Password</Label>
             <Input secureTextEntry={true} />
           </Item>
-          <View style={styles.signInBtns}>
-            <Button info>
-              <Text> Sign Up </Text>
+          <Container style={styles.signInBtns}>
+            <Button block transparent>
+              <Text> Forgot Password? </Text>
             </Button>
-            <Button primary>
+            <Button style={{ backgroundColor: "#00b374" }}>
               <Text> Login </Text>
             </Button>
-          </View>
+          </Container>
         </Form>
-        <Button
-          style={styles.trialBtn}
-          rounded
-          block
-          light
-          onPress={this._signInTrial}
-        >
-          <Text> Try Us Out! </Text>
-        </Button>
+        <Container style={styles.helpBtnsCtn}>
+          <Button style={styles.helpBtns} rounded block light>
+            <Text> Create an Account </Text>
+          </Button>
+          <Button style={styles.helpBtns} rounded block light onPress={this._signInTrial}>
+            <Text> Try Us Out! </Text>
+          </Button>
+        </Container>
       </SafeAreaView>
     );
   }
@@ -60,12 +59,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flex: 1
   },
+  helpBtnsCtn: {
+    justifyContent: "flex-end",
+    padding: 10,
+    flex: 1
+  },
+  helpBtns: {
+    margin: 15
+  },
   signInBtns: {
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 30
-  },
-  trialBtn: {
-    marginBottom: 50
   }
 });
