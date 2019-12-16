@@ -6,7 +6,8 @@ import { LogoTitle } from "./../../reusable/LogoTitle";
 export class HomeScreen extends React.Component {
   static navigationOptions = {
     // Use logo instead of text
-    headerTitle: () => <LogoTitle />
+    headerTitle: () => <LogoTitle />,
+    headerRight: null
   };
   render() {
     const { navigate } = this.props.navigation;
@@ -30,7 +31,7 @@ export class HomeScreen extends React.Component {
             menuName="Projects"
           />
           <HomeList
-            menuAction={() => navigate("Map")}
+            menuAction={() => navigate("ProjectList")}
             iconName="help-circle"
             menuName="Project Questions"
           />

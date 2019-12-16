@@ -6,6 +6,8 @@ import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
 import { SignInScreen } from "./components/routes/auth/SignInScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
+import { ProjectList } from "./components/routes/Menu/ProjectList";
+import { View } from "react-native";
 
 import { Icon } from "native-base";
 
@@ -16,9 +18,13 @@ const bottomNavigator = createBottomTabNavigator(
       navigationOptions: {
         tabBarVisible: false
       }
+    },
+    ProjectList: {
+      screen: ProjectList
     }
   },
   {
+    initialRouteName: "Map",
     defaultNavigationOptions: ({ navigation }) => ({
       tabBarIcon: ({ focused, tintColor }) => {
         return <Icon name="navigate" />;
@@ -34,12 +40,12 @@ const MainNavigator = createStackNavigator(
       screen: bottomNavigator,
       navigationOptions: {
         title: "Map",
-        headerTitleStyle: {
-          fontWeight: "bold",
-          marginLeft: "auto",
-          marginRight: "auto"
-        },
-        headerTintColor: "white"
+      }
+    },
+    ProjectList: {
+      screen: ProjectList,
+      navigationOptions: {
+        title: "Projects",
       }
     }
   },
@@ -48,7 +54,15 @@ const MainNavigator = createStackNavigator(
     defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: "#0f2834"
-      }
+      },
+      headerTitleStyle: {
+        flex: 1,
+        textAlign: 'center',
+        alignSelf: 'center',
+      },
+      // this is because the back button offsets by 40
+      headerRight: (<View />),
+      headerTintColor: "white"
     }
   }
 );
