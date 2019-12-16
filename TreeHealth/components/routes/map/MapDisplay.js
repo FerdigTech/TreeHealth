@@ -1,6 +1,6 @@
 import React from "react";
-import { Marker, Callout}  from "react-native-maps";
-import MapView from 'react-native-maps';
+import { Marker, Callout } from "react-native-maps";
+import MapView from "react-native-maps";
 import {
   StyleSheet,
   View,
@@ -10,7 +10,9 @@ import {
   StatusBar,
   TextInput
 } from "react-native";
+import { Container, Content } from "native-base";
 import { MarkerModal } from "./MarkerModal";
+import { FooterTabs } from "../../reusable/FooterTabs";
 
 export class MapDisplay extends React.Component {
   static navigationOptions = {
@@ -21,7 +23,8 @@ export class MapDisplay extends React.Component {
     super(props);
     this.state = {
       modalVisible: false,
-      mapPts: {}
+      mapPts: {},
+      showSearch: false
     };
   }
 
@@ -51,60 +54,73 @@ export class MapDisplay extends React.Component {
     await this.setStateAsync({ mapPts: points });
   }
 
-  toggleVisibility() {
+  toggleModalVis() {
     this.setState({ modalVisible: !this.state.modalVisible });
+  }
+  toggleSearchVis() {
+    this.setState({ showSearch: !this.state.showSearch });
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
       <SafeAreaView style={styles.container}>
-        <View>
-          <StatusBar
-            style={styles.statusBar}
-            backgroundColor="blue"
-            barStyle="light-content"
+        <Container>
+          <Content>
+            <StatusBar
+              style={styles.statusBar}
+              backgroundColor="blue"
+              barStyle="light-content"
+            />
+            <MapView style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
+              <Marker
+                coordinate={{
+                  longitude: -81.4899204,
+                  latitude: 41.50191905
+                }}
+                title={"Acacia Clubhouse"}
+                onPress={() => this.toggleModalVis()}
+              />
+              <Marker
+                coordinate={{
+                  longitude: -81.52245312,
+                  latitude: 41.53738951
+                }}
+                title={"Euclid Creek Management Office"}
+                onPress={() => this.toggleModalVis()}
+              />
+              <Marker
+                coordinate={{
+                  longitude: -81.52248681,
+                  latitude: 41.53940433
+                }}
+                title={"Rear Quarry"}
+                onPress={() => this.toggleModalVis()}
+              />
+            </MapView>
+            <MarkerModal
+              show={this.state.modalVisible}
+              handleClose={() => this.toggleModalVis()}
+            />
+            {this.state.showSearch && (
+              <Callout>
+                <View style={styles.calloutView}>
+                  <TextInput
+                    style={styles.calloutSearch}
+                    placeholder={"Search"}
+                  />
+                </View>
+              </Callout>
+            )}
+          </Content>
+          <FooterTabs
+            listIcon="list"
+            switchView={() => navigate("ProjectList")}
+            funnelToggle={() => {}}
+            SearchToggle={() => this.toggleSearchVis()}
+            addItemAction={() => {}}
           />
-          <MapView style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
-            <Marker
-              coordinate={{
-                longitude: -81.4899204,
-                latitude: 41.50191905
-              }}
-              title={"Acacia Clubhouse"}
-              onPress={() => this.toggleVisibility()}
-            />
-            <Marker
-              coordinate={{
-                longitude: -81.52245312,
-                latitude: 41.53738951
-              }}
-              title={"Euclid Creek Management Office"}
-              onPress={() => this.toggleVisibility()}
-            />
-            <Marker
-              coordinate={{
-                longitude: -81.52248681,
-                latitude: 41.53940433
-              }}
-              title={"Rear Quarry"}
-              onPress={() => this.toggleVisibility()}
-            />
-          </MapView>
-          <MarkerModal
-            show={this.state.modalVisible}
-            handleClose={() => this.toggleVisibility()}
-          />
-          {!this.state.showSearch && (
-            <Callout>
-              <View style={styles.calloutView}>
-                <TextInput
-                  style={styles.calloutSearch}
-                  placeholder={"Search"}
-                />
-              </View>
-            </Callout>
-          )}
-        </View>
+        </Container>
       </SafeAreaView>
     );
   }
@@ -127,7 +143,7 @@ const styles = StyleSheet.create({
     width: "40%",
     marginLeft: "30%",
     marginRight: "30%",
-    marginTop: 50
+    marginTop: 10
   },
   calloutSearch: {
     borderColor: "transparent",

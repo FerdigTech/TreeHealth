@@ -1,7 +1,6 @@
 import React from "react";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import { createBottomTabNavigator } from "react-navigation-tabs";
 import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
 import { SignInScreen } from "./components/routes/auth/SignInScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
@@ -9,43 +8,19 @@ import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { ProjectList } from "./components/routes/Menu/ProjectList";
 import { View } from "react-native";
 
-import { Icon } from "native-base";
-
-const bottomNavigator = createBottomTabNavigator(
-  {
-    Map: {
-      screen: MapDisplay,
-      navigationOptions: {
-        tabBarVisible: false
-      }
-    },
-    ProjectList: {
-      screen: ProjectList
-    }
-  },
-  {
-    initialRouteName: "Map",
-    defaultNavigationOptions: ({ navigation }) => ({
-      tabBarIcon: ({ focused, tintColor }) => {
-        return <Icon name="navigate" />;
-      }
-    })
-  }
-);
-
 const MainNavigator = createStackNavigator(
   {
     Home: HomeScreen,
     Map: {
-      screen: bottomNavigator,
+      screen: MapDisplay,
       navigationOptions: {
-        title: "Map",
+        title: "Map"
       }
     },
     ProjectList: {
       screen: ProjectList,
       navigationOptions: {
-        title: "Projects",
+        title: "Projects"
       }
     }
   },
@@ -57,11 +32,11 @@ const MainNavigator = createStackNavigator(
       },
       headerTitleStyle: {
         flex: 1,
-        textAlign: 'center',
-        alignSelf: 'center',
+        textAlign: "center",
+        alignSelf: "center"
       },
       // this is because the back button offsets by 40
-      headerRight: (<View />),
+      headerRight: <View />,
       headerTintColor: "white"
     }
   }
