@@ -119,7 +119,7 @@ export class MapDisplay extends React.Component {
             )}
           </Content>
           <FooterTabs
-            listIcon="layers"
+            listIcon="list"
             switchView={() =>
               navigate("ProjectStacked", {
                 projectName: this.state.currentProject
