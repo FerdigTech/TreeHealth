@@ -14,10 +14,7 @@ const MainNavigator = createStackNavigator(
   {
     Home: HomeScreen,
     Map: {
-      screen: MapDisplay,
-      navigationOptions: {
-        title: "Map"
-      }
+      screen: MapDisplay
     },
     QuestionList: {
       screen: QuestionList,

@@ -1,12 +1,15 @@
 import React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import { Container, Content } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
+import {TitleDrop} from "./../../reusable/TitleDrop"
 
 export class ProjectStacked extends React.Component {
-  static navigationOptions = {
-    title: "Projects name"
-  };
+  static navigationOptions = ({ navigation }) => ({
+    headerTitle: () => (
+      <TitleDrop projectName={navigation.getParam("projectName", "All")} />
+    )
+  });
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -19,11 +22,13 @@ export class ProjectStacked extends React.Component {
           switchView={() => navigate("Map")}
           funnelToggle={() => {}}
           SearchToggle={() => {}}
-          addItemAction={() =>  navigate("QuestionList")}
+          addItemAction={() =>
+            navigate("QuestionList", {
+              projectName: this.state.currentProject
+            })
+          }
         />
       </Container>
     );
   }
 }
-
-const styles = StyleSheet.create({});

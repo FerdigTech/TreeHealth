@@ -17,9 +17,5 @@ const styles = StyleSheet.create({
     height: 30,
     marginLeft: "auto",
     marginRight: "auto"
-  },
-  listLayout: {
-    justifyContent: "space-around",
-    flex: 1
   }
 });

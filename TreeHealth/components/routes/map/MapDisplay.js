@@ -13,18 +13,22 @@ import {
 import { Container, Content } from "native-base";
 import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
+import {TitleDrop} from "../../reusable/TitleDrop";
 
 export class MapDisplay extends React.Component {
-  static navigationOptions = {
-    title: "Map"
-  };
+  static navigationOptions = ({ navigation }) => ({
+    headerTitle: () => (
+      <TitleDrop projectName={navigation.getParam("projectName", "All")} />
+    )
+  });
   // initalize the default values in state
   constructor(props) {
     super(props);
     this.state = {
       modalVisible: false,
       mapPts: {},
-      showSearch: false
+      showSearch: false,
+      currentProject: this.props.navigation.getParam("projectName", "All")
     };
   }
 
@@ -115,10 +119,18 @@ export class MapDisplay extends React.Component {
           </Content>
           <FooterTabs
             listIcon="layers"
-            switchView={() => navigate("ProjectStacked") }
+            switchView={() =>
+              navigate("ProjectStacked", {
+                projectName: this.state.currentProject
+              })
+            }
             funnelToggle={() => {}}
             SearchToggle={() => this.toggleSearchVis()}
-            addItemAction={() => navigate("QuestionList")}
+            addItemAction={() =>
+              navigate("QuestionList", {
+                projectName: this.state.currentProject
+              })
+            }
           />
         </Container>
       </SafeAreaView>

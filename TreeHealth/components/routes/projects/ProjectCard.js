@@ -11,11 +11,16 @@ export class ProjectCard extends React.Component {
     return (
       <Container>
         <Card>
-          <CardItem cardBody button onPress={() => navigate("Map")}>
-            <Image
-              source={img}
-              style={styles.headerImg}
-            />
+          <CardItem
+            cardBody
+            button
+            onPress={() =>
+              navigate("Map", {
+                projectName: this.props.projectName
+              })
+            }
+          >
+            <Image source={img} style={styles.headerImg} />
           </CardItem>
           <CardItem>
             <Text style={styles.titleTxt}>{this.props.projectName}</Text>
