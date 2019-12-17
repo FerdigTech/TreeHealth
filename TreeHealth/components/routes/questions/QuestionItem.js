@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 import { Button, ListItem, Text, Icon, Left, Body, Right } from "native-base";
  
 
-export class ProjectItem extends React.Component {
+export class QuestionItem extends React.Component {
   render() {
     return (
       <ListItem style={styles.listItemStyle}>

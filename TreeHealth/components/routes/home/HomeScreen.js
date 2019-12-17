@@ -31,7 +31,7 @@ export class HomeScreen extends React.Component {
             menuName="Projects"
           />
           <HomeList
-            menuAction={() => navigate("ProjectList")}
+            menuAction={() => navigate("QuestionList")}
             iconName="help-circle"
             menuName="Project Questions"
           />

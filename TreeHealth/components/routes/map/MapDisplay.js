@@ -115,7 +115,7 @@ export class MapDisplay extends React.Component {
           </Content>
           <FooterTabs
             listIcon="layers"
-            switchView={() => navigate("ProjectList")}
+            switchView={() => navigate("QuestionList")}
             funnelToggle={() => {}}
             SearchToggle={() => this.toggleSearchVis()}
             addItemAction={() => {}}

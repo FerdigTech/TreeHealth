@@ -5,7 +5,7 @@ import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
 import { SignInScreen } from "./components/routes/auth/SignInScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
-import { ProjectList } from "./components/routes/Menu/ProjectList";
+import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { View } from "react-native";
 
@@ -18,8 +18,8 @@ const MainNavigator = createStackNavigator(
         title: "Map"
       }
     },
-    ProjectList: {
-      screen: ProjectList,
+    QuestionList: {
+      screen: QuestionList,
       navigationOptions: {
         title: "Projects Questions"
       }
