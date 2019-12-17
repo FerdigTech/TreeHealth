@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet, ScrollView } from "react-native";
 import { ProjectCard } from "./ProjectCard";
 import { Container, Content } from "native-base";
@@ -22,4 +23,7 @@ export class ProjectOverview extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({});
+ProjectOverview.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
+

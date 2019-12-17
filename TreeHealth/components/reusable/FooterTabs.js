@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet } from "react-native";
 import { Footer, FooterTab, Button, Icon } from "native-base";
 
@@ -24,6 +25,14 @@ export class FooterTabs extends React.Component {
     );
   }
 }
+
+FooterTabs.propTypes = {
+  listIcon: PropTypes.string.isRequired,
+  switchView: PropTypes.func.isRequired,
+  funnelToggle: PropTypes.func.isRequired,
+  SearchToggle: PropTypes.func.isRequired,
+  addItemAction: PropTypes.func.isRequired
+};
 
 const styles = StyleSheet.create({
   footerStyle: {

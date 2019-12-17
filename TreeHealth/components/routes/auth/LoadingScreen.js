@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   View,
   StatusBar,
@@ -31,6 +32,10 @@ export class LoadingScreen extends React.Component {
     );
   }
 }
+
+LoadingScreen.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
 
 const styles = StyleSheet.create({
   loadingView: {

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet, Image } from "react-native";
 import { Text, Card, CardItem, Container } from "native-base";
 
@@ -35,6 +36,12 @@ export class ProjectCard extends React.Component {
     );
   }
 }
+
+ProjectCard.propTypes = {
+  defaultImg: PropTypes.bool.isRequired,
+  projectName: PropTypes.string.isRequired,
+  projectSummary: PropTypes.string.isRequired
+};
 
 const styles = StyleSheet.create({
   headerImg: {

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Marker, Callout } from "react-native-maps";
 import MapView from "react-native-maps";
 import {
@@ -145,6 +146,10 @@ const zoomNEOhio = {
     latitudeDelta: 3 / 4,
     longitudeDelta: 3 / 4
   }
+};
+
+MapDisplay.propTypes = {
+  navigation: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

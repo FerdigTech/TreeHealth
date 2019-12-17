@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet } from "react-native";
 import { Button, ListItem, Text, Icon, Left, Body, Right } from "native-base";
  
@@ -23,7 +24,9 @@ export class QuestionItem extends React.Component {
   }
 }
 
-
+QuestionItem.propTypes = {
+  isDraft: PropTypes.bool.isRequired
+};
 
 const styles = StyleSheet.create({
   lstIconBtn: {

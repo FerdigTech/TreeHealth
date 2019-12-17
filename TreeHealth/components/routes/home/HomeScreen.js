@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { View, StyleSheet, Button, AsyncStorage } from "react-native";
 import { HomeList } from "./HomeList";
 import { LogoTitle } from "./../../reusable/LogoTitle";
@@ -39,6 +40,10 @@ export class HomeScreen extends React.Component {
     this.props.navigation.navigate("Auth");
   };
 }
+
+HomeScreen.propTypes = {
+  navigation: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   listLayout: {

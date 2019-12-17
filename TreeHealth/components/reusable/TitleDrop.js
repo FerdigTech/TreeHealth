@@ -1,15 +1,12 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, Text } from "native-base";
 
 export class TitleDrop extends React.Component {
   render() {
     return (
-      <TouchableOpacity
-        onPress={() => {}}
-        style={styles.dropContr}
-        activeOpacity={0.7}
-      >
+      <TouchableOpacity onPress={() => {}} style={styles.dropContr} activeOpacity={0.7}>
         <View style={styles.dropWrap}>
           <Text style={styles.projectTitle}>{this.props.projectName}</Text>
           <Icon name="arrow-down" style={styles.dropIcon} />
@@ -18,6 +15,10 @@ export class TitleDrop extends React.Component {
     );
   }
 }
+
+TitleDrop.propTypes = {
+  projectName: PropTypes.string.isRequired
+};
 
 const styles = StyleSheet.create({
   dropContr: {

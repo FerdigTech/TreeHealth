@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import {
   StyleSheet,
   ScrollView,
@@ -39,6 +40,11 @@ export class MarkerModal extends React.Component {
     );
   }
 }
+
+MarkerModal.propTypes = {
+  show: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired
+};
 
 const styles = StyleSheet.create({
   modalButton: {

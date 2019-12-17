@@ -1,5 +1,6 @@
 import React from "react";
-import { View, SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
+import PropTypes from 'prop-types';
+import { SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
 
 import { LogoTitle } from "../../reusable/LogoTitle";
@@ -48,6 +49,10 @@ export class SignInScreen extends React.Component {
     this.props.navigation.navigate("Loading");
   };
 }
+
+SignInScreen.propTypes = {
+  navigation: PropTypes.object.isRequire
+};
 
 const styles = StyleSheet.create({
   signInView: {

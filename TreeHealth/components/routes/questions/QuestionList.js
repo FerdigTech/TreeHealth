@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleSheet, ScrollView } from "react-native";
+import PropTypes from "prop-types";
+import { ScrollView } from "react-native";
 import { QuestionItem } from "./QuestionItem";
 import { Container, Content } from "native-base";
 
@@ -19,4 +20,6 @@ export class QuestionList extends React.Component {
   }
 }
 
-const styles = StyleSheet.create({});
+QuestionList.propTypes = {
+  navigation: PropTypes.object.isRequired
+};
