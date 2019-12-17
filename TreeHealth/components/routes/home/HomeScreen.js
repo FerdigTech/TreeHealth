@@ -30,11 +30,6 @@ export class HomeScreen extends React.Component {
             iconName="map"
             menuName="Projects"
           />
-          <HomeList
-            menuAction={() => navigate("QuestionList")}
-            iconName="help-circle"
-            menuName="Project Questions"
-          />
         </View>
       </View>
     );
