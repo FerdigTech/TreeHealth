@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Marker, Callout } from "react-native-maps";
-import MapView from "react-native-maps";
+import MapView, {  Marker, Callout, AnimatedRegion, Animated } from 'react-native-maps';
 import {
   StyleSheet,
   View,
@@ -77,7 +76,7 @@ export class MapDisplay extends React.Component {
               backgroundColor="blue"
               barStyle="light-content"
             />
-            <MapView style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
+            <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
               <Marker
                 coordinate={{
                   longitude: -81.4899204,
@@ -102,7 +101,7 @@ export class MapDisplay extends React.Component {
                 title={"Rear Quarry"}
                 onPress={() => this.toggleModalVis()}
               />
-            </MapView>
+            </Animated>
             <MarkerModal
               show={this.state.modalVisible}
               handleClose={() => this.toggleModalVis()}
@@ -140,12 +139,12 @@ export class MapDisplay extends React.Component {
 }
 
 const zoomNEOhio = {
-  region: {
+  region: new AnimatedRegion({
     latitude: 41.215078,
     longitude: -81.562843,
     latitudeDelta: 3 / 4,
     longitudeDelta: 3 / 4
-  }
+  })
 };
 
 MapDisplay.propTypes = {
