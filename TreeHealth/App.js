@@ -6,6 +6,7 @@ import { SignInScreen } from "./components/routes/auth/SignInScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { ProjectList } from "./components/routes/Menu/ProjectList";
+import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { View } from "react-native";
 
 const MainNavigator = createStackNavigator(
@@ -19,6 +20,12 @@ const MainNavigator = createStackNavigator(
     },
     ProjectList: {
       screen: ProjectList,
+      navigationOptions: {
+        title: "Projects Questions"
+      }
+    },
+    ProjectOverview: {
+      screen: ProjectOverview,
       navigationOptions: {
         title: "Projects"
       }
