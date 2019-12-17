@@ -8,16 +8,16 @@ export class FooterTabs extends React.Component {
       <Footer>
         <FooterTab style={styles.footerStyle}>
           <Button onPress={this.props.switchView}>
-            <Icon style={styles.footerIcnStyle} name={this.props.listIcon} />
+            <Icon type="Feather" style={styles.footerIcnStyle} name={this.props.listIcon} />
           </Button>
           <Button onPress={this.props.funnelToggle}>
-            <Icon style={styles.footerIcnStyle} name="funnel" />
+            <Icon type="Feather" style={styles.footerIcnStyle} name="filter" />
           </Button>
           <Button onPress={this.props.SearchToggle}>
-            <Icon style={styles.footerIcnStyle} name="search" />
+            <Icon type="Feather" style={styles.footerIcnStyle} name="search" />
           </Button>
           <Button onPress={this.props.addItemAction}>
-            <Icon style={styles.footerIcnStyle} name="add" />
+            <Icon type="Feather" style={styles.footerIcnStyle} name="plus" />
           </Button>
         </FooterTab>
       </Footer>
