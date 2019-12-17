@@ -7,6 +7,7 @@ import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
+import { ProjectStacked } from "./components/routes/projects/ProjectStacked";
 import { View } from "react-native";
 
 const MainNavigator = createStackNavigator(
@@ -29,6 +30,9 @@ const MainNavigator = createStackNavigator(
       navigationOptions: {
         title: "Projects"
       }
+    },
+    ProjectStacked: {
+      screen: ProjectStacked,
     }
   },
   {
