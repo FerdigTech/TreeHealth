@@ -1,16 +1,22 @@
 import React from "react";
 import { StyleSheet, ScrollView } from "react-native";
 import { ProjectCard } from "./ProjectCard";
-import { Container } from "native-base";
+import { Container, Content } from "native-base";
 
 export class ProjectOverview extends React.Component {
   render() {
     return (
       <Container>
-        <ScrollView style={{ flex: 1 }}>
-          <ProjectCard />
-          <ProjectCard />
-        </ScrollView>
+        <Content>
+          <ScrollView style={{ flex: 1 }}>
+            <ProjectCard
+              projectName={"Beech Leaf Disease Training"}
+              defaultImg={true}
+              projectSummary={"fsdfsdfsd"}
+              navigation={this.props.navigation}
+            />
+          </ScrollView>
+        </Content>
       </Container>
     );
   }
