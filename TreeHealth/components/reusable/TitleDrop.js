@@ -4,15 +4,33 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, Text } from "native-base";
 
 export class TitleDrop extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentlyDropd: false
+    };
+  }
+
   render() {
     return (
-      <TouchableOpacity onPress={() => {}} style={styles.dropContr} activeOpacity={0.7}>
+      <TouchableOpacity
+        onPress={() => this.toggleDropDown()}
+        style={styles.dropContr}
+        activeOpacity={0.7}
+      >
         <View style={styles.dropWrap}>
           <Text style={styles.projectTitle}>{this.props.projectName}</Text>
-          <Icon name="arrow-down" style={styles.dropIcon} />
+          <Icon
+            name={this.state.currentlyDropd ? "arrow-up" : "arrow-down"}
+            style={styles.dropIcon}
+          />
         </View>
       </TouchableOpacity>
     );
+  }
+
+  toggleDropDown() {
+    this.setState({ currentlyDropd: !this.state.currentlyDropd });
   }
 }
 
