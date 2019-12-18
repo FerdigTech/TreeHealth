@@ -1,19 +1,22 @@
 import React from "react";
 import PropTypes from "prop-types";
-import MapView, {  Marker, Callout, AnimatedRegion, Animated } from 'react-native-maps';
+import MapView, {
+  Marker,
+  Callout,
+  AnimatedRegion,
+  Animated
+} from "react-native-maps";
 import {
   StyleSheet,
   View,
   SafeAreaView,
-  Platform,
   Dimensions,
-  StatusBar,
   TextInput
 } from "react-native";
 import { Container, Content } from "native-base";
 import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
-import {TitleDrop} from "../../reusable/TitleDrop";
+import { TitleDrop } from "../../reusable/TitleDrop";
 
 export class MapDisplay extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -26,36 +29,9 @@ export class MapDisplay extends React.Component {
     super(props);
     this.state = {
       modalVisible: false,
-      mapPts: {},
       showSearch: false,
       currentProject: this.props.navigation.getParam("projectName", "All")
     };
-  }
-
-  // this is for the fetch await and async component mount
-  setStateAsync(state) {
-    return new Promise(resolve => {
-      this.setState(state, resolve);
-    });
-  }
-
-  // Get all the map points from the site
-  async componentDidMount() {
-    if (Platform.OS === "ios") {
-      StatusBar.setNetworkActivityIndicatorVisible(true);
-    }
-
-    const points = await fetch("https://127.0.0.1:8000/Indexpoints.geojson")
-      .then(response => response.json())
-      .catch(function(error) {
-        console.log(error.message);
-        throw error;
-      });
-
-    if (Platform.OS === "ios") {
-      StatusBar.setNetworkActivityIndicatorVisible(false);
-    }
-    await this.setStateAsync({ mapPts: points });
   }
 
   toggleModalVis() {
@@ -71,11 +47,6 @@ export class MapDisplay extends React.Component {
       <SafeAreaView style={styles.container}>
         <Container>
           <Content>
-            <StatusBar
-              style={styles.statusBar}
-              backgroundColor="blue"
-              barStyle="light-content"
-            />
             <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
               <Marker
                 coordinate={{
@@ -167,10 +138,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: "90%",
     height: 40
-  },
-  statusBar: {
-    height: Platform.OS === "ios" ? 20 : 0,
-    zIndex: 3
   },
   container: {
     flex: 1,
