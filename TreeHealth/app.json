@@ -28,7 +28,12 @@
       "bundleIdentifier": "com.KentState.TreeHealth"
     },
     "android": {
-      "package": "com.KentState.TreeHealth"
+      "package": "com.KentState.TreeHealth",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyBTVQg75ZtVkM7sP2K5H9xJXhZVSCgUiZc"
+        }
+      }
     }
   }
 }
