@@ -10,29 +10,27 @@ export class ProjectCard extends React.Component {
       ? require("../../../assets/treehouse-default.png")
       : require("../../../assets/treehouse-default.png");
     return (
-      <Container>
-        <Card>
-          <CardItem
-            cardBody
-            button
-            onPress={() =>
-              navigate("Map", {
-                projectName: this.props.projectName
-              })
-            }
-          >
-            <Image source={img} style={styles.headerImg} />
-          </CardItem>
-          <CardItem>
-            <Text style={styles.titleTxt}>{this.props.projectName}</Text>
-          </CardItem>
-          <CardItem>
-            <Text style={styles.summaryTxt} note>
-              {this.props.projectSummary}
-            </Text>
-          </CardItem>
-        </Card>
-      </Container>
+      <Card>
+        <CardItem
+          cardBody
+          button
+          onPress={() =>
+            navigate("Map", {
+              projectName: this.props.projectName
+            })
+          }
+        >
+          <Image source={img} style={styles.headerImg} />
+        </CardItem>
+        <CardItem>
+          <Text style={styles.titleTxt}>{this.props.projectName}</Text>
+        </CardItem>
+        <CardItem>
+          <Text style={styles.summaryTxt} note>
+            {this.props.projectSummary}
+          </Text>
+        </CardItem>
+      </Card>
     );
   }
 }

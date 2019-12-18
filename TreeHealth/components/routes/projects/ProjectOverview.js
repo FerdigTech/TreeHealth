@@ -42,18 +42,20 @@ export class ProjectOverview extends React.Component {
     // Handles to see if GeoJson format exists, otherwise returns empty
     let projectInfo = [];
     if (typeof this.state.geoJSON_values !== "undefined") {
-      let projectInfo = this.state.geoJSON_values.hasOwnProperty("features")
+      projectInfo = this.state.geoJSON_values.hasOwnProperty("features")
         ? getProjectLstInfo(this.state.geoJSON_values)
         : [];
     }
-
-    const projects = projectInfo.map((item, index) => {
-      <ProjectCard
-        projectName={item[0]}
-        defaultImg={true}
-        projectSummary={item[1]}
-        navigation={this.props.navigation}
-      />;
+    const projects = projectInfo.map((project, index) => {
+      return (
+        <ProjectCard
+          projectName={project.title}
+          defaultImg={true}
+          projectSummary={project.description}
+          navigation={this.props.navigation}
+          key={index}
+        />
+      );
     });
 
     return (
