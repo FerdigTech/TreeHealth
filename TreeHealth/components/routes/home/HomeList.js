@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet } from "react-native";
 import { Button, ListItem, Text, Icon, Left, Body, Right } from "native-base";
+import globals from "../../../globals"
 
 export class HomeList extends React.Component {
   render() {
@@ -31,7 +32,7 @@ HomeList.propTypes = {
 
 const styles = StyleSheet.create({
   iconStyling: {
-    backgroundColor: "#00b374",
+    backgroundColor: globals.COLOR.GREEN,
     color: "white"
   }
 });

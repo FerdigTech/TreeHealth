@@ -9,6 +9,7 @@ import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { ProjectStacked } from "./components/routes/projects/ProjectStacked";
 import { View } from "react-native";
+import globals from "./globals"
 
 const MainNavigator = createStackNavigator(
   {
@@ -36,7 +37,7 @@ const MainNavigator = createStackNavigator(
     initialRouteName: "Home",
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: "#0f2834"
+        backgroundColor: globals.COLOR.DARK_BLUE
       },
       headerTitleStyle: {
         flex: 1,
@@ -55,7 +56,7 @@ const AuthStack = createStackNavigator({
     screen: SignInScreen,
     navigationOptions: {
       headerStyle: {
-        backgroundColor: "#0f2834"
+        backgroundColor: globals.COLOR.DARK_BLUE
       }
     }
   }

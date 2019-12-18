@@ -3,13 +3,13 @@ import PropTypes from "prop-types";
 import { StyleSheet, ScrollView, Platform, StatusBar } from "react-native";
 import { ProjectCard } from "./ProjectCard";
 import { Container, Content } from "native-base";
-import { getProjectLstInfo } from "../../../pointFunc";
+import globals from "../../../globals";
 
 export class ProjectOverview extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      projectList: []
+      projects: []
     };
   }
   // this is for the fetch await and async component mount
@@ -24,29 +24,23 @@ export class ProjectOverview extends React.Component {
       StatusBar.setNetworkActivityIndicatorVisible(true);
     }
 
-    let geoJSON_values = await fetch(
-      "https://127.0.0.1:8000/Indexpoints.geojson"
-    )
+    let projects = await fetch(globals.SERVER_URL + "/projects/")
       .then(response => response.json())
       .catch(function(error) {
         console.log(error.message);
-        return [];
+        throw error;
       });
-
+    
     if (Platform.OS === "ios") {
       StatusBar.setNetworkActivityIndicatorVisible(false);
     }
-    await this.setStateAsync({ geoJSON_values: geoJSON_values });
+
+    // TODO: if offline, should try to pull project information from local information
+
+    await this.setStateAsync({ projects: ((projects !== "undefined") ? projects : []) });
   }
   render() {
-    // Handles to see if GeoJson format exists, otherwise returns empty
-    let projectInfo = [];
-    if (typeof this.state.geoJSON_values !== "undefined") {
-      projectInfo = this.state.geoJSON_values.hasOwnProperty("features")
-        ? getProjectLstInfo(this.state.geoJSON_values)
-        : [];
-    }
-    const projects = projectInfo.map((project, index) => {
+    const projectsEl = this.state.projects.map((project, index) => {
       return (
         <ProjectCard
           projectName={project.title}
@@ -66,7 +60,16 @@ export class ProjectOverview extends React.Component {
             backgroundColor="blue"
             barStyle="light-content"
           />
-          <ScrollView style={{ flex: 1 }}>{projects}</ScrollView>
+          <ScrollView style={{ flex: 1 }}>
+            {projectsEl}
+            <ProjectCard
+              projectName={"Example project"}
+              defaultImg={true}
+              projectSummary={"description for the project"}
+              navigation={this.props.navigation}
+              key={-1}
+            />
+          </ScrollView>
         </Content>
       </Container>
     );

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
+import globals from "../../../globals"
 
 import { LogoTitle } from "../../reusable/LogoTitle";
 
@@ -27,7 +28,7 @@ export class SignInScreen extends React.Component {
             <Button block transparent>
               <Text> Forgot Password? </Text>
             </Button>
-            <Button style={{ backgroundColor: "#00b374" }}>
+            <Button style={{ backgroundColor: globals.COLOR.GREEN }}>
               <Text> Login </Text>
             </Button>
           </Container>
