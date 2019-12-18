@@ -13,12 +13,11 @@ export function searchName_GeoJSON(GeoJSON, keyword) {
 }
 // input GeoJSON content and a keyword
 export function searchNameForCoords(GeoJSON, keyword) {
-    // Limits the results of the GeoJSON to the correct point
-    let result_GeoJSON = searchName_GeoJSON(GeoJSON, keyword);
-    // Returns an array coordinates for the point with keyword in its title
-    return result_GeoJSON.features.map(features => features.geometry.coordinates);
-  }
-
+  // Limits the results of the GeoJSON to the correct point
+  let result_GeoJSON = searchName_GeoJSON(GeoJSON, keyword);
+  // Returns an array coordinates for the point with keyword in its title
+  return result_GeoJSON.features.map(features => features.geometry.coordinates);
+}
 
 // input GeoJSON content and a project identifier
 export function filterProject_GeoJSON(GeoJSON, projectID) {
