@@ -62,13 +62,6 @@ export class ProjectOverview extends React.Component {
           />
           <ScrollView style={{ flex: 1 }}>
             {projectsEl}
-            <ProjectCard
-              projectName={"Example project"}
-              defaultImg={true}
-              projectSummary={"description for the project"}
-              navigation={this.props.navigation}
-              key={-1}
-            />
           </ScrollView>
         </Content>
       </Container>
