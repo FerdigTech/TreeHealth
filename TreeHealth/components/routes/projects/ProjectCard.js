@@ -16,7 +16,8 @@ export class ProjectCard extends React.Component {
           button
           onPress={() =>
             navigate("Map", {
-              projectName: this.props.projectName
+              projectName: this.props.projectName,
+              projectID: this.props.projectID
             })
           }
         >
@@ -38,6 +39,7 @@ export class ProjectCard extends React.Component {
 ProjectCard.propTypes = {
   defaultImg: PropTypes.bool.isRequired,
   projectName: PropTypes.string.isRequired,
+  projectID: PropTypes.number.isRequired,
   projectSummary: PropTypes.string.isRequired
 };
 

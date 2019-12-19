@@ -17,6 +17,7 @@ import { Container, Content } from "native-base";
 import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop } from "../../reusable/TitleDrop";
+import globals from "../../../globals";
 
 export class MapDisplay extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -30,10 +31,37 @@ export class MapDisplay extends React.Component {
     this.state = {
       modalVisible: false,
       showSearch: false,
-      currentProject: this.props.navigation.getParam("projectName", "All")
+      currentProject: this.props.navigation.getParam("projectName", "All"),
+      currentProjectID: this.props.navigation.getParam("ProjectID", "None"),
+      points: []
     };
   }
+  // this is for the fetch await and async component mount
+  setStateAsync(state) {
+    return new Promise(resolve => {
+      this.setState(state, resolve);
+    });
+  }
+  // Get all the points from the site
+  async componentDidMount() {
+    let points = await fetch(
+      globals.SERVER_URL + "/points/" + this.state.currentProjectID.toString()
+    )
+      .then(response => response.json())
+      .catch(function(error) {
+        console.log(error.message);
+        throw error;
+      });
 
+    await this.setStateAsync({
+      points:
+        points !== "undefined"
+          ? points.hasOwnProperty("features")
+            ? points.features
+            : []
+          : []
+    });
+  }
   toggleModalVis() {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
@@ -42,36 +70,26 @@ export class MapDisplay extends React.Component {
   }
 
   render() {
+    const pointEl = this.state.points.map((point, index) => {
+      return (
+        <Marker
+          coordinate={{
+            longitude: point.geometry.coordinates[0],
+            latitude: point.geometry.coordinates[1]
+          }}
+          title={point.properties.title}
+          onPress={() => this.toggleModalVis()}
+          key={index}
+        />
+      );
+    });
     const { navigate } = this.props.navigation;
     return (
       <SafeAreaView style={styles.container}>
         <Container>
           <Content>
             <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
-              <Marker
-                coordinate={{
-                  longitude: -81.4899204,
-                  latitude: 41.50191905
-                }}
-                title={"Acacia Clubhouse"}
-                onPress={() => this.toggleModalVis()}
-              />
-              <Marker
-                coordinate={{
-                  longitude: -81.52245312,
-                  latitude: 41.53738951
-                }}
-                title={"Euclid Creek Management Office"}
-                onPress={() => this.toggleModalVis()}
-              />
-              <Marker
-                coordinate={{
-                  longitude: -81.52248681,
-                  latitude: 41.53940433
-                }}
-                title={"Rear Quarry"}
-                onPress={() => this.toggleModalVis()}
-              />
+              {pointEl}
             </Animated>
             <MarkerModal
               show={this.state.modalVisible}

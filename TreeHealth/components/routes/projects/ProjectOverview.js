@@ -18,7 +18,7 @@ export class ProjectOverview extends React.Component {
       this.setState(state, resolve);
     });
   }
-  // Get all the map points from the site
+  // Get all the projects from the site
   async componentDidMount() {
     if (Platform.OS === "ios") {
       StatusBar.setNetworkActivityIndicatorVisible(true);
@@ -36,13 +36,14 @@ export class ProjectOverview extends React.Component {
     }
 
     // TODO: if offline, should try to pull project information from local information
-
+    // TODO: projects should be set globally, so other components could use it
     await this.setStateAsync({ projects: ((projects !== "undefined") ? projects : []) });
   }
   render() {
     const projectsEl = this.state.projects.map((project, index) => {
       return (
         <ProjectCard
+          projectID={project.ProjectID}
           projectName={project.name}
           defaultImg={true}
           projectSummary={project.description}
