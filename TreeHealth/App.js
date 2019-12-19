@@ -62,7 +62,7 @@ const AuthStack = createStackNavigator({
   }
 });
 
-export default createAppContainer(
+ const InitalNavigator = createAppContainer(
   createSwitchNavigator(
     {
       Loading: LoadingScreen,
@@ -74,3 +74,11 @@ export default createAppContainer(
     }
   )
 );
+
+export default class App extends React.Component {
+  render() {
+    return(
+      <InitalNavigator/>
+    );
+  }
+}
