@@ -43,7 +43,7 @@ export class ProjectOverview extends React.Component {
     const projectsEl = this.state.projects.map((project, index) => {
       return (
         <ProjectCard
-          projectName={project.title}
+          projectName={project.name}
           defaultImg={true}
           projectSummary={project.description}
           navigation={this.props.navigation}
