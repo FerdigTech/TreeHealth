@@ -12,20 +12,15 @@ export class ProjectOverview extends React.Component {
       projects: []
     };
   }
-  // this is for the fetch await and async component mount
-  setStateAsync(state) {
-    return new Promise(resolve => {
-      this.setState(state, resolve);
-    });
-  }
   // Get all the projects from the site
-  async componentDidMount() {
+  componentDidMount() {
     if (Platform.OS === "ios") {
       StatusBar.setNetworkActivityIndicatorVisible(true);
     }
 
-    let projects = await fetch(globals.SERVER_URL + "/projects/")
+    fetch(globals.SERVER_URL + "/projects/")
       .then(response => response.json())
+      .then(response => this.setState({ projects: ((response !== "undefined") ? response : []) }))
       .catch(function(error) {
         console.log(error.message);
         throw error;
@@ -37,7 +32,6 @@ export class ProjectOverview extends React.Component {
 
     // TODO: if offline, should try to pull project information from local information
     // TODO: projects should be set globally, so other components could use it
-    await this.setStateAsync({ projects: ((projects !== "undefined") ? projects : []) });
   }
   render() {
     const projectsEl = this.state.projects.map((project, index) => {

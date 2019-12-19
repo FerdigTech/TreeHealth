@@ -36,31 +36,26 @@ export class MapDisplay extends React.Component {
       points: []
     };
   }
-  // this is for the fetch await and async component mount
-  setStateAsync(state) {
-    return new Promise(resolve => {
-      this.setState(state, resolve);
-    });
-  }
   // Get all the points from the site
   async componentDidMount() {
-    let points = await fetch(
+    fetch(
       globals.SERVER_URL + "/points/" + this.state.currentProjectID.toString()
     )
       .then(response => response.json())
+      .then(response =>
+        this.setState({
+          points:
+          response !== "undefined"
+              ? response.hasOwnProperty("features")
+                ? response.features
+                : []
+              : []
+        })
+      )
       .catch(function(error) {
         console.log(error.message);
         throw error;
       });
-
-    await this.setStateAsync({
-      points:
-        points !== "undefined"
-          ? points.hasOwnProperty("features")
-            ? points.features
-            : []
-          : []
-    });
   }
   toggleModalVis() {
     this.setState({ modalVisible: !this.state.modalVisible });
