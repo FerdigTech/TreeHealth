@@ -8,8 +8,9 @@ import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { ProjectStacked } from "./components/routes/projects/ProjectStacked";
+import { ProjectWrapper } from "./ProjectWrapper";
 import { View } from "react-native";
-import globals from "./globals"
+import globals from "./globals";
 
 const MainNavigator = createStackNavigator(
   {
@@ -30,7 +31,7 @@ const MainNavigator = createStackNavigator(
       }
     },
     ProjectStacked: {
-      screen: ProjectStacked,
+      screen: ProjectStacked
     }
   },
   {
@@ -62,7 +63,7 @@ const AuthStack = createStackNavigator({
   }
 });
 
- const InitalNavigator = createAppContainer(
+const InitalNavigator = createAppContainer(
   createSwitchNavigator(
     {
       Loading: LoadingScreen,
@@ -75,10 +76,10 @@ const AuthStack = createStackNavigator({
   )
 );
 
-export default class App extends React.Component {
-  render() {
-    return(
-      <InitalNavigator/>
+export default function App(){
+    return (
+      <ProjectWrapper>
+        <InitalNavigator />
+      </ProjectWrapper>
     );
-  }
 }

@@ -1,9 +1,24 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, ScrollView, Platform, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  ScrollView,
+  Platform,
+  StatusBar,
+  Text
+} from "react-native";
 import { ProjectCard } from "./ProjectCard";
 import { Container, Content } from "native-base";
 import globals from "../../../globals";
+import { ProjectCosumer } from "./../../../ProjectProvider";
+
+export function DataEl() {
+  return (
+    <ProjectCosumer>
+      {context => <Text>Data: {context.Projects.length}</Text>}
+    </ProjectCosumer>
+  );
+}
 
 export class ProjectOverview extends React.Component {
   constructor(props) {
@@ -20,12 +35,14 @@ export class ProjectOverview extends React.Component {
 
     fetch(globals.SERVER_URL + "/projects/")
       .then(response => response.json())
-      .then(response => this.setState({ projects: ((response !== "undefined") ? response : []) }))
+      .then(response =>
+        this.setState({ projects: response !== "undefined" ? response : [] })
+      )
       .catch(function(error) {
         console.log(error.message);
         throw error;
       });
-    
+
     if (Platform.OS === "ios") {
       StatusBar.setNetworkActivityIndicatorVisible(false);
     }
@@ -56,7 +73,7 @@ export class ProjectOverview extends React.Component {
             barStyle="light-content"
           />
           <ScrollView style={{ flex: 1 }}>
-            {projectsEl}
+            <DataEl />
           </ScrollView>
         </Content>
       </Container>
