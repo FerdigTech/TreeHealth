@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { View, StyleSheet, Button, AsyncStorage } from "react-native";
 import { HomeList } from "./HomeList";
 import { LogoTitle } from "./../../reusable/LogoTitle";
+import NavigationService from "../../../NavigationService";
 
 export class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -11,23 +12,22 @@ export class HomeScreen extends React.Component {
     headerRight: null
   };
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <View style={{ flex: 1 }}>
         <Button title="Logout" onPress={this._signOutAsync} />
         <View style={styles.listLayout}>
           <HomeList
-            menuAction={() => navigate("Map")}
+            menuAction={() => NavigationService.navigate("Map")}
             iconName="people"
             menuName="About Us"
           />
           <HomeList
-            menuAction={() => navigate("Map")}
+            menuAction={() => NavigationService.navigate("Map")}
             iconName="hand"
             menuName="Introduction"
           />
           <HomeList
-            menuAction={() => navigate("ProjectOverview")}
+            menuAction={() => NavigationService.navigate("ProjectOverview")}
             iconName="map"
             menuName="Projects"
           />
@@ -37,13 +37,10 @@ export class HomeScreen extends React.Component {
   }
   _signOutAsync = async () => {
     await AsyncStorage.clear();
-    this.props.navigation.navigate("Auth");
+    NavigationService.navigate("Auth");
   };
 }
 
-HomeScreen.propTypes = {
-  navigation: PropTypes.object.isRequired,
-};
 
 const styles = StyleSheet.create({
   listLayout: {

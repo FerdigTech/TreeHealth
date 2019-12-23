@@ -3,6 +3,26 @@ import PropTypes from "prop-types";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, Text } from "native-base";
 import { List, ListItem } from "native-base";
+import { ProjectCosumer } from "./../../ProjectProvider";
+
+// creats a list of the projects who aren't active
+const ProjectsLstEl = props => {
+  return (
+    <ProjectCosumer>
+      {context =>
+        context.Projects.filter(
+          project => project.name != props.projectName
+        ).map((project, index) => {
+          return (
+            <ListItem key={index}>
+              <Text ellipsizeMode="tail" numberOfLines={1}> {project.name} </Text>
+            </ListItem>
+          );
+        })
+      }
+    </ProjectCosumer>
+  );
+};
 
 export class TitleDrop extends React.Component {
   constructor(props) {
@@ -26,7 +46,13 @@ export class TitleDrop extends React.Component {
             style={styles.dropIcon}
           />
         </View>
-        {this.state.currentlyDropd && <ScrollDrop />}
+        {this.state.currentlyDropd && (
+          <View style={styles.dropLst}>
+            <List>
+              <ProjectsLstEl projectName={this.props.projectName} />
+            </List>
+          </View>
+        )}
       </TouchableOpacity>
     );
   }
@@ -39,28 +65,6 @@ export class TitleDrop extends React.Component {
 TitleDrop.propTypes = {
   projectName: PropTypes.string.isRequired
 };
-
-export class ScrollDrop extends React.Component {
-  render() {
-    return (
-      <View style={styles.dropLst}>
-        <List>
-          <ListItem>
-            <Text numberOfLines={1} ellipsizeMode="tail">
-              Project 2
-            </Text>
-          </ListItem>
-          <ListItem>
-            <Text>Project 3</Text>
-          </ListItem>
-          <ListItem>
-            <Text>Project 4</Text>
-          </ListItem>
-        </List>
-      </View>
-    );
-  }
-}
 
 const styles = StyleSheet.create({
   dropLst: {

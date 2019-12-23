@@ -18,6 +18,7 @@ import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop } from "../../reusable/TitleDrop";
 import globals from "../../../globals";
+import NavigationService from "../../../NavigationService";
 
 export class MapDisplay extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -31,8 +32,8 @@ export class MapDisplay extends React.Component {
     this.state = {
       modalVisible: false,
       showSearch: false,
-      currentProject: this.props.navigation.getParam("projectName", "All"),
       currentProjectID: this.props.navigation.getParam("ProjectID", "None"),
+      currentProject: this.props.navigation.getParam("projectName", "All"),
       points: []
     };
   }
@@ -78,7 +79,6 @@ export class MapDisplay extends React.Component {
         />
       );
     });
-    const { navigate } = this.props.navigation;
     return (
       <SafeAreaView style={styles.container}>
         <Container>
@@ -104,14 +104,14 @@ export class MapDisplay extends React.Component {
           <FooterTabs
             listIcon="list"
             switchView={() =>
-              navigate("ProjectStacked", {
+              NavigationService.navigate("ProjectStacked", {
                 projectName: this.state.currentProject
               })
             }
             funnelToggle={() => {}}
             SearchToggle={() => this.toggleSearchVis()}
             addItemAction={() =>
-              navigate("QuestionList", {
+              NavigationService.navigate("QuestionList", {
                 projectName: this.state.currentProject
               })
             }
@@ -129,10 +129,6 @@ const zoomNEOhio = {
     latitudeDelta: 3 / 4,
     longitudeDelta: 3 / 4
   })
-};
-
-MapDisplay.propTypes = {
-  navigation: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

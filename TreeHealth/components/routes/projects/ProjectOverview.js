@@ -5,7 +5,7 @@ import { ProjectCard } from "./ProjectCard";
 import { Container, Content } from "native-base";
 import { ProjectCosumer } from "./../../../ProjectProvider";
 
-export function ProjectsEl() {
+function ProjectsEl() {
   return (
     <ProjectCosumer>
       {context =>
@@ -43,10 +43,6 @@ export class ProjectOverview extends React.Component {
     );
   }
 }
-
-ProjectOverview.propTypes = {
-  navigation: PropTypes.object.isRequired
-};
 
 const styles = StyleSheet.create({
   statusBar: {

@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { ScrollView } from "react-native";
 import { QuestionItem } from "./QuestionItem";
 import { Container, Content } from "native-base";
+import NavigationService from "../../../NavigationService";
 
 export class QuestionList extends React.Component {
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <Container>
         <Content>
@@ -19,7 +19,3 @@ export class QuestionList extends React.Component {
     );
   }
 }
-
-QuestionList.propTypes = {
-  navigation: PropTypes.object.isRequired
-};

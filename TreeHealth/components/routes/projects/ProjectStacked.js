@@ -1,9 +1,9 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { ScrollView } from "react-native";
 import { Container, Content } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop } from "./../../reusable/TitleDrop";
+import NavigationService from "../../../NavigationService";
 
 export class ProjectStacked extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -18,7 +18,6 @@ export class ProjectStacked extends React.Component {
     };
   }
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <Container>
         <Content>
@@ -26,11 +25,11 @@ export class ProjectStacked extends React.Component {
         </Content>
         <FooterTabs
           listIcon="compass"
-          switchView={() => navigate("Map")}
+          switchView={() => NavigationService.navigate("Map")}
           funnelToggle={() => {}}
           SearchToggle={() => {}}
           addItemAction={() =>
-            navigate("QuestionList", {
+            NavigationService.navigate("QuestionList", {
               projectName: this.state.currentProject
             })
           }
@@ -39,7 +38,3 @@ export class ProjectStacked extends React.Component {
     );
   }
 }
-
-ProjectStacked.propTypes = {
-  navigation: PropTypes.object.isRequired
-};

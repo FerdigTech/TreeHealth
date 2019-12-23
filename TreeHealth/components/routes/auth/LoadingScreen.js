@@ -7,6 +7,8 @@ import {
   AsyncStorage,
   StyleSheet
 } from "react-native";
+import NavigationService from "../../../NavigationService";
+
 
 export class LoadingScreen extends React.Component {
   // used constructor as props navigation props are needed
@@ -19,7 +21,7 @@ export class LoadingScreen extends React.Component {
   _bootstrapAsync = async () => {
     const userToken = await AsyncStorage.getItem("userToken");
     // if token exist goes to Homepage, otherwise login
-    this.props.navigation.navigate(userToken ? "Home" : "Auth");
+    NavigationService.navigate(userToken ? "Home" : "Auth");
   };
 
   // Render any loading content that you like here
@@ -33,9 +35,6 @@ export class LoadingScreen extends React.Component {
   }
 }
 
-LoadingScreen.propTypes = {
-  navigation: PropTypes.object.isRequired
-};
 
 const styles = StyleSheet.create({
   loadingView: {

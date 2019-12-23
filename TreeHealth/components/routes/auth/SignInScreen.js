@@ -1,9 +1,9 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 import { SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
-import globals from "../../../globals"
-
+import globals from "../../../globals";
+import NavigationService from "../../../NavigationService";
 import { LogoTitle } from "../../reusable/LogoTitle";
 
 export class SignInScreen extends React.Component {
@@ -37,7 +37,13 @@ export class SignInScreen extends React.Component {
           <Button style={styles.helpBtns} rounded block light>
             <Text> Create an Account </Text>
           </Button>
-          <Button style={styles.helpBtns} rounded block light onPress={this._signInTrial}>
+          <Button
+            style={styles.helpBtns}
+            rounded
+            block
+            light
+            onPress={this._signInTrial}
+          >
             <Text> Try Us Out! </Text>
           </Button>
         </Container>
@@ -47,13 +53,9 @@ export class SignInScreen extends React.Component {
 
   _signInTrial = async () => {
     await AsyncStorage.setItem("userToken", "trial");
-    this.props.navigation.navigate("Loading");
+    NavigationService.navigate("Loading");
   };
 }
-
-SignInScreen.propTypes = {
-  navigation: PropTypes.object.isRequire
-};
 
 const styles = StyleSheet.create({
   signInView: {
