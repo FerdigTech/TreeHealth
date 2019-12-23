@@ -15,7 +15,17 @@ function navigate(routeName, params = null) {
   );
 }
 
+function setParams(params, key) {
+  _navigator.dispatch(
+    NavigationActions.setParams({
+      params,
+      key
+    })
+  );
+}
+
 export default {
   navigate,
+  setParams,
   setTopLevelNavigator
 };

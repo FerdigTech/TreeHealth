@@ -4,6 +4,7 @@ import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Icon, Text } from "native-base";
 import { List, ListItem } from "native-base";
 import { ProjectCosumer } from "./../../ProjectProvider";
+import NavigationService from "../../NavigationService";
 
 // creats a list of the projects who aren't active
 const ProjectsLstEl = props => {
@@ -15,7 +16,11 @@ const ProjectsLstEl = props => {
         ).map((project, index) => {
           return (
             <ListItem key={index}>
-              <Text ellipsizeMode="tail" numberOfLines={1}> {project.name} </Text>
+              <TouchableOpacity onPress={(e, data) => console.log("did it")}>
+                <Text ellipsizeMode="tail" numberOfLines={1}>
+                  {project.name}
+                </Text>
+              </TouchableOpacity>
             </ListItem>
           );
         })
@@ -34,18 +39,19 @@ export class TitleDrop extends React.Component {
 
   render() {
     return (
-      <TouchableOpacity
-        onPress={() => this.toggleDropDown()}
-        style={styles.dropContr}
-        activeOpacity={0.7}
-      >
-        <View style={styles.dropWrap}>
-          <Text style={styles.projectTitle}>{this.props.projectName}</Text>
-          <Icon
-            name={this.state.currentlyDropd ? "arrow-up" : "arrow-down"}
-            style={styles.dropIcon}
-          />
-        </View>
+      <View style={styles.dropContr}>
+        <TouchableOpacity
+          onPress={() => this.toggleDropDown()}
+          activeOpacity={0.7}
+        >
+          <View style={styles.dropWrap}>
+            <Text style={styles.projectTitle}>{this.props.projectName}</Text>
+            <Icon
+              name={this.state.currentlyDropd ? "arrow-up" : "arrow-down"}
+              style={styles.dropIcon}
+            />
+          </View>
+        </TouchableOpacity>
         {this.state.currentlyDropd && (
           <View style={styles.dropLst}>
             <List>
@@ -53,7 +59,7 @@ export class TitleDrop extends React.Component {
             </List>
           </View>
         )}
-      </TouchableOpacity>
+      </View>
     );
   }
 
@@ -71,7 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     position: "absolute",
     top: 38,
-    zIndex: 2
+    zIndex: 5
   },
   dropContr: {
     marginLeft: "auto",
