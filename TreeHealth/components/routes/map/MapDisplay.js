@@ -45,7 +45,7 @@ export class MapDisplay extends React.Component {
       .then(response =>
         this.setState({
           points:
-          response !== "undefined"
+            response !== "undefined"
               ? response.hasOwnProperty("features")
                 ? response.features
                 : []

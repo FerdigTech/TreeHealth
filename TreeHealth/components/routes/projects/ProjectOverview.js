@@ -1,11 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {
-  StyleSheet,
-  ScrollView,
-  Platform,
-  StatusBar
-} from "react-native";
+import { StyleSheet, ScrollView, Platform, StatusBar } from "react-native";
 import { ProjectCard } from "./ProjectCard";
 import { Container, Content } from "native-base";
 import { ProjectCosumer } from "./../../../ProjectProvider";

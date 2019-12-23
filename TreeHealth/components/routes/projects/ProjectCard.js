@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, Image } from "react-native";
-import { Text, Card, CardItem, Container } from "native-base";
+import { Text, Card, CardItem } from "native-base";
 import NavigationService from "../../../NavigationService";
-
 
 export class ProjectCard extends React.Component {
   render() {
@@ -15,7 +14,8 @@ export class ProjectCard extends React.Component {
         <CardItem
           cardBody
           button
-          onPress={()=> NavigationService.navigate("Map", {
+          onPress={() =>
+            NavigationService.navigate("Map", {
               projectName: this.props.projectName,
               projectID: this.props.projectID
             })
