@@ -11,6 +11,7 @@ import { ProjectStacked } from "./components/routes/projects/ProjectStacked";
 import { ProjectWrapper } from "./ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
+import NavigationService from "./NavigationService";
 
 const MainNavigator = createStackNavigator(
   {
@@ -76,10 +77,14 @@ const InitalNavigator = createAppContainer(
   )
 );
 
-export default function App(){
-    return (
-      <ProjectWrapper>
-        <InitalNavigator />
-      </ProjectWrapper>
-    );
+export default function App() {
+  return (
+    <ProjectWrapper>
+      <InitalNavigator
+        ref={navigatorRef => {
+          NavigationService.setTopLevelNavigator(navigatorRef);
+        }}
+      />
+    </ProjectWrapper>
+  );
 }
