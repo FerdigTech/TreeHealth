@@ -2,13 +2,16 @@ import React from "react";
 import { ScrollView } from "react-native";
 import { Container, Content } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
-import { TitleDrop } from "./../../reusable/TitleDrop";
+import { TitleDrop, ProjectsModalDrop } from "./../../reusable/TitleDrop";
 import NavigationService from "../../../NavigationService";
 
 export class ProjectStacked extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: () => (
-      <TitleDrop projectName={navigation.getParam("projectName", "All")} />
+      <TitleDrop
+        navigation={navigation}
+        projectName={navigation.getParam("projectName", "All")}
+      />
     )
   });
   constructor(props) {
@@ -21,6 +24,7 @@ export class ProjectStacked extends React.Component {
     return (
       <Container>
         <Content>
+          <ProjectsModalDrop navigation={this.props.navigation} />
           <ScrollView style={{ flex: 1 }} />
         </Content>
         <FooterTabs

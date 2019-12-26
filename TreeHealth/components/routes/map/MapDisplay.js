@@ -68,16 +68,8 @@ export class MapDisplay extends React.Component {
   toggleSearchVis() {
     this.setState({ showSearch: !this.state.showSearch });
   }
-  toggleDropVis = () => {
-    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
-
-    this.props.navigation.setParams({
-      DropDownVisible: !DropDownVisible
-    });
-  };
 
   render() {
-    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
     const pointEl = this.state.points.map((point, index) => {
       return (
         <Marker
@@ -104,7 +96,6 @@ export class MapDisplay extends React.Component {
             />
             <ProjectsModalDrop
               navigation={this.props.navigation}
-              handleToggle={() => this.toggleDropVis()}
             />
             {this.state.showSearch && (
               <Callout>

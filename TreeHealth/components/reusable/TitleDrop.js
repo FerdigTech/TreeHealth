@@ -35,12 +35,19 @@ const ProjectLst = props => {
   );
 };
 export const ProjectsModalDrop = props => {
+  toggleDropVis = () => {
+    const DropDownVisible = props.navigation.getParam("DropDownVisible");
+
+    props.navigation.setParams({
+      DropDownVisible: !DropDownVisible
+    });
+  };
   // defaults to keeping the modal closed
   const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
   return (
     <Modal style={styles.markerModal} visible={DropDownVisible}>
       <Button
-        onPress={props.handleToggle}
+        onPress={() => this.toggleDropVis()}
         title={"Close"}
       />
       <ScrollView
