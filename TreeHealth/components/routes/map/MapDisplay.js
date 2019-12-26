@@ -33,7 +33,6 @@ export class MapDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      DropDownVisible: false,
       modalVisible: false,
       showSearch: false,
       currentProjectID: this.props.navigation.getParam("ProjectID", "None"),

@@ -22,7 +22,7 @@ const ProjectLst = props => {
         ).map((project, index) => {
           return (
             <ListItem key={index}>
-              <TouchableOpacity onPress={() => console.log("did it")}>
+              <TouchableOpacity onPress={() => props.handleUpdate(project.name)}>
                 <Text ellipsizeMode="tail" numberOfLines={1}>
                   {project.name}
                 </Text>
@@ -35,6 +35,12 @@ const ProjectLst = props => {
   );
 };
 export const ProjectsModalDrop = props => {
+  setProjectName = updatedProject => {
+    props.navigation.setParams({
+      projectName: updatedProject
+    });
+    toggleDropVis();
+  };
   toggleDropVis = () => {
     const DropDownVisible = props.navigation.getParam("DropDownVisible");
 
@@ -44,18 +50,16 @@ export const ProjectsModalDrop = props => {
   };
   // defaults to keeping the modal closed
   const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
+  const ProjectName = props.navigation.getParam("projectName", "All");
   return (
     <Modal style={styles.markerModal} visible={DropDownVisible}>
-      <Button
-        onPress={() => this.toggleDropVis()}
-        title={"Close"}
-      />
+      <Button onPress={() => this.toggleDropVis()} title={"Close"} />
       <ScrollView
         stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
         style={styles.dropLst}
       >
-        <ProjectLst projectName={props.projectName} />
+        <ProjectLst handleUpdate={this.setProjectName} projectName={ProjectName} />
       </ScrollView>
     </Modal>
   );
@@ -63,9 +67,7 @@ export const ProjectsModalDrop = props => {
 
 export class TitleDrop extends React.Component {
   toggleDropVis = () => {
-    const DropDownVisible = this.props.navigation.getParam(
-      "DropDownVisible"
-    );
+    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
 
     this.props.navigation.setParams({
       DropDownVisible: !DropDownVisible
@@ -75,7 +77,10 @@ export class TitleDrop extends React.Component {
     const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
     return (
       <View style={styles.dropContr}>
-        <TouchableOpacity onPress={() => this.toggleDropVis()} activeOpacity={0.7}>
+        <TouchableOpacity
+          onPress={() => this.toggleDropVis()}
+          activeOpacity={0.7}
+        >
           <View style={styles.dropWrap}>
             <Text style={styles.projectTitle}>{this.props.projectName}</Text>
             <Icon
