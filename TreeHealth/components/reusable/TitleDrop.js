@@ -1,13 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { StyleSheet, View, TouchableOpacity } from "react-native";
-import { Icon, Text } from "native-base";
-import { List, ListItem } from "native-base";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Modal,
+  Button
+} from "react-native";
+import { Icon, Text, ListItem, List } from "native-base";
 import { ProjectCosumer } from "./../../ProjectProvider";
 import NavigationService from "../../NavigationService";
 
 // creats a list of the projects who aren't active
-const ProjectsLstEl = props => {
+const ProjectLst = props => {
   return (
     <ProjectCosumer>
       {context =>
@@ -16,7 +22,7 @@ const ProjectsLstEl = props => {
         ).map((project, index) => {
           return (
             <ListItem key={index}>
-              <TouchableOpacity onPress={(e, data) => console.log("did it")}>
+              <TouchableOpacity onPress={() => console.log("did it")}>
                 <Text ellipsizeMode="tail" numberOfLines={1}>
                   {project.name}
                 </Text>
@@ -28,43 +34,51 @@ const ProjectsLstEl = props => {
     </ProjectCosumer>
   );
 };
+export const ProjectsModalDrop = props => {
+  // defaults to keeping the modal closed
+  const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
+  return (
+    <Modal style={styles.markerModal} visible={DropDownVisible}>
+      <Button
+        onPress={props.handleToggle}
+        title={"Close"}
+      />
+      <ScrollView
+        stickyHeaderIndices={[0]}
+        showsVerticalScrollIndicator={false}
+        style={styles.dropLst}
+      >
+        <ProjectLst projectName={props.projectName} />
+      </ScrollView>
+    </Modal>
+  );
+};
 
 export class TitleDrop extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentlyDropd: false
-    };
-  }
+  toggleDropVis = () => {
+    const DropDownVisible = this.props.navigation.getParam(
+      "DropDownVisible"
+    );
 
+    this.props.navigation.setParams({
+      DropDownVisible: !DropDownVisible
+    });
+  };
   render() {
+    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
     return (
       <View style={styles.dropContr}>
-        <TouchableOpacity
-          onPress={() => this.toggleDropDown()}
-          activeOpacity={0.7}
-        >
+        <TouchableOpacity onPress={() => this.toggleDropVis()} activeOpacity={0.7}>
           <View style={styles.dropWrap}>
             <Text style={styles.projectTitle}>{this.props.projectName}</Text>
             <Icon
-              name={this.state.currentlyDropd ? "arrow-up" : "arrow-down"}
+              name={DropDownVisible ? "arrow-up" : "arrow-down"}
               style={styles.dropIcon}
             />
           </View>
         </TouchableOpacity>
-        {this.state.currentlyDropd && (
-          <View style={styles.dropLst}>
-            <List>
-              <ProjectsLstEl projectName={this.props.projectName} />
-            </List>
-          </View>
-        )}
       </View>
     );
-  }
-
-  toggleDropDown() {
-    this.setState({ currentlyDropd: !this.state.currentlyDropd });
   }
 }
 
@@ -77,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     position: "absolute",
     top: 38,
-    zIndex: 5
+    zIndex: 2
   },
   dropContr: {
     marginLeft: "auto",

@@ -16,20 +16,24 @@ import {
 import { Container, Content } from "native-base";
 import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
-import { TitleDrop } from "../../reusable/TitleDrop";
+import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
 import globals from "../../../globals";
 import NavigationService from "../../../NavigationService";
 
 export class MapDisplay extends React.Component {
   static navigationOptions = ({ navigation }) => ({
     headerTitle: () => (
-      <TitleDrop projectName={navigation.getParam("projectName", "All")} />
+      <TitleDrop
+        navigation={navigation}
+        projectName={navigation.getParam("projectName", "All")}
+      />
     )
   });
   // initalize the default values in state
   constructor(props) {
     super(props);
     this.state = {
+      DropDownVisible: false,
       modalVisible: false,
       showSearch: false,
       currentProjectID: this.props.navigation.getParam("ProjectID", "None"),
@@ -64,8 +68,16 @@ export class MapDisplay extends React.Component {
   toggleSearchVis() {
     this.setState({ showSearch: !this.state.showSearch });
   }
+  toggleDropVis = () => {
+    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
+
+    this.props.navigation.setParams({
+      DropDownVisible: !DropDownVisible
+    });
+  };
 
   render() {
+    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
     const pointEl = this.state.points.map((point, index) => {
       return (
         <Marker
@@ -89,6 +101,10 @@ export class MapDisplay extends React.Component {
             <MarkerModal
               show={this.state.modalVisible}
               handleClose={() => this.toggleModalVis()}
+            />
+            <ProjectsModalDrop
+              navigation={this.props.navigation}
+              handleToggle={() => this.toggleDropVis()}
             />
             {this.state.showSearch && (
               <Callout>
