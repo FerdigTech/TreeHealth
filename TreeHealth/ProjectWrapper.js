@@ -60,7 +60,7 @@ export function ProjectWrapper({ children }) {
               ? Points.features
               : []
             : [],
-        setProjectID(ID) {
+        setProjectID: ID => {
           processData(ID).then(results => {
             setPoints(results);
           });
