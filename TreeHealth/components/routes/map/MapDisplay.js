@@ -13,7 +13,6 @@ import {
   TextInput
 } from "react-native";
 import { Container, Content } from "native-base";
-import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
 import NavigationService from "../../../NavigationService";
@@ -53,14 +52,9 @@ export class MapDisplay extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      modalVisible: false,
       showSearch: false,
-      currentProjectID: this.props.navigation.getParam("ProjectID", "None"),
       currentProject: this.props.navigation.getParam("projectName", "All")
     };
-  }
-  toggleModalVis() {
-    this.setState({ modalVisible: !this.state.modalVisible });
   }
   toggleSearchVis() {
     this.setState({ showSearch: !this.state.showSearch });
