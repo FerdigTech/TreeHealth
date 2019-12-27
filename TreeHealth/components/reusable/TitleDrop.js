@@ -5,12 +5,11 @@ import {
   View,
   TouchableOpacity,
   ScrollView,
-  Modal,
   Button
 } from "react-native";
-import { Icon, Text, ListItem, List } from "native-base";
+import { Icon, Text, ListItem } from "native-base";
+import Modal from "react-native-modal";
 import { ProjectCosumer } from "./../../ProjectProvider";
-import NavigationService from "../../NavigationService";
 
 // creats a list of the projects who aren't active
 const ProjectLst = props => {
@@ -22,8 +21,14 @@ const ProjectLst = props => {
         ).map((project, index) => {
           return (
             <ListItem key={index}>
-              <TouchableOpacity onPress={() => props.handleUpdate(project.name)}>
-                <Text ellipsizeMode="tail" numberOfLines={1}>
+              <TouchableOpacity
+                onPress={() => props.handleUpdate(project.name)}
+              >
+                <Text
+                  ellipsizeMode="tail"
+                  numberOfLines={1}
+                  style={styles.ProjectTxt}
+                >
                   {project.name}
                 </Text>
               </TouchableOpacity>
@@ -52,16 +57,24 @@ export const ProjectsModalDrop = props => {
   const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
   const ProjectName = props.navigation.getParam("projectName", "All");
   return (
-    <Modal style={styles.markerModal} visible={DropDownVisible}>
-      <Button onPress={() => this.toggleDropVis()} title={"Close"} />
-      <ScrollView
-        stickyHeaderIndices={[0]}
-        showsVerticalScrollIndicator={false}
-        style={styles.dropLst}
+    <View style={{ flex: 1 }}>
+      <Modal
+        onSwipeThreshold={750}
+        onSwipeComplete={() => this.toggleDropVis()}
+        swipeDirection="down"
+        isVisible={DropDownVisible}
+        scrollHorizontal={true}
+        style={{ margin: 0 }}
       >
-        <ProjectLst handleUpdate={this.setProjectName} projectName={ProjectName} />
-      </ScrollView>
-    </Modal>
+        <ScrollView style={styles.dropLst}>
+          <Button onPress={() => this.toggleDropVis()} title={"Close"} />
+          <ProjectLst
+            handleUpdate={this.setProjectName}
+            projectName={ProjectName}
+          />
+        </ScrollView>
+      </Modal>
+    </View>
   );
 };
 
@@ -101,9 +114,12 @@ TitleDrop.propTypes = {
 const styles = StyleSheet.create({
   dropLst: {
     backgroundColor: "white",
-    position: "absolute",
-    top: 38,
-    zIndex: 2
+    alignContent: "center",
+    height: "100%"
+  },
+  ProjectTxt: {
+    flexDirection: "row",
+    alignItems: "center"
   },
   dropContr: {
     marginLeft: "auto",

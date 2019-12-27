@@ -7,7 +7,7 @@ import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
-import { ProjectStacked } from "./components/routes/projects/ProjectStacked";
+import { PointsStacked } from "./components/routes/map/PointsStacked";
 import { ProjectWrapper } from "./ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
@@ -31,8 +31,8 @@ const MainNavigator = createStackNavigator(
         title: "Projects"
       }
     },
-    ProjectStacked: {
-      screen: ProjectStacked
+    PointsStacked: {
+      screen: PointsStacked
     }
   },
   {

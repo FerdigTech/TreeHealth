@@ -94,7 +94,7 @@ export class MapDisplay extends React.Component {
           <FooterTabs
             listIcon="list"
             switchView={() =>
-              NavigationService.navigate("ProjectStacked", {
+              NavigationService.navigate("PointsStacked", {
                 projectName: this.state.currentProject
               })
             }
