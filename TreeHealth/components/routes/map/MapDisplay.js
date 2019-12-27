@@ -1,5 +1,4 @@
 import React from "react";
-import PropTypes from "prop-types";
 import MapView, {
   Marker,
   Callout,
@@ -17,8 +16,30 @@ import { Container, Content } from "native-base";
 import { MarkerModal } from "./MarkerModal";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
-import globals from "../../../globals";
 import NavigationService from "../../../NavigationService";
+import { ProjectCosumer } from "./../../../ProjectProvider";
+
+function PointsEl() {
+  return (
+    <ProjectCosumer>
+      {context =>
+        context.Points.map((point, index) => {
+          return (
+            <Marker
+              coordinate={{
+                longitude: point.geometry.coordinates[0],
+                latitude: point.geometry.coordinates[1]
+              }}
+              title={point.properties.title}
+              onPress={() => this.toggleModalVis()}
+              key={index}
+            />
+          );
+        })
+      }
+    </ProjectCosumer>
+  );
+}
 
 export class MapDisplay extends React.Component {
   static navigationOptions = ({ navigation }) => ({
@@ -36,30 +57,8 @@ export class MapDisplay extends React.Component {
       modalVisible: false,
       showSearch: false,
       currentProjectID: this.props.navigation.getParam("ProjectID", "None"),
-      currentProject: this.props.navigation.getParam("projectName", "All"),
-      points: []
+      currentProject: this.props.navigation.getParam("projectName", "All")
     };
-  }
-  // Get all the points from the site
-  async componentDidMount() {
-    fetch(
-      globals.SERVER_URL + "/points/" + this.state.currentProjectID.toString()
-    )
-      .then(response => response.json())
-      .then(response =>
-        this.setState({
-          points:
-            response !== "undefined"
-              ? response.hasOwnProperty("features")
-                ? response.features
-                : []
-              : []
-        })
-      )
-      .catch(function(error) {
-        console.log(error.message);
-        throw error;
-      });
   }
   toggleModalVis() {
     this.setState({ modalVisible: !this.state.modalVisible });
@@ -69,33 +68,18 @@ export class MapDisplay extends React.Component {
   }
 
   render() {
-    const pointEl = this.state.points.map((point, index) => {
-      return (
-        <Marker
-          coordinate={{
-            longitude: point.geometry.coordinates[0],
-            latitude: point.geometry.coordinates[1]
-          }}
-          title={point.properties.title}
-          onPress={() => this.toggleModalVis()}
-          key={index}
-        />
-      );
-    });
     return (
       <SafeAreaView style={styles.container}>
         <Container>
           <Content>
             <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
-              {pointEl}
+              <PointsEl />
             </Animated>
             <MarkerModal
               show={this.state.modalVisible}
               handleClose={() => this.toggleModalVis()}
             />
-            <ProjectsModalDrop
-              navigation={this.props.navigation}
-            />
+            <ProjectsModalDrop navigation={this.props.navigation} />
             {this.state.showSearch && (
               <Callout>
                 <View style={styles.calloutView}>
