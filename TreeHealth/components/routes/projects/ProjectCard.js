@@ -11,12 +11,12 @@ export class ProjectCard extends React.Component {
       : require("../../../assets/treehouse-default.png");
     return (
       <TouchableOpacity
-        onPress={() =>
+        onPress={() => {
+         this.props.setProjectID(this.props.projectID);
           NavigationService.navigate("Map", {
-            projectName: this.props.projectName,
-            projectID: this.props.projectID
-          })
-        }
+            projectName: this.props.projectName
+          });
+        }}
       >
         <Card>
           <CardItem cardBody>
@@ -39,7 +39,6 @@ export class ProjectCard extends React.Component {
 ProjectCard.propTypes = {
   defaultImg: PropTypes.bool.isRequired,
   projectName: PropTypes.string.isRequired,
-  projectID: PropTypes.number.isRequired,
   projectSummary: PropTypes.string.isRequired
 };
 

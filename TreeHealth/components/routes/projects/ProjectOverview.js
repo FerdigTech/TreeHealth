@@ -11,10 +11,12 @@ function ProjectsEl() {
         context.Projects.map((project, index) => {
           return (
             <ProjectCard
-              projectID={project.ProjectID}
               projectName={project.name}
               defaultImg={true}
               projectSummary={project.description}
+              setProjectID={() => {
+                context.setProjectID(project.ProjectID);
+              }}
               key={index}
             />
           );

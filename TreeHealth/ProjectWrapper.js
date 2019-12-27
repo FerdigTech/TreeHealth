@@ -19,25 +19,37 @@ function useProjects() {
   return Projects;
 }
 
+// hit the backend to
+async function getData(ID) {
+  const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
+  return await fetch(globals.SERVER_URL + "/points/" + projectID).then(
+    response => response.json()
+  );
+}
+
+const processData = ID => {
+  return new Promise(resolve => {
+    resolve(getData(ID));
+  });
+};
+
 // use hook to get the data
 function usePoints() {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
-    async function getData() {
-      const PointsData = await fetch(globals.SERVER_URL + "/points/").then(
-        response => response.json()
-      )
-      setPoints(PointsData);
-    }
-    getData();
+    processData(-1).then(results => {
+      setPoints(results);
+    });
   }, []);
-  return Points;
+  return { Points, setPoints };
 }
 
 // Build the provider
 export function ProjectWrapper({ children }) {
   const Projects = useProjects();
-  const Points = usePoints();
+  const PointsObj = usePoints();
+  const Points = PointsObj.Points;
+  const setPoints = PointsObj.setPoints;
   return (
     <ProjectProvider
       value={{
@@ -47,7 +59,13 @@ export function ProjectWrapper({ children }) {
             ? Points.hasOwnProperty("features")
               ? Points.features
               : []
-            : []
+            : [],
+        setProjectID(ID) {
+          console.log(ID);
+          processData(ID).then(results => {
+            setPoints(results);
+          });
+        }
       }}
     >
       {children}

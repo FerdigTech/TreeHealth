@@ -22,7 +22,10 @@ const ProjectLst = props => {
           return (
             <ListItem key={index}>
               <TouchableOpacity
-                onPress={() => props.handleUpdate(project.name)}
+                onPress={() => {
+                  context.setProjectID()
+                  props.handleUpdate(project.name);
+                }}
               >
                 <Text
                   ellipsizeMode="tail"
