@@ -31,7 +31,6 @@ function PointsEl() {
                 latitude: point.geometry.coordinates[1]
               }}
               title={point.properties.title}
-              onPress={() => this.toggleModalVis()}
               key={index}
             />
           );
@@ -75,10 +74,6 @@ export class MapDisplay extends React.Component {
             <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
               <PointsEl />
             </Animated>
-            <MarkerModal
-              show={this.state.modalVisible}
-              handleClose={() => this.toggleModalVis()}
-            />
             <ProjectsModalDrop navigation={this.props.navigation} />
             {this.state.showSearch && (
               <Callout>
