@@ -61,7 +61,6 @@ export function ProjectWrapper({ children }) {
               : []
             : [],
         setProjectID(ID) {
-          console.log(ID);
           processData(ID).then(results => {
             setPoints(results);
           });

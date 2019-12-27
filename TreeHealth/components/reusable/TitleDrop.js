@@ -23,7 +23,7 @@ const ProjectLst = props => {
             <ListItem key={index}>
               <TouchableOpacity
                 onPress={() => {
-                  context.setProjectID()
+                  context.setProjectID(project.ProjectID);
                   props.handleUpdate(project.name);
                 }}
               >
