@@ -36,7 +36,9 @@ FooterTabs.propTypes = {
 
 const styles = StyleSheet.create({
   footerStyle: {
-    backgroundColor: "white"
+    backgroundColor: "white",
+    borderTopColor: "#ccc",
+    borderTopWidth: 1,
   },
   footerIcnStyle: {
     color: "black"
