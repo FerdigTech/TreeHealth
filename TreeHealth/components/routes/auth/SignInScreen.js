@@ -9,7 +9,8 @@ import { LogoTitle } from "../../reusable/LogoTitle";
 export class SignInScreen extends React.Component {
   static navigationOptions = {
     // Use logo instead of text
-    headerTitle: () => <LogoTitle />
+    headerTitle: () => <LogoTitle />,
+    headerRight: null
   };
 
   render() {
@@ -34,7 +35,7 @@ export class SignInScreen extends React.Component {
           </Container>
         </Form>
         <Container style={styles.helpBtnsCtn}>
-          <Button style={styles.helpBtns} rounded block light>
+          <Button onPress={() => NavigationService.navigate("Register")} style={styles.helpBtns} rounded block light>
             <Text> Create an Account </Text>
           </Button>
           <Button

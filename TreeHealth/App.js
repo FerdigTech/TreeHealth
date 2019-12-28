@@ -3,6 +3,7 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
 import { SignInScreen } from "./components/routes/auth/SignInScreen";
+import { RegisterScreen } from "./components/routes/auth/RegisterScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
@@ -53,16 +54,30 @@ const MainNavigator = createStackNavigator(
   }
 );
 
-const AuthStack = createStackNavigator({
-  SignIn: {
-    screen: SignInScreen,
-    navigationOptions: {
+const AuthStack = createStackNavigator(
+  {
+    SignIn: {
+      screen: SignInScreen
+    },
+    Register: {
+      screen: RegisterScreen,
+    }
+  },
+  {
+    defaultNavigationOptions: {
       headerStyle: {
         backgroundColor: globals.COLOR.DARK_BLUE
-      }
+      },
+      headerTitleStyle: {
+        flex: 1,
+        textAlign: "center",
+        alignSelf: "center"
+      },
+      headerTintColor: "white",
+      headerRight: <View />
     }
   }
-});
+);
 
 const InitalNavigator = createAppContainer(
   createSwitchNavigator(
