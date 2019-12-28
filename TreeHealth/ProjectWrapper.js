@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ProjectContext } from "./ProjectProvider";
+import { AsyncStorage } from "react-native";
 import globals from "./globals";
 
 const ProjectProvider = ProjectContext.Provider;
@@ -20,12 +21,25 @@ function useProjects() {
 }
 
 // hit the backend to
-async function getData(ID) {
+
+getData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
-  return await fetch(globals.SERVER_URL + "/points/" + projectID).then(
-    response => response.json()
-  );
-}
+  let pointsData = await AsyncStorage.getItem("Points");
+  if (pointsData !== null) {
+    // get all the storied points and filter the ones with the correct ID
+    pointsData = JSON.parse(pointsData);
+    pointsData.features = pointsData.features.filter(points => points.properties.projectID == ID);
+  } else {
+    AllPoints = await fetch(globals.SERVER_URL + "/points/").then(
+      response => response.json()
+    );
+    pointsData = await fetch(globals.SERVER_URL + "/points/" + projectID).then(
+      response => response.json()
+    );
+    await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
+  }
+  return pointsData;
+};
 
 const processData = ID => {
   return new Promise(resolve => {
