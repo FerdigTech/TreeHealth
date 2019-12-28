@@ -20,9 +20,8 @@ function useProjects() {
   return Projects;
 }
 
-// hit the backend to
-
-getData = async ID => {
+// try to get the  point data from cache, if not get from the site.
+getPointData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
   let pointsData = await AsyncStorage.getItem("Points");
   if (pointsData !== null) {
@@ -43,7 +42,7 @@ getData = async ID => {
 
 const processData = ID => {
   return new Promise(resolve => {
-    resolve(getData(ID));
+    resolve(getPointData(ID));
   });
 };
 
