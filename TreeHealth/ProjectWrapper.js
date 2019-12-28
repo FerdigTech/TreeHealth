@@ -5,17 +5,33 @@ import globals from "./globals";
 
 const ProjectProvider = ProjectContext.Provider;
 
-// use hook to get the data
+// try to get the Project data from cache, if not get from the site.
+getProjectData = async () => {
+  let projectData = await AsyncStorage.getItem("Projects");
+  if (projectData !== null) {
+    projectData = JSON.parse(projectData);
+  } else {
+    projectData = await fetch(globals.SERVER_URL + "/projects/").then(
+      response => response.json()
+    );
+    await AsyncStorage.setItem("Projects", JSON.stringify(projectData));
+  }
+  return projectData;
+};
+
+const processProjData = () => {
+  return new Promise(resolve => {
+    resolve(getProjectData());
+  });
+};
+
+// use hook to get the project data
 function useProjects() {
   const [Projects, setProjects] = useState([]);
   useEffect(() => {
-    async function getData() {
-      const ProjectData = await fetch(globals.SERVER_URL + "/projects/").then(
-        response => response.json()
-      );
-      setProjects(ProjectData);
-    }
-    getData();
+    processProjData().then(results => {
+      setProjects(results);
+    });
   }, []);
   return Projects;
 }
@@ -27,10 +43,12 @@ getPointData = async ID => {
   if (pointsData !== null) {
     // get all the storied points and filter the ones with the correct ID
     pointsData = JSON.parse(pointsData);
-    pointsData.features = pointsData.features.filter(points => points.properties.projectID == ID);
+    pointsData.features = pointsData.features.filter(
+      points => points.properties.projectID == ID
+    );
   } else {
-    AllPoints = await fetch(globals.SERVER_URL + "/points/").then(
-      response => response.json()
+    AllPoints = await fetch(globals.SERVER_URL + "/points/").then(response =>
+      response.json()
     );
     pointsData = await fetch(globals.SERVER_URL + "/points/" + projectID).then(
       response => response.json()
@@ -40,7 +58,7 @@ getPointData = async ID => {
   return pointsData;
 };
 
-const processData = ID => {
+const processPntData = ID => {
   return new Promise(resolve => {
     resolve(getPointData(ID));
   });
@@ -50,7 +68,7 @@ const processData = ID => {
 function usePoints() {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
-    processData(-1).then(results => {
+    processPntData(-1).then(results => {
       setPoints(results);
     });
   }, []);
@@ -74,7 +92,7 @@ export function ProjectWrapper({ children }) {
               : []
             : [],
         setProjectID: ID => {
-          processData(ID).then(results => {
+          processPntData(ID).then(results => {
             setPoints(results);
           });
         }
