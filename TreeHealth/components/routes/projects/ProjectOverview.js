@@ -1,7 +1,11 @@
 import React from "react";
-import { ScrollView } from "react-native";
+import {
+  ScrollView,
+  RefreshControl,
+  StyleSheet,
+  SafeAreaView
+} from "react-native";
 import { ProjectCard } from "./ProjectCard";
-import { Container, Content } from "native-base";
 import { ProjectCosumer } from "./../../../ProjectProvider";
 
 function ProjectsEl() {
@@ -26,16 +30,40 @@ function ProjectsEl() {
   );
 }
 
-export class ProjectOverview extends React.Component {
-  render() {
-    return (
-      <Container>
-        <Content>
-          <ScrollView style={{ flex: 1 }}>
-            <ProjectsEl />
-          </ScrollView>
-        </Content>
-      </Container>
-    );
-  }
+function wait(timeout) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeout);
+  });
 }
+
+export const ProjectOverview = () => {
+  const [refreshing, setRefreshing] = React.useState(false);
+
+  const onRefresh = React.useCallback(
+    () => {
+      setRefreshing(true);
+
+      wait(2000).then(() => setRefreshing(false));
+    },
+    [refreshing]
+  );
+
+  return (
+    <SafeAreaView>
+      <ScrollView
+        contentContainerStyle={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <ProjectsEl forcedReset={refreshing}/>
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
+const styles = StyleSheet.create({
+  scrollView: {
+    flex: 1,
+    backgroundColor: "#ccc"
+  }
+});
