@@ -8,6 +8,7 @@
     "eject": "expo eject"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "~3.2.1",
     "expo": "^35.0.0",
     "native-base": "^2.13.8",
     "prop-types": "^15.7.2",

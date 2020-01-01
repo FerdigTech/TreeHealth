@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MapView, {
   Marker,
   Callout,
@@ -12,11 +12,14 @@ import {
   Dimensions,
   TextInput
 } from "react-native";
-import { Container, Content } from "native-base";
+import { Container, Content, Text } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
+import { useNetInfo } from "@react-native-community/netinfo";
+import * as Location from "expo-location";
+import * as Permissions from "expo-permissions";
 
 function PointsEl() {
   return (
@@ -39,67 +42,82 @@ function PointsEl() {
   );
 }
 
-export class MapDisplay extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    headerTitle: () => (
-      <TitleDrop
-        navigation={navigation}
-        projectName={navigation.getParam("projectName", "All")}
-      />
-    )
-  });
-  // initalize the default values in state
-  constructor(props) {
-    super(props);
-    this.state = {
-      showSearch: false,
-      currentProject: this.props.navigation.getParam("projectName", "All")
-    };
+_getLocationAsync = async () => {
+  let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  if (status !== "granted") {
+    this.setState({
+      errorMessage: "Permission to access location was denied"
+    });
   }
-  toggleSearchVis() {
-    this.setState({ showSearch: !this.state.showSearch });
-  }
+};
 
-  render() {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Container>
-          <Content>
-            <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
-              <PointsEl />
-            </Animated>
-            <ProjectsModalDrop navigation={this.props.navigation} />
-            {this.state.showSearch && (
-              <Callout>
-                <View style={styles.calloutView}>
-                  <TextInput
-                    style={styles.calloutSearch}
-                    placeholder={"Search"}
-                  />
-                </View>
-              </Callout>
-            )}
-          </Content>
-          <FooterTabs
-            listIcon="list"
-            switchView={() =>
-              NavigationService.navigate("PointsStacked", {
-                projectName: this.state.currentProject
-              })
-            }
-            funnelToggle={() => {}}
-            SearchToggle={() => this.toggleSearchVis()}
-            addItemAction={() =>
-              NavigationService.navigate("QuestionList", {
-                projectName: this.state.currentProject
-              })
-            }
-          />
-        </Container>
-      </SafeAreaView>
-    );
-  }
-}
+export const MapDisplay = props => {
+  const [showSearch, setShowSearch] = useState(false);
+  const [currentProject] = useState(
+    props.navigation.getParam("projectName", "All")
+  );
+  const [location, setLocation] = useState(null);
+  const [errorMessage, setError] = useState(null);
+  const netInfo = useNetInfo();
+
+  useEffect(() => {
+    _getLocationAsync();
+    Location.getCurrentPositionAsync({
+      accuracy: Location.Accuracy.High
+    }).then(location => {
+      console.log("latitude " + location.coords.latitude);
+      console.log("longitude " + location.coords.longitude);
+      setLocation(location);
+    });
+  }, []);
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <Container>
+        <Content>
+          <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
+            <PointsEl />
+          </Animated>
+          <ProjectsModalDrop navigation={props.navigation} />
+          {showSearch && (
+            <Callout>
+              <View style={styles.calloutView}>
+                <TextInput
+                  style={styles.calloutSearch}
+                  placeholder={"Search"}
+                />
+              </View>
+            </Callout>
+          )}
+        </Content>
+        <FooterTabs
+          listIcon="list"
+          switchView={() =>
+            NavigationService.navigate("PointsStacked", {
+              projectName: currentProject
+            })
+          }
+          funnelToggle={() => {}}
+          SearchToggle={() => {setShowSearch(!showSearch)}}
+          addItemAction={() =>
+            NavigationService.navigate("QuestionList", {
+              projectName: currentProject
+            })
+          }
+        />
+      </Container>
+    </SafeAreaView>
+  );
+};
+
+MapDisplay.navigationOptions = ({ navigation }) => ({
+  headerTitle: () => (
+    <TitleDrop
+      navigation={navigation}
+      projectName={navigation.getParam("projectName", "All")}
+    />
+  )
+});
 
 const zoomNEOhio = {
   region: new AnimatedRegion({
