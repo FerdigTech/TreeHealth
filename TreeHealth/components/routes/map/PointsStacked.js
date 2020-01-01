@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, Image, StyleSheet } from "react-native";
 import {
   Container,
@@ -43,45 +43,42 @@ function PointsLstEl() {
   );
 }
 
-export class PointsStacked extends React.Component {
-  static navigationOptions = ({ navigation }) => ({
-    headerTitle: () => (
-      <TitleDrop
-        navigation={navigation}
-        projectName={navigation.getParam("projectName", "All")}
+export const PointsStacked = props => {
+  const [currentProject] = useState(
+    props.navigation.getParam("projectName", "All")
+  );
+
+  return (
+    <Container>
+      <Content>
+        <ProjectsModalDrop navigation={props.navigation} />
+        <ScrollView style={{ flex: 1 }}>
+          <PointsLstEl />
+        </ScrollView>
+      </Content>
+      <FooterTabs
+        listIcon="compass"
+        switchView={() => NavigationService.navigate("Map")}
+        funnelToggle={() => {}}
+        SearchToggle={() => {}}
+        addItemAction={() =>
+          NavigationService.navigate("QuestionList", {
+            projectName: currentProject
+          })
+        }
       />
-    )
-  });
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentProject: this.props.navigation.getParam("projectName", "All")
-    };
-  }
-  render() {
-    return (
-      <Container>
-        <Content>
-          <ProjectsModalDrop navigation={this.props.navigation} />
-          <ScrollView style={{ flex: 1 }}>
-            <PointsLstEl />
-          </ScrollView>
-        </Content>
-        <FooterTabs
-          listIcon="compass"
-          switchView={() => NavigationService.navigate("Map")}
-          funnelToggle={() => {}}
-          SearchToggle={() => {}}
-          addItemAction={() =>
-            NavigationService.navigate("QuestionList", {
-              projectName: this.state.currentProject
-            })
-          }
-        />
-      </Container>
-    );
-  }
-}
+    </Container>
+  );
+};
+
+PointsStacked.navigationOptions = ({ navigation }) => ({
+  headerTitle: () => (
+    <TitleDrop
+      navigation={navigation}
+      projectName={navigation.getParam("projectName", "All")}
+    />
+  )
+});
 
 const styles = StyleSheet.create({
   headerImg: {
