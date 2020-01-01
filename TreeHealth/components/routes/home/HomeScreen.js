@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { View, StyleSheet, Button, AsyncStorage } from "react-native";
 import { HomeList } from "./HomeList";
 import { LogoTitle } from "./../../reusable/LogoTitle";
-import NavigationService from "../../../NavigationService";
+import NavigationService from "../../../services/NavigationService";
 
 export class HomeScreen extends React.Component {
   static navigationOptions = {

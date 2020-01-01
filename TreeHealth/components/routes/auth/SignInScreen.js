@@ -1,9 +1,8 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
 import globals from "../../../globals";
-import NavigationService from "../../../NavigationService";
+import NavigationService from "../../../services/NavigationService";
 import { LogoTitle } from "../../reusable/LogoTitle";
 
 export class SignInScreen extends React.Component {

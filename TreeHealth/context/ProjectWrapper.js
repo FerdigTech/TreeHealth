@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ProjectContext } from "./ProjectProvider";
 import { AsyncStorage } from "react-native";
-import globals from "./globals";
+import globals from "../globals";
 
 const ProjectProvider = ProjectContext.Provider;
 

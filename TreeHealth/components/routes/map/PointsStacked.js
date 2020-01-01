@@ -11,8 +11,8 @@ import {
 } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop, ProjectsModalDrop } from "./../../reusable/TitleDrop";
-import NavigationService from "../../../NavigationService";
-import { ProjectCosumer } from "./../../../ProjectProvider";
+import NavigationService from "../../../services/NavigationService";
+import { ProjectCosumer } from "../../../context/ProjectProvider";
 
 function PointsLstEl() {
   var img = require("../../../assets/treehouse-default.png");

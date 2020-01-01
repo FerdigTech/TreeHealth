@@ -6,7 +6,7 @@ import {
   SafeAreaView
 } from "react-native";
 import { ProjectCard } from "./ProjectCard";
-import { ProjectCosumer } from "./../../../ProjectProvider";
+import { ProjectCosumer } from "../../../context/ProjectProvider";
 
 function ProjectsEl() {
   return (

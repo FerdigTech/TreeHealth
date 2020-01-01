@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import { Text, Card, CardItem } from "native-base";
-import NavigationService from "../../../NavigationService";
+import NavigationService from "../../../services/NavigationService";
 
 export class ProjectCard extends React.Component {
   render() {

@@ -9,10 +9,10 @@ import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { PointsStacked } from "./components/routes/map/PointsStacked";
-import { ProjectWrapper } from "./ProjectWrapper";
+import { ProjectWrapper } from "./context/ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
-import NavigationService from "./NavigationService";
+import NavigationService from "./services/NavigationService";
 
 const MainNavigator = createStackNavigator(
   {

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Icon, Text, ListItem } from "native-base";
 import Modal from "react-native-modal";
-import { ProjectCosumer } from "./../../ProjectProvider";
+import { ProjectCosumer } from "../../context/ProjectProvider";
 
 // creats a list of the projects who aren't active
 const ProjectLst = props => {

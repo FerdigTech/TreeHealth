@@ -15,8 +15,8 @@ import {
 import { Container, Content } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
-import NavigationService from "../../../NavigationService";
-import { ProjectCosumer } from "./../../../ProjectProvider";
+import NavigationService from "../../../services/NavigationService";
+import { ProjectCosumer } from "../../../context/ProjectProvider";
 
 function PointsEl() {
   return (

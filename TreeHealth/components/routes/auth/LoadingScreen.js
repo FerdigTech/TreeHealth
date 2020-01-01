@@ -6,7 +6,7 @@ import {
   AsyncStorage,
   StyleSheet
 } from "react-native";
-import NavigationService from "../../../NavigationService";
+import NavigationService from "../../../services/NavigationService";
 
 
 export class LoadingScreen extends React.Component {
