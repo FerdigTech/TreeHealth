@@ -1,10 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MapView, {
-  Marker,
-  Callout,
-  AnimatedRegion,
-  Animated
-} from "react-native-maps";
+import MapView, { Marker, Callout } from "react-native-maps";
 import {
   StyleSheet,
   View,
@@ -53,12 +48,34 @@ _getLocationAsync = async () => {
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
+  const [Points, setPoints] = useState([]);
   const [currentProject] = useState(
     props.navigation.getParam("projectName", "All")
   );
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
   const netInfo = useNetInfo();
+  let mapRef = null;
+  const searchAndFocus = text => {
+    const filteredPts = Points.filter(point =>
+      point.properties.title.toLowerCase().includes(text.toLowerCase())
+    );
+
+    // if there is a result of point's title containing the text
+    if (filteredPts.length > 0) {
+      // get the last item
+      const { geometry } = filteredPts.pop();
+      // get its coordinates
+      const { coordinates } = geometry;
+      // extract them in proper form
+      const coordinate = {
+        longitude: coordinates[0],
+        latitude: coordinates[1]
+      };
+
+      mapRef.fitToCoordinates([coordinate], { animated: true });
+    }
+  };
 
   useEffect(() => {
     _getLocationAsync();
@@ -75,9 +92,33 @@ export const MapDisplay = props => {
     <SafeAreaView style={styles.container}>
       <Container>
         <Content>
-          <Animated style={styles.mapStyle} initialRegion={zoomNEOhio.region}>
-            <PointsEl />
-          </Animated>
+          <MapView
+            ref={ref => {
+              mapRef = ref;
+            }}
+            style={styles.mapStyle}
+            initialRegion={zoomNEOhio.region}
+            showsUserLocation={true}
+            showsTraffic={false}
+            loadingEnabled={true}
+            cacheEnabled={true}
+          >
+            <ProjectCosumer>
+              {context => setPoints(context.Points)}
+            </ProjectCosumer>
+            {Points.map((point, index) => {
+              return (
+                <Marker
+                  coordinate={{
+                    longitude: point.geometry.coordinates[0],
+                    latitude: point.geometry.coordinates[1]
+                  }}
+                  title={point.properties.title}
+                  key={index}
+                />
+              );
+            })}
+          </MapView>
           <ProjectsModalDrop navigation={props.navigation} />
           {showSearch && (
             <Callout>
@@ -85,6 +126,7 @@ export const MapDisplay = props => {
                 <TextInput
                   style={styles.calloutSearch}
                   placeholder={"Search"}
+                  onEndEditing={e => searchAndFocus(e.nativeEvent.text)}
                 />
               </View>
             </Callout>
@@ -122,12 +164,12 @@ MapDisplay.navigationOptions = ({ navigation }) => ({
 });
 
 const zoomNEOhio = {
-  region: new AnimatedRegion({
+  region: {
     latitude: 41.215078,
     longitude: -81.562843,
     latitudeDelta: 3 / 4,
     longitudeDelta: 3 / 4
-  })
+  }
 };
 
 const styles = StyleSheet.create({
