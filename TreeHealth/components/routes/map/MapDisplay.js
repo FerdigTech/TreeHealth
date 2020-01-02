@@ -98,7 +98,9 @@ export const MapDisplay = props => {
             })
           }
           funnelToggle={() => {}}
-          SearchToggle={() => {setShowSearch(!showSearch)}}
+          SearchToggle={() => {
+            setShowSearch(!showSearch);
+          }}
           addItemAction={() =>
             NavigationService.navigate("QuestionList", {
               projectName: currentProject

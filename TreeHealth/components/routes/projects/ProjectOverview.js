@@ -8,7 +8,7 @@ import {
 import { ProjectCard } from "./ProjectCard";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
 
-function ProjectsEl() {
+const ProjectsEl = () => {
   return (
     <ProjectCosumer>
       {context =>
@@ -28,13 +28,13 @@ function ProjectsEl() {
       }
     </ProjectCosumer>
   );
-}
+};
 
-function wait(timeout) {
-  return new Promise(resolve => {
-    setTimeout(resolve, timeout);
-  });
-}
+const updateProjectData = () => {};
+
+const wait = timeout => {
+  return Promise.all([updateProjectData(), setTimeout(() => {}, timeout)]);
+};
 
 export const ProjectOverview = () => {
   const [refreshing, setRefreshing] = React.useState(false);
@@ -56,7 +56,7 @@ export const ProjectOverview = () => {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <ProjectsEl forcedReset={refreshing}/>
+        <ProjectsEl forcedReset={refreshing} />
       </ScrollView>
     </SafeAreaView>
   );

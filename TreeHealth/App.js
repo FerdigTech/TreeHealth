@@ -92,7 +92,7 @@ const InitalNavigator = createAppContainer(
   )
 );
 
-export default function App() {
+const App = () => {
   return (
     <ProjectWrapper>
       <InitalNavigator
@@ -103,3 +103,5 @@ export default function App() {
     </ProjectWrapper>
   );
 }
+
+export default App;

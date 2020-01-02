@@ -14,7 +14,7 @@ import { TitleDrop, ProjectsModalDrop } from "./../../reusable/TitleDrop";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
 
-function PointsLstEl() {
+const PointsLstEl = () => {
   var img = require("../../../assets/treehouse-default.png");
   return (
     <ProjectCosumer>

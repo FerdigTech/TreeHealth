@@ -26,7 +26,7 @@ const processProjData = () => {
 };
 
 // use hook to get the project data
-function useProjects() {
+const useProjects = () => {
   const [Projects, setProjects] = useState([]);
   useEffect(() => {
     processProjData().then(results => {
@@ -65,7 +65,7 @@ const processPntData = ID => {
 };
 
 // use hook to get the data
-function usePoints() {
+const usePoints = () => {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
     processPntData(-1).then(results => {
@@ -76,7 +76,7 @@ function usePoints() {
 }
 
 // Build the provider
-export function ProjectWrapper({ children }) {
+export const ProjectWrapper = ({ children }) => {
   const Projects = useProjects();
   const PointsObj = usePoints();
   const Points = PointsObj.Points;
