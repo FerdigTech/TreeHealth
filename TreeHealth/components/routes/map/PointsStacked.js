@@ -21,6 +21,7 @@ export const PointsStacked = props => {
   const [showSearch, setShowSearch] = useState(false);
   const [Points, setPoints] = useState([]);
   let [RenderedPts, setRenderedPts] = useState(null);
+  const [Results, setResults] = useState(true);
   const img = require("../../../assets/treehouse-default.png");
 
   const searchAndFilter = text => {
@@ -28,6 +29,8 @@ export const PointsStacked = props => {
       point.properties.title.toLowerCase().includes(text.toLowerCase())
     );
     setRenderedPts(filteredPts);
+    // if no results return true
+    setResults(filteredPts.length > 0);
   };
 
   return (
@@ -72,6 +75,11 @@ export const PointsStacked = props => {
               );
             }))
           }
+          {!Results && (
+            <View style={styles.NoResTxt}>
+              <Text>No results</Text>
+            </View>
+          )}
         </ScrollView>
       </Content>
       <FooterTabs
@@ -105,6 +113,11 @@ const styles = StyleSheet.create({
     height: 40,
     width: 40,
     flex: 1
+  },
+  NoResTxt: {
+    flex: 1,
+    padding: 10,
+    alignItems: "center"
   },
   SearchView: {
     flexDirection: "row",
