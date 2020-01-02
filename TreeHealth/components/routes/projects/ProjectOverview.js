@@ -6,58 +6,60 @@ import {
   SafeAreaView
 } from "react-native";
 import { ProjectCard } from "./ProjectCard";
-import { ProjectCosumer } from "../../../context/ProjectProvider";
+import {
+  ProjectCosumer
+} from "../../../context/ProjectProvider";
 
 const ProjectsEl = () => {
-  return (
-    <ProjectCosumer>
-      {context =>
-        context.Projects.map((project, index) => {
-          return (
-            <ProjectCard
-              projectName={project.name}
-              defaultImg={true}
-              projectSummary={project.description}
-              setProjectID={() => {
-                context.setProjectID(project.ProjectID);
-              }}
-              key={index}
-            />
-          );
-        })
-      }
-    </ProjectCosumer>
-  );
-};
-
-const updateProjectData = () => {};
-
-const wait = timeout => {
-  return Promise.all([updateProjectData(), setTimeout(() => {}, timeout)]);
-};
-
-export const ProjectOverview = () => {
   const [refreshing, setRefreshing] = React.useState(false);
 
+  // On the refresh we should update the projects
   const onRefresh = React.useCallback(
-    () => {
+    context => {
       setRefreshing(true);
-
-      wait(2000).then(() => setRefreshing(false));
+      context.updateProjects();
+      setRefreshing(false);
     },
     [refreshing]
   );
 
   return (
+    <ProjectCosumer>
+      {context => {
+        return (
+          <ScrollView
+            contentContainerStyle={styles.scrollView}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={() => onRefresh(context)}
+              />
+            }
+          >
+            {context.Projects.map((project, index) => {
+              return (
+                <ProjectCard
+                  projectName={project.name}
+                  defaultImg={true}
+                  projectSummary={project.description}
+                  setProjectID={() => {
+                    context.setProjectID(project.ProjectID);
+                  }}
+                  key={index}
+                />
+              );
+            })}
+          </ScrollView>
+        );
+      }}
+    </ProjectCosumer>
+  );
+};
+
+export const ProjectOverview = () => {
+  return (
     <SafeAreaView>
-      <ScrollView
-        contentContainerStyle={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        <ProjectsEl forcedReset={refreshing} />
-      </ScrollView>
+      <ProjectsEl />
     </SafeAreaView>
   );
 };

@@ -5,23 +5,34 @@ import globals from "../globals";
 
 const ProjectProvider = ProjectContext.Provider;
 
+const setProjectData = async data => {
+  return await AsyncStorage.setItem("Projects", JSON.stringify(data));
+};
 // try to get the Project data from cache, if not get from the site.
-getProjectData = async () => {
+getProjectData = async (forceUpdate = false) => {
   let projectData = await AsyncStorage.getItem("Projects");
-  if (projectData !== null) {
+  if (projectData !== null && !(forceUpdate)) {
     projectData = JSON.parse(projectData);
   } else {
     projectData = await fetch(globals.SERVER_URL + "/projects/").then(
       response => response.json()
     );
-    await AsyncStorage.setItem("Projects", JSON.stringify(projectData));
+    // TODO: if offline/fails, we should try return cache and that it failed to get updated data
+    // Since AsyncStorage is immunitable, the projects object should be deleted before being set
+    if (projectData !== null) {
+      await AsyncStorage.removeItem("Projects").then(() => {
+        setProjectData(projectData);
+      });
+    } else {
+      setProjectData(projectData);
+    }
   }
   return projectData;
 };
 
-const processProjData = () => {
+const processProjData = (forceUpdate = false) => {
   return new Promise(resolve => {
-    resolve(getProjectData());
+    resolve(getProjectData(forceUpdate));
   });
 };
 
@@ -29,12 +40,12 @@ const processProjData = () => {
 const useProjects = () => {
   const [Projects, setProjects] = useState([]);
   useEffect(() => {
-    processProjData().then(results => {
+    processProjData(false).then(results => {
       setProjects(results);
     });
   }, []);
-  return Projects;
-}
+  return { Projects, setProjects };
+};
 
 // try to get the  point data from cache, if not get from the site.
 getPointData = async ID => {
@@ -68,16 +79,19 @@ const processPntData = ID => {
 const usePoints = () => {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
-    processPntData(-1).then(results => {
+    processPntData(-1, true).then(results => {
       setPoints(results);
     });
   }, []);
   return { Points, setPoints };
-}
+};
 
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
-  const Projects = useProjects();
+  const ProjectsObj = useProjects();
+  const Projects = ProjectsObj.Projects;
+  const setProjects = ProjectsObj.setProjects;
+  const [ProjectID, setProjectID] = useState(-1);
   const PointsObj = usePoints();
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
@@ -94,6 +108,13 @@ export const ProjectWrapper = ({ children }) => {
         setProjectID: ID => {
           processPntData(ID).then(results => {
             setPoints(results);
+            setProjectID(ID);
+          });
+        },
+        ProjectID,
+        updateProjects: () => {
+          processProjData(true).then(results => {
+            setProjects(results);
           });
         }
       }}
@@ -101,4 +122,4 @@ export const ProjectWrapper = ({ children }) => {
       {children}
     </ProjectProvider>
   );
-}
+};
