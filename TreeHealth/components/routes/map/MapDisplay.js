@@ -12,7 +12,6 @@ import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
-import { useNetInfo } from "@react-native-community/netinfo";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 
@@ -37,14 +36,7 @@ function PointsEl() {
   );
 }
 
-_getLocationAsync = async () => {
-  let { status } = await Permissions.askAsync(Permissions.LOCATION);
-  if (status !== "granted") {
-    this.setState({
-      errorMessage: "Permission to access location was denied"
-    });
-  }
-};
+
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
@@ -54,8 +46,15 @@ export const MapDisplay = props => {
   );
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
-  const netInfo = useNetInfo();
   let mapRef = null;
+
+  _getLocationAsync = async () => {
+    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+    if (status !== "granted") {
+      setError("Permission to access location was denied")
+    }
+  };
+
   const searchAndFocus = text => {
     const filteredPts = Points.filter(point =>
       point.properties.title.toLowerCase().includes(text.toLowerCase())
@@ -82,8 +81,6 @@ export const MapDisplay = props => {
     Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High
     }).then(location => {
-      console.log("latitude " + location.coords.latitude);
-      console.log("longitude " + location.coords.longitude);
       setLocation(location);
     });
   }, []);

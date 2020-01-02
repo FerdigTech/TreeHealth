@@ -8,6 +8,7 @@ import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
+import { AddPoint } from "./components/routes/points/AddPoint";
 import { PointsStacked } from "./components/routes/map/PointsStacked";
 import { ProjectWrapper } from "./context/ProjectWrapper";
 import { View } from "react-native";
@@ -24,6 +25,12 @@ const MainNavigator = createStackNavigator(
       screen: QuestionList,
       navigationOptions: {
         title: "Projects Questions"
+      }
+    },
+    AddPoint: {
+      screen: AddPoint,
+      navigationOptions: {
+        title: "Add Record"
       }
     },
     ProjectOverview: {
@@ -60,7 +67,7 @@ const AuthStack = createStackNavigator(
       screen: SignInScreen
     },
     Register: {
-      screen: RegisterScreen,
+      screen: RegisterScreen
     }
   },
   {
@@ -102,6 +109,6 @@ const App = () => {
       />
     </ProjectWrapper>
   );
-}
+};
 
 export default App;
