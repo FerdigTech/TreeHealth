@@ -6,11 +6,9 @@ import {
   SafeAreaView
 } from "react-native";
 import { ProjectCard } from "./ProjectCard";
-import {
-  ProjectCosumer
-} from "../../../context/ProjectProvider";
+import { ProjectCosumer } from "../../../context/ProjectProvider";
 
-const ProjectsEl = () => {
+export const ProjectOverview = () => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   // On the refresh we should update the projects
@@ -24,45 +22,40 @@ const ProjectsEl = () => {
   );
 
   return (
-    <ProjectCosumer>
-      {context => {
-        return (
-          <ScrollView
-            contentContainerStyle={styles.scrollView}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={() => onRefresh(context)}
-              />
-            }
-          >
-            {context.Projects.map((project, index) => {
-              return (
-                <ProjectCard
-                  projectName={project.name}
-                  defaultImg={true}
-                  projectSummary={project.description}
-                  setProjectID={() => {
-                    context.setProjectID(project.ProjectID);
-                  }}
-                  key={index}
-                />
-              );
-            })}
-          </ScrollView>
-        );
-      }}
-    </ProjectCosumer>
-  );
-};
-
-export const ProjectOverview = () => {
-  return (
     <SafeAreaView>
-      <ProjectsEl />
+      <ProjectCosumer>
+        {context => {
+          return (
+            <ScrollView
+              contentContainerStyle={styles.scrollView}
+              refreshControl={
+                <RefreshControl
+                  refreshing={refreshing}
+                  onRefresh={() => onRefresh(context)}
+                />
+              }
+            >
+              {context.Projects.map((project, index) => {
+                return (
+                  <ProjectCard
+                    projectName={project.name}
+                    defaultImg={true}
+                    projectSummary={project.description}
+                    setProjectID={() => {
+                      context.setProjectID(project.ProjectID);
+                    }}
+                    key={index}
+                  />
+                );
+              })}
+            </ScrollView>
+          );
+        }}
+      </ProjectCosumer>
     </SafeAreaView>
   );
 };
+
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
