@@ -87,6 +87,7 @@ export const AddPoint = () => {
           <Item style={styles.formItem} rounded floatingLabel>
             <Label style={styles.itemStyle}>Latitude</Label>
             <Input
+              keyboardType={"decimal-pad"}
               style={styles.itemStyle}
               value={
                 location != null ? location.coords.latitude.toString() : ""
@@ -98,6 +99,7 @@ export const AddPoint = () => {
           <Item style={styles.formItem} rounded floatingLabel>
             <Label style={styles.itemStyle}>Longitude</Label>
             <Input
+              keyboardType={"decimal-pad"}
               style={styles.itemStyle}
               value={
                 location != null ? location.coords.longitude.toString() : ""
