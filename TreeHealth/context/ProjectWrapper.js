@@ -79,7 +79,7 @@ const processPntData = ID => {
 const usePoints = () => {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
-    processPntData(-1, true).then(results => {
+    processPntData(-1).then(results => {
       setPoints(results);
     });
   }, []);
