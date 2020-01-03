@@ -22,8 +22,6 @@ export const AddPoint = () => {
     Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High
     }).then(location => {
-      console.log("latitude " + location.coords.latitude);
-      console.log("longitude " + location.coords.longitude);
       setLocation(location);
     });
   }, []);
