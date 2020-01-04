@@ -11,8 +11,9 @@ export class ProjectCard extends React.Component {
       : require("../../../assets/treehouse-default.png");
     return (
       <TouchableOpacity
+        activeOpacity={0.5}
         onPress={() => {
-         this.props.setProjectID(this.props.projectID);
+          this.props.setProjectID(this.props.projectID);
           NavigationService.navigate("Map", {
             projectName: this.props.projectName
           });
