@@ -90,7 +90,7 @@ export const PointsStacked = props => {
           setShowSearch(!showSearch);
         }}
         addItemAction={() =>
-          NavigationService.navigate("QuestionList", {
+          NavigationService.navigate("AddPoint", {
             projectName: currentProject
           })
         }

@@ -15,28 +15,6 @@ import { ProjectCosumer } from "../../../context/ProjectProvider";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 
-function PointsEl() {
-  return (
-    <ProjectCosumer>
-      {context =>
-        context.Points.map((point, index) => {
-          return (
-            <Marker
-              coordinate={{
-                longitude: point.geometry.coordinates[0],
-                latitude: point.geometry.coordinates[1]
-              }}
-              title={point.properties.title}
-              key={index}
-            />
-          );
-        })
-      }
-    </ProjectCosumer>
-  );
-}
-
-
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
@@ -132,7 +110,7 @@ export const MapDisplay = props => {
         <FooterTabs
           listIcon="list"
           switchView={() =>
-            NavigationService.navigate("PointsStacked", {
+            NavigationService.navigate("QuestionList", {
               projectName: currentProject
             })
           }
@@ -141,7 +119,7 @@ export const MapDisplay = props => {
             setShowSearch(!showSearch);
           }}
           addItemAction={() =>
-            NavigationService.navigate("QuestionList", {
+            NavigationService.navigate("AddPoint", {
               projectName: currentProject
             })
           }
