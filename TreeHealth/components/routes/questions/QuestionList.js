@@ -1,20 +1,15 @@
 import React from "react";
-import {
-  ScrollView,
-  TouchableOpacity,
-  Text,
-  StyleSheet
-} from "react-native";
+import { ScrollView, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { QuestionItem } from "./QuestionItem";
-import { Container, Content, List, Icon, Button } from "native-base";
+import { Container, Content } from "native-base";
 
 export const QuestionList = () => {
   return (
     <Container>
       <Content>
         <ScrollView style={{ flex: 1 }}>
-        <QuestionItem indexVal={1} isDraft={true} />
-        <QuestionItem indexVal={2} isDraft={false} />
+          <QuestionItem indexVal={1} isDraft={true} />
+          <QuestionItem indexVal={2} isDraft={false} />
         </ScrollView>
       </Content>
     </Container>
