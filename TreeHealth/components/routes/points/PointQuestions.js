@@ -1,6 +1,22 @@
-import React, { useState, useEffect } from "react";
-import { ScrollView, StyleSheet, SafeAreaView, Text, View } from "react-native";
-import { Container, Content, ListItem, Left, Right, Body, Thumbnail, Button } from "native-base";
+import React, { useRef, useState, useEffect } from "react";
+import {
+  ScrollView,
+  StyleSheet,
+  SafeAreaView,
+  Text,
+  View,
+  Animated
+} from "react-native";
+import {
+  Container,
+  Content,
+  ListItem,
+  Left,
+  Right,
+  Body,
+  Thumbnail,
+  Button
+} from "native-base";
 import globals from "../../../globals";
 
 getQuestionsData = async ID => {
@@ -17,25 +33,48 @@ const processQuestData = ID => {
   });
 };
 
-const MultipleChoiceEl = () => {};
-
-const ExtendedResponseEl = () => {};
-const DropDownEl = () => {};
-
 export const PointQuestions = () => {
   const [Questions, setQuestions] = useState([]);
+  const [progress, setProgress] = useState(0);
+  let animation = useRef(new Animated.Value(0));
+  let CompleteQuestionIDs = [];
 
-  useEffect(() => {
-    processQuestData(-1).then(results => {
-      setQuestions(results);
-    });
-  }, []);
+  const width = animation.current.interpolate({
+    inputRange: [0, 100],
+    outputRange: ["0%", "100%"],
+    extrapolate: "clamp"
+  });
+
+  useEffect(
+    () => {
+      processQuestData(-1).then(results => {
+        setQuestions(results);
+        let progressBarWidth = Math.round(
+          CompleteQuestionIDs.length / results.length * 100
+        );
+        setProgress(progressBarWidth);
+      });
+      Animated.timing(animation.current, {
+        toValue: progress,
+        duration: 100
+      }).start();
+    },
+    [progress]
+  );
 
   return (
     <SafeAreaView style={styles.container}>
       <Container>
         <Content>
-          <ScrollView>
+          <View style={styles.progressBar}>
+            <Animated.View
+              style={
+                ([StyleSheet.absoluteFill],
+                { backgroundColor: globals.COLOR.GREEN, width })
+              }
+            />
+          </View>
+          <ScrollView style={styles.questionList}>
             {Questions.map((question, index) => {
               return (
                 <ListItem key={index} thumbnail>
@@ -43,16 +82,38 @@ export const PointQuestions = () => {
                     <Thumbnail square source={{ uri: question.image }} />
                   </Left>
                   <Body>
-                    <Text numberOfLines={1} style={styles.questionDesc}>{question.Description}</Text>
+                    <Text numberOfLines={1} style={styles.questionDesc}>
+                      {question.Description}
+                    </Text>
                   </Body>
-                  <Right>
-                <Button transparent>
-                  <Text style={styles.answerBtn}>Answer</Text>
-                </Button>
-              </Right>
+                  <Right
+                    style={[
+                      styles.rightStyling,
+                      {
+                        borderColor: CompleteQuestionIDs.includes(
+                          question.QuestionID
+                        )
+                          ? "green"
+                          : "red"
+                      }
+                    ]}
+                  >
+                    <Button transparent>
+                      <Text style={styles.answerBtn}>Answer</Text>
+                    </Button>
+                  </Right>
                 </ListItem>
               );
             })}
+
+            <Button
+              disabled={progress != 100}
+              block
+              rounded
+              style={styles.completeBtn}
+            >
+              <Text style={{ color: "white" }}>Complete</Text>
+            </Button>
           </ScrollView>
         </Content>
       </Container>
@@ -65,11 +126,35 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff"
   },
+  questionList: {
+    paddingTop: 1
+  },
   questionDesc: {
     fontWeight: "bold",
     padding: 5
   },
   answerBtn: {
-    color: "blue",
+    color: "blue"
+  },
+  completeBtn: {
+    justifyContent: "center",
+    margin: 10,
+    marginTop: 20
+  },
+  rightStyling: {
+    borderRightWidth: 10,
+    borderBottomColor: "#ccc",
+    marginBottom: 1,
+    marginTop: 1
+  },
+  progressBar: {
+    flexDirection: "row",
+    height: 20,
+    width: "100%",
+    backgroundColor: "white",
+    borderColor: "#000",
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderRightWidth: 0
   }
 });
