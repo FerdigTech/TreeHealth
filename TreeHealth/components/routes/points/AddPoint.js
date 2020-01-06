@@ -12,6 +12,7 @@ import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../../../services/NavigationService";
+
 export const AddPoint = () => {
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);

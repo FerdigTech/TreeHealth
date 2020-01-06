@@ -36,8 +36,18 @@ const processQuestData = ID => {
 export const PointQuestions = () => {
   const [Questions, setQuestions] = useState([]);
   const [progress, setProgress] = useState(0);
+  const [CompleteQuestions, setCompleteQuestions] = useState([]);
   let animation = useRef(new Animated.Value(0));
-  let CompleteQuestionIDs = [];
+
+  const finishQuestion = ID => {
+    if (!CompleteQuestions.includes(ID)) {
+      setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
+      // seems like CompleteQuestions hasn't been finished being set yet, so we add one
+      setProgress(
+        Math.round((CompleteQuestions.length + 1) / Questions.length * 100)
+      );
+    }
+  };
 
   const width = animation.current.interpolate({
     inputRange: [0, 100],
@@ -49,10 +59,6 @@ export const PointQuestions = () => {
     () => {
       processQuestData(-1).then(results => {
         setQuestions(results);
-        let progressBarWidth = Math.round(
-          CompleteQuestionIDs.length / results.length * 100
-        );
-        setProgress(progressBarWidth);
       });
       Animated.timing(animation.current, {
         toValue: progress,
@@ -90,7 +96,7 @@ export const PointQuestions = () => {
                     style={[
                       styles.rightStyling,
                       {
-                        borderColor: CompleteQuestionIDs.includes(
+                        borderColor: CompleteQuestions.includes(
                           question.QuestionID
                         )
                           ? "green"
@@ -98,7 +104,12 @@ export const PointQuestions = () => {
                       }
                     ]}
                   >
-                    <Button transparent>
+                    <Button
+                      transparent
+                      onPress={() => {
+                        finishQuestion(question.QuestionID);
+                      }}
+                    >
                       <Text style={styles.answerBtn}>Answer</Text>
                     </Button>
                   </Right>
