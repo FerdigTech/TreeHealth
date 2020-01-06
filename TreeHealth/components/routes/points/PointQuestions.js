@@ -17,6 +17,7 @@ import {
   Thumbnail,
   Button
 } from "native-base";
+import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
 
 getQuestionsData = async ID => {
@@ -33,11 +34,29 @@ const processQuestData = ID => {
   });
 };
 
-export const PointQuestions = () => {
+export const PointQuestions = props => {
   const [Questions, setQuestions] = useState([]);
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
+  const [ShowModal, setShowModal] = useState(false);
+  const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   let animation = useRef(new Animated.Value(0));
+
+  const handleQuestion = ID => {
+    // first we must pass to current question to the navigator
+    setCurrentQuestion(ID);
+    // then we toggle the modal
+    setShowModal(true);
+  };
+
+  const saveAnswers = answer => {
+    // save the answer locally
+
+    // marked finished
+    finishQuestion(CurrentQuestion);
+    // closed modal
+    setShowModal(false);
+  };
 
   const finishQuestion = ID => {
     if (!CompleteQuestions.includes(ID)) {
@@ -72,6 +91,14 @@ export const PointQuestions = () => {
     <SafeAreaView style={styles.container}>
       <Container>
         <Content>
+          <QuestionModal
+            ShowModal={ShowModal}
+            // should save on close and untoggle modal visibility
+            handleSave={saveAnswers}
+            QuestionData={Questions.filter(
+              question => question.QuestionID === CurrentQuestion
+            )}
+          />
           <View style={styles.progressBar}>
             <Animated.View
               style={
@@ -107,7 +134,7 @@ export const PointQuestions = () => {
                     <Button
                       transparent
                       onPress={() => {
-                        finishQuestion(question.QuestionID);
+                        handleQuestion(question.QuestionID);
                       }}
                     >
                       <Text style={styles.answerBtn}>Answer</Text>
