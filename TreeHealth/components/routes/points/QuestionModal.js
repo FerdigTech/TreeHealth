@@ -1,7 +1,17 @@
 import React, { useState } from "react";
 import { StyleSheet, View, ScrollView, Image, Dimensions } from "react-native";
-import { Button, Text, Icon, Form, Input, Item, Picker, Textarea } from "native-base";
-import Modal from "react-native-modal";
+import {
+  Button,
+  Text,
+  Icon,
+  Form,
+  Input,
+  Item,
+  Picker,
+  Textarea
+} from "native-base";
+import { Modal } from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const MultipleChoice = props => {
   return (
@@ -45,6 +55,7 @@ const DropDown = props => {
 
 export const QuestionModal = props => {
   const [Answer, setAnswer] = useState("");
+  const [ImagleViewable, setImagleViewable] = useState(false);
   const { Question, Options, QuestionType, image } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
@@ -54,15 +65,13 @@ export const QuestionModal = props => {
           QuestionType: "",
           image: ""
         };
+
   return (
     <View style={{ flex: 1 }}>
       <Modal
-        onSwipeThreshold={750}
-        onSwipeComplete={() => props.handleSave(Answer)}
-        swipeDirection="down"
-        isVisible={props.ShowModal}
+        visible={props.ShowModal}
         scrollHorizontal={true}
-        style={{ margin: 0 }}
+        style={styles.mainModal}
       >
         <ScrollView style={styles.ModalView}>
           <Button
@@ -78,9 +87,24 @@ export const QuestionModal = props => {
               <Icon style={styles.QuestionIconTxt} name="information" />
             </Button>
             <Text type={styles.QuestionTxt}>{Question}</Text>
-            <Button block rounded style={styles.imageBtn}>
-              <Text style={{ color: "white" }}>View Image</Text>
+            <Button
+              block
+              rounded
+              style={styles.imageBtn}
+              onPress={() => setImagleViewable(!ImagleViewable)}
+            >
+              <Text style={{ color: "white" }}>
+                {ImagleViewable ? "Hide" : "View"} Image
+              </Text>
             </Button>
+            <Modal style={styles.imgModal} visible={ImagleViewable} transparent={false}>
+              <ImageViewer
+                enableSwipeDown={true}
+                swipeDownThreshold={200}
+                onSwipeDown={() => setImagleViewable(false)}
+                imageUrls={[{ url: image }]}
+              />
+            </Modal>
             <Form>
               {(QuestionType == "multiple-choice" && (
                 <MultipleChoice
@@ -146,5 +170,12 @@ const styles = StyleSheet.create({
   },
   CloseBtn: {
     marginBottom: 5
+  },
+  mainModal: {
+    margin: 0,
+    zIndex: 5
+  },
+  imgModal: {
+      zIndex: 10
   }
 });
