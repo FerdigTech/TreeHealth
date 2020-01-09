@@ -58,6 +58,12 @@ export const PointQuestions = props => {
     setShowModal(false);
   };
 
+  const addToQueue = answers => {
+    //TODO: add to global queue
+    // if offline, then wait till online
+    // otherwise submit the data to its repsective endpoint
+  };
+
   const finishQuestion = ID => {
     if (!CompleteQuestions.includes(ID)) {
       setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
@@ -149,6 +155,9 @@ export const PointQuestions = props => {
               block
               rounded
               style={styles.completeBtn}
+              onPress={() => {
+                addToQueue();
+              }}
             >
               <Text style={{ color: "white" }}>Complete</Text>
             </Button>
