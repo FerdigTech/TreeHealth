@@ -12,11 +12,24 @@ import {
 } from "native-base";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import SelectMultiple from "react-native-select-multiple";
 
 const MultipleChoice = props => {
+  const { options } = props;
+  const [MultipleAnswer, setMultipleAnswer] = useState([]);
+
+  const handleChange = value => {
+    setMultipleAnswer(value);
+    // extract the value property and save that globally
+    props.handleSave(value.map(({ value }) => value));
+  };
   return (
     <Item>
-      <Input />
+      <SelectMultiple
+        items={options}
+        onSelectionsChange={value => handleChange(value)}
+        selectedItems={MultipleAnswer}
+      />
     </Item>
   );
 };
@@ -24,7 +37,12 @@ const MultipleChoice = props => {
 const TextInput = props => {
   return (
     <Item>
-      <Textarea rowSpan={5} bordered placeholder="Textarea" />
+      <Textarea
+        style={styles.textInput}
+        rowSpan={5}
+        bordered
+        placeholder="Type your answer"
+      />
     </Item>
   );
 };
@@ -97,7 +115,11 @@ export const QuestionModal = props => {
                 {ImagleViewable ? "Hide" : "View"} Image
               </Text>
             </Button>
-            <Modal style={styles.imgModal} visible={ImagleViewable} transparent={false}>
+            <Modal
+              style={styles.imgModal}
+              visible={ImagleViewable}
+              transparent={false}
+            >
               <ImageViewer
                 enableSwipeDown={true}
                 swipeDownThreshold={200}
@@ -176,6 +198,9 @@ const styles = StyleSheet.create({
     zIndex: 5
   },
   imgModal: {
-      zIndex: 10
+    zIndex: 10
+  },
+  textInput: {
+    width: "100%"
   }
 });
