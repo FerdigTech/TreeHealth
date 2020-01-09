@@ -36,6 +36,7 @@ const processQuestData = ID => {
 
 export const PointQuestions = props => {
   const [Questions, setQuestions] = useState([]);
+  const [Answers, setAnswers] = useState([]);
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [ShowModal, setShowModal] = useState(false);
@@ -51,6 +52,9 @@ export const PointQuestions = props => {
 
   const saveAnswers = answer => {
     // save the answer locally
+    let newAnswerObj = {};
+    newAnswerObj[CurrentQuestion] = answer;
+    setAnswers(Answers => [...Answers, newAnswerObj]);
 
     // marked finished
     finishQuestion(CurrentQuestion);
@@ -62,6 +66,8 @@ export const PointQuestions = props => {
     //TODO: add to global queue
     // if offline, then wait till online
     // otherwise submit the data to its repsective endpoint
+    // post to URL /answer/create
+    // passing questionid: questionID, answeredby:userID, answer: answer[questionID], locationid
   };
 
   const finishQuestion = ID => {
