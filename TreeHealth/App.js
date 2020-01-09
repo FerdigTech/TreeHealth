@@ -1,4 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { AppLoading } from 'expo';
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
@@ -107,16 +108,23 @@ const InitalNavigator = createAppContainer(
 );
 
 const App = () => {
+  const [isReady, setisReady] = useState(false);
+
   useEffect(() => {
     async function setupFonts() {
       await Expo.Font.loadAsync({
         Roboto: require("native-base/Fonts/Roboto.ttf"),
         Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
       });
+      setisReady({ isReady: true });
     }
 
     setupFonts();
   }, []);
+  if (!isReady) {
+    return <AppLoading />;
+  }
+
   return (
     <ProjectWrapper>
       <InitalNavigator
