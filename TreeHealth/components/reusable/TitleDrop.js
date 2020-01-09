@@ -82,29 +82,12 @@ export const ProjectsModalDrop = props => {
 };
 
 export class TitleDrop extends React.Component {
-  toggleDropVis = () => {
-    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
-
-    this.props.navigation.setParams({
-      DropDownVisible: !DropDownVisible
-    });
-  };
   render() {
-    const DropDownVisible = this.props.navigation.getParam("DropDownVisible");
     return (
       <View style={styles.dropContr}>
-        <TouchableOpacity
-          onPress={() => this.toggleDropVis()}
-          activeOpacity={0.7}
-        >
-          <View style={styles.dropWrap}>
-            <Text style={styles.projectTitle}>{this.props.projectName}</Text>
-            <Icon
-              name={DropDownVisible ? "arrow-up" : "arrow-down"}
-              style={styles.dropIcon}
-            />
-          </View>
-        </TouchableOpacity>
+        <View style={styles.dropWrap}>
+          <Text style={styles.projectTitle}>{this.props.projectName}</Text>
+        </View>
       </View>
     );
   }
