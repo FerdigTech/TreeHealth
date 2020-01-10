@@ -26,6 +26,12 @@ export const MapDisplay = props => {
   const [errorMessage, setError] = useState(null);
   let mapRef = null;
 
+  // from the filter
+  const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
+  const Operator = props.navigation.getParam("Operator", null);
+  const FilterAffilation = props.navigation.getParam("FilterAffilation", false);
+  const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
+
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
@@ -70,7 +76,6 @@ export const MapDisplay = props => {
       DropDownVisible: !DropDownVisible
     });
   };
-
   return (
     <SafeAreaView style={styles.container}>
       <Container>
@@ -89,7 +94,15 @@ export const MapDisplay = props => {
             <ProjectCosumer>
               {context => setPoints(context.Points)}
             </ProjectCosumer>
-            {Points.map((point, index) => {
+            {Points.filter(
+              point =>
+                (!FilterAffilation ||
+                !point.properties.hasOwnProperty("AffiliationID"))
+            ).filter(
+              point =>
+                (!OnlyAffilation ||
+                point.properties.hasOwnProperty("AffiliationID"))
+            ).map((point, index) => {
               return (
                 <Marker
                   coordinate={{
@@ -97,8 +110,11 @@ export const MapDisplay = props => {
                     latitude: point.geometry.coordinates[1]
                   }}
                   title={point.properties.title}
-                  key={index}
-                  pinColor={point.properties.AffiliationID > 0 ? "blue" : "red"}
+                  key={index + Date.now()}
+                  // seems like when rerendering, react uses the key to update
+                  // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
+                  // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684
+                  pinColor={point.properties.hasOwnProperty("AffiliationID") ? "blue" : "red"}
                 />
               );
             })}
