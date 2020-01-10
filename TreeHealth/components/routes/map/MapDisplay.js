@@ -110,10 +110,10 @@ export const MapDisplay = props => {
                     latitude: point.geometry.coordinates[1]
                   }}
                   title={point.properties.title}
-                  key={index + Date.now()}
                   // seems like when rerendering, react uses the key to update
                   // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
                   // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684
+                  key={Number.parseInt(index.toString() + Date.now().toString())}
                   pinColor={point.properties.hasOwnProperty("AffiliationID") ? "blue" : "red"}
                 />
               );
