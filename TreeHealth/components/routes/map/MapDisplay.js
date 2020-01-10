@@ -98,6 +98,7 @@ export const MapDisplay = props => {
                   }}
                   title={point.properties.title}
                   key={index}
+                  pinColor={point.properties.AffiliationID > 0 ? "blue" : "red"}
                 />
               );
             })}

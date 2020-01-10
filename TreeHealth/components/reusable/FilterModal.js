@@ -70,7 +70,7 @@ export const FilterModal = props => {
           </Button>
           <List>
             <ListItem itemDivider>
-              <Text>Filter By Date:</Text>
+              <Text style={styles.divingTxt}>Filter By Date:</Text>
             </ListItem>
             <ListItem>
               <Text>Date Selected: </Text>
@@ -106,7 +106,7 @@ export const FilterModal = props => {
               </Item>
             </ListItem>
             <ListItem itemDivider>
-              <Text>Filter By Affilation:</Text>
+              <Text style={styles.divingTxt}>Filter By Affilation:</Text>
             </ListItem>
             <ListItem>
               <Text>Remove Affilation</Text>
@@ -164,5 +164,8 @@ const styles = StyleSheet.create({
   },
   checkBoxes: {
     marginLeft: 5
+  },
+  divingTxt: {
+    fontWeight: "bold"
   }
 });
