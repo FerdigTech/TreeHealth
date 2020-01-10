@@ -46,6 +46,7 @@ export const RegisterScreen = () => {
               onEndEditing={e =>
                 setAnswers({ ...Answers, name: e.nativeEvent.text })
               }
+              autoCompleteType={"name"}
               style={styles.inputs}
             />
           </Item>
@@ -55,6 +56,8 @@ export const RegisterScreen = () => {
               onEndEditing={e =>
                 setAnswers({ ...Answers, email: e.nativeEvent.text })
               }
+              autoCompleteType={"email"}
+              keyboardType={"email-address"}
               style={styles.inputs}
             />
           </Item>
@@ -65,6 +68,7 @@ export const RegisterScreen = () => {
                 setAnswers({ ...Answers, password: e.nativeEvent.text })
               }
               style={styles.inputs}
+              autoCompleteType={"password"}
               secureTextEntry={true}
             />
           </Item>
