@@ -83,7 +83,7 @@ export const FilterModal = props => {
             </ListItem>
             <ListItem>
               <Text>
-                {Operator != "range" ? "Date Selected: " : "Start Date: "}
+                {Operator == "range" ? "Start Date: " : "Date Selected: "}
               </Text>
               <DatePicker
                 ref={DatePickerRef}
@@ -94,6 +94,7 @@ export const FilterModal = props => {
                 placeHolderText="Select a date"
                 placeHolderTextStyle={{ color: "#d3d3d3" }}
                 onDateChange={setDateFilter}
+                // to make sure they can't select a day past the endDate
                 maximumDate={
                   Operator == "range"
                     ? EndDateFilter != ""
@@ -118,6 +119,7 @@ export const FilterModal = props => {
                   placeHolderText="Select a date"
                   placeHolderTextStyle={{ color: "#d3d3d3" }}
                   onDateChange={setEndDateFilter}
+                  // to make sure they can't select a date before startDate
                   minimumDate={dateFilter}
                   maximumDate={Date.now()}
                   formatChosenDate={date => {
