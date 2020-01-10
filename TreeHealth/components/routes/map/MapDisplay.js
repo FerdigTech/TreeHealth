@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { Container, Content, Text } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
-import { TitleDrop, ProjectsModalDrop } from "../../reusable/TitleDrop";
+import { TitleDrop } from "../../reusable/TitleDrop";
+import { FilterModal } from "../../reusable/FilterModal";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
-
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
@@ -29,7 +29,7 @@ export const MapDisplay = props => {
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
-      setError("Permission to access location was denied")
+      setError("Permission to access location was denied");
     }
   };
 
@@ -63,6 +63,14 @@ export const MapDisplay = props => {
     });
   }, []);
 
+  toggleDropVis = () => {
+    const DropDownVisible = props.navigation.getParam("DropDownVisible");
+
+    props.navigation.setParams({
+      DropDownVisible: !DropDownVisible
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Container>
@@ -94,7 +102,7 @@ export const MapDisplay = props => {
               );
             })}
           </MapView>
-          <ProjectsModalDrop navigation={props.navigation} />
+          <FilterModal navigation={props.navigation} />
           {showSearch && (
             <Callout>
               <View style={styles.calloutView}>
@@ -114,7 +122,7 @@ export const MapDisplay = props => {
               projectName: currentProject
             })
           }
-          funnelToggle={() => {}}
+          funnelToggle={() => toggleDropVis()}
           SearchToggle={() => {
             setShowSearch(!showSearch);
           }}
