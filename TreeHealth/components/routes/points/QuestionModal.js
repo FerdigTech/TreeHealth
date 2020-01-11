@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import { StyleSheet, View, ScrollView, Image, Dimensions } from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, ScrollView } from "react-native";
 import {
   Button,
   Text,
   Icon,
   Form,
-  Input,
   Item,
   Picker,
   Textarea
@@ -15,6 +14,9 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import SelectMultiple from "react-native-select-multiple";
 
 const MultipleChoice = props => {
+  useEffect(() => {
+    props.handleSave([]);
+  }, []);
   const { options } = props;
   const [MultipleAnswer, setMultipleAnswer] = useState([]);
 
@@ -35,6 +37,9 @@ const MultipleChoice = props => {
 };
 
 const TextInput = props => {
+  useEffect(() => {
+    props.handleSave("");
+  }, []);
   return (
     <Item>
       <Textarea
@@ -49,6 +54,9 @@ const TextInput = props => {
 
 const DropDown = props => {
   const { options } = props;
+  useEffect(() => {
+    props.handleSave(0);
+  }, []);
   return (
     <Item picker>
       <Picker
