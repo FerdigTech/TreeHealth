@@ -31,6 +31,8 @@ export const MapDisplay = props => {
   const Operator = props.navigation.getParam("Operator", null);
   const FilterAffilation = props.navigation.getParam("FilterAffilation", false);
   const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
+  const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
+  const dateFilter = props.navigation.getParam("dateFilter", "");
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -96,28 +98,36 @@ export const MapDisplay = props => {
             </ProjectCosumer>
             {Points.filter(
               point =>
-                (!FilterAffilation ||
-                !point.properties.hasOwnProperty("AffiliationID"))
-            ).filter(
-              point =>
-                (!OnlyAffilation ||
-                point.properties.hasOwnProperty("AffiliationID"))
-            ).map((point, index) => {
-              return (
-                <Marker
-                  coordinate={{
-                    longitude: point.geometry.coordinates[0],
-                    latitude: point.geometry.coordinates[1]
-                  }}
-                  title={point.properties.title}
-                  // seems like when rerendering, react uses the key to update
-                  // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
-                  // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684
-                  key={Number.parseInt(index.toString() + Date.now().toString())}
-                  pinColor={point.properties.hasOwnProperty("AffiliationID") ? "blue" : "red"}
-                />
-              );
-            })}
+                !FilterAffilation ||
+                !point.properties.hasOwnProperty("AffiliationID")
+            )
+              .filter(
+                point =>
+                  !OnlyAffilation ||
+                  point.properties.hasOwnProperty("AffiliationID")
+              )
+              .map((point, index) => {
+                return (
+                  <Marker
+                    coordinate={{
+                      longitude: point.geometry.coordinates[0],
+                      latitude: point.geometry.coordinates[1]
+                    }}
+                    title={point.properties.title}
+                    // seems like when rerendering, react uses the key to update
+                    // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
+                    // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684
+                    key={Number.parseInt(
+                      index.toString() + Date.now().toString()
+                    )}
+                    pinColor={
+                      point.properties.hasOwnProperty("AffiliationID")
+                        ? "blue"
+                        : "red"
+                    }
+                  />
+                );
+              })}
           </MapView>
           <FilterModal navigation={props.navigation} />
           {showSearch && (
