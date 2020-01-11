@@ -5,7 +5,8 @@ import {
   SafeAreaView,
   Text,
   View,
-  Animated
+  Animated,
+  AsyncStorage
 } from "react-native";
 import {
   Container,
@@ -22,9 +23,22 @@ import globals from "../../../globals";
 
 getQuestionsData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
-  const questionsData = await fetch(
-    globals.SERVER_URL + "/questions/" + projectID
-  ).then(response => response.json());
+  let questionsStored = await AsyncStorage.getItem(
+    "questions-PID-" + projectID
+  );
+  let questionsData = [];
+  if (questionsStored !== null) {
+    questionsData = JSON.parse(questionsStored);
+  } else {
+    questionsData = await fetch(
+      globals.SERVER_URL + "/questions/" + projectID
+    ).then(response => response.json());
+    await AsyncStorage.setItem(
+      "questions-PID-" + projectID,
+      JSON.stringify(questionsData)
+    );
+  }
+
   return questionsData;
 };
 
