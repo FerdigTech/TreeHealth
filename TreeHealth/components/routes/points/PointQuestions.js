@@ -136,7 +136,13 @@ export const PointQuestions = props => {
           <ScrollView style={styles.questionList}>
             {Questions.map((question, index) => {
               return (
-                <ListItem key={index} thumbnail>
+                <ListItem
+                  thumbnail
+                  key={index}
+                  onPress={() => {
+                    handleQuestion(question.QuestionID);
+                  }}
+                >
                   <Left>
                     <Thumbnail square source={{ uri: question.image }} />
                   </Left>
@@ -156,16 +162,7 @@ export const PointQuestions = props => {
                           : "red"
                       }
                     ]}
-                  >
-                    <Button
-                      transparent
-                      onPress={() => {
-                        handleQuestion(question.QuestionID);
-                      }}
-                    >
-                      <Text style={styles.answerBtn}>Answer</Text>
-                    </Button>
-                  </Right>
+                  />
                 </ListItem>
               );
             })}
