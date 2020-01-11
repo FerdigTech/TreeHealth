@@ -56,7 +56,7 @@ export const FilterModal = props => {
   };
   // defaults to keeping the modal closed
   const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
-  const Operator = props.navigation.getParam("Operator", null);
+  const Operator = props.navigation.getParam("Operator", "none");
   const FilterAffilation = props.navigation.getParam("FilterAffilation", false);
   const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");

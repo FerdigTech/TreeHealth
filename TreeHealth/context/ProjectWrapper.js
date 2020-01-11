@@ -54,8 +54,8 @@ getPointData = async ID => {
   if (pointsData !== null) {
     // get all the storied points and filter the ones with the correct ID
     pointsData = JSON.parse(pointsData);
-    pointsData.features = pointsData.features.filter(
-      points => points.properties.projectID == ID
+    pointsData.result = pointsData.result.filter(
+      points => points.projectid == ID
     );
   } else {
     AllPoints = await fetch(globals.SERVER_URL + "/points/").then(response =>
@@ -101,8 +101,8 @@ export const ProjectWrapper = ({ children }) => {
         Projects: Projects !== "undefined" ? Projects : [],
         Points:
           Points !== "undefined"
-            ? Points.hasOwnProperty("features")
-              ? Points.features
+            ? Points.hasOwnProperty("result")
+              ? Points.result
               : []
             : [],
         setProjectID: ID => {
