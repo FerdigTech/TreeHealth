@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -20,6 +20,7 @@ import {
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
+import { ProjectContext } from "../../../context/ProjectProvider";
 
 getQuestionsData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
@@ -56,6 +57,8 @@ export const PointQuestions = props => {
   const [ShowModal, setShowModal] = useState(false);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   let animation = useRef(new Animated.Value(0));
+  const context = useContext(ProjectContext);
+
 
   const handleQuestion = ID => {
     // first we must pass to current question to the navigator
@@ -76,10 +79,8 @@ export const PointQuestions = props => {
     setShowModal(false);
   };
 
-  const addToQueue = answers => {
-    //TODO: add to global queue
-    // if offline, then wait till online
-    // otherwise submit the data to its repsective endpoint
+  const addToQueue = () => {
+    context.addToOfflineQueue(Answers);
     // post to URL /answer/create
     // passing questionid: questionID, answeredby:userID, answer: answer[questionID], locationid
   };
