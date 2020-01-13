@@ -66,9 +66,9 @@ export const PointQuestions = props => {
 
   const saveAnswers = answer => {
     // save the answer locally
-    let newAnswerObj = {};
+    let newAnswerObj = Answers;
     newAnswerObj[CurrentQuestion] = answer;
-    setAnswers(Answers => [...Answers, newAnswerObj]);
+    setAnswers(newAnswerObj);
 
     // marked finished
     finishQuestion(CurrentQuestion);
@@ -121,6 +121,7 @@ export const PointQuestions = props => {
             ShowModal={ShowModal}
             // should save on close and untoggle modal visibility
             handleSave={saveAnswers}
+            currentAnswers={Answers}
             QuestionData={Questions.filter(
               question => question.QuestionID === CurrentQuestion
             )}

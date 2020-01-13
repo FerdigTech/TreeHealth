@@ -1,36 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, View, ScrollView } from "react-native";
-import {
-  Button,
-  Text,
-  Icon,
-  Form,
-  Item,
-  Picker,
-  Textarea
-} from "native-base";
+import { Button, Text, Icon, Form, Item, Picker, Textarea } from "native-base";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import SelectMultiple from "react-native-select-multiple";
 
 const MultipleChoice = props => {
   useEffect(() => {
-    props.handleSave([]);
+    if (props.savedValue == "") {
+      props.handleSave([]);
+    }
   }, []);
   const { options } = props;
-  const [MultipleAnswer, setMultipleAnswer] = useState([]);
 
-  const handleChange = value => {
-    setMultipleAnswer(value);
-    // extract the value property and save that globally
-    props.handleSave(value.map(({ value }) => value));
-  };
   return (
     <Item>
       <SelectMultiple
         items={options}
-        onSelectionsChange={value => handleChange(value)}
-        selectedItems={MultipleAnswer}
+        // if you want to extract just the values of selected answers
+        // value.map(({ value }) => value)
+        onSelectionsChange={value => props.handleSave(value)}
+        selectedItems={Array.isArray(props.savedValue) ? props.savedValue : []}
       />
     </Item>
   );
@@ -38,7 +28,9 @@ const MultipleChoice = props => {
 
 const TextInput = props => {
   useEffect(() => {
-    props.handleSave("");
+    if (props.savedValue.length <= 0 || props.savedValue == "") {
+      props.handleSave("");
+    }
   }, []);
   return (
     <Item>
@@ -46,6 +38,8 @@ const TextInput = props => {
         style={styles.textInput}
         rowSpan={5}
         bordered
+        value={props.savedValue}
+        onChangeText={value => props.handleSave(value.toString())}
         placeholder="Type your answer"
       />
     </Item>
@@ -55,7 +49,9 @@ const TextInput = props => {
 const DropDown = props => {
   const { options } = props;
   useEffect(() => {
-    props.handleSave(0);
+    if (props.savedValue == 0 || props.savedValue == "") {
+      props.handleSave(0);
+    }
   }, []);
   return (
     <Item picker>
@@ -82,16 +78,35 @@ const DropDown = props => {
 export const QuestionModal = props => {
   const [Answer, setAnswer] = useState("");
   const [ImagleViewable, setImagleViewable] = useState(false);
-  const { Question, Options, QuestionType, image } =
+  const { Question, Options, QuestionType, image, QuestionID } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
       : {
           Question: "",
           Options: "",
           QuestionType: "",
-          image: ""
+          image: "",
+          QuestionID: -1
         };
+  useEffect(
+    () => {
+      // on load, we should set the answer back to what we got previously
+      if (
+        props.ShowModal &&
+        typeof props.currentAnswers[QuestionID] !== "undefined"
+      ) {
+        setAnswer(props.currentAnswers[QuestionID]);
+      }
+    },
+    [props.ShowModal]
+  );
 
+  const beforeClose = () => {
+    // save the answer
+    props.handleSave(Answer);
+    // reset the value on head
+    setAnswer("");
+  };
   return (
     <View style={{ flex: 1 }}>
       <Modal
@@ -103,7 +118,7 @@ export const QuestionModal = props => {
           <Button
             danger
             block
-            onPress={() => props.handleSave(Answer)}
+            onPress={() => beforeClose()}
             style={styles.CloseBtn}
           >
             <Text style={styles.CloseBtnTxt}>Submit Progress</Text>
