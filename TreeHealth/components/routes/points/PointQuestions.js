@@ -58,7 +58,7 @@ export const PointQuestions = props => {
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   let animation = useRef(new Animated.Value(0));
   const context = useContext(ProjectContext);
-
+  const location = props.navigation.getParam("location", null);
 
   const handleQuestion = ID => {
     // first we must pass to current question to the navigator
@@ -80,9 +80,8 @@ export const PointQuestions = props => {
   };
 
   const addToQueue = () => {
-    context.addToOfflineQueue(Answers);
-    // post to URL /answer/create
-    // passing questionid: questionID, answeredby:userID, answer: answer[questionID], locationid
+    // send over the location and all the answers
+    context.addToOfflineQueue({ location: location, answers: Answers });
   };
 
   const finishQuestion = ID => {

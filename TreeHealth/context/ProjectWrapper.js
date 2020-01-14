@@ -87,16 +87,80 @@ const usePoints = () => {
   return { Points, setPoints };
 };
 
-function OfflineReducer(state, action) {
+const OfflineReducer = (state, action) => {
   switch (action.type) {
     case "add":
       return { items: [...state.items, action.payload] };
     case "pop":
       return { items: state.items.filter((_, i) => i !== 0) };
+    case "set":
+      return action.payload;
     default:
       throw new Error();
   }
-}
+};
+
+const sendtoServerAnswers = async (answers, locationID) => {
+  let sucessCount = 0;
+  answers.map((answer, questionid) => {
+    // post to URL /answer/create
+    // passing questionid: questionID, answeredby:userID, answer: answer[questionID], locationid
+    fetch(globals.SERVER_URL + "/answer/create", {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        questionid,
+        answeredby: 10,
+        answer,
+        locationID
+      })
+    }).then(function(res) {
+      // if a 200s response
+      if (res.ok) {
+        sucessCount += 1;
+      }
+      // count the sucessful sends, if all of them then we can remove this item
+      if (sucessCount == answers.length) {
+        dispatcher({ type: "pop" });
+        // TODO: refresh the cache for the records
+        // this is so it shows up in manage view
+      }
+    });
+  });
+};
+
+const generateLocationID = async (longitude, latitude, projectid) => {
+  const locationID = await fetch(globals.SERVER_URL + "/location/create", {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json"
+    },
+    method: "POST",
+    body: JSON.stringify({
+      longitude: longitude,
+      latitude: latitude,
+      projectid: projectid,
+      createdby: 10,
+      title: "hi"
+    })
+  })
+    .then(response => response.json())
+    .then(response => response.projectid)
+    .catch(() => {
+      return -1;
+    });
+  return locationID;
+};
+
+const processLocationID = (longitude, latitude, projectid) => {
+  return new Promise(resolve => {
+    resolve(generateLocationID(longitude, latitude, projectid));
+  });
+};
 
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
@@ -126,12 +190,38 @@ export const ProjectWrapper = ({ children }) => {
       if (netInfo.isConnected) {
         // the reducer seems to initalize to undefined, this is to prevent it from going on
         if (typeof OfflineStateQ.items !== "undefined") {
+          // something is in the queue
           if (OfflineStateQ.items.length > 0) {
-            // push to the server
-            console.log("length", OfflineStateQ.items.length);
-            // on sucess remove from top queue
-            dispatcher({ type: "pop" });
-            console.log("length", OfflineStateQ.items.length);
+            // if the location ID hasn't been set
+            if (!OfflineStateQ.items[0].hasOwnProperty("LocationID")) {
+              // get the coordinates and convert it to a coordinateID
+              const {
+                longitude,
+                latitude
+              } = OfflineStateQ.items[0].location.coords;
+
+              // once we get the ID for the location
+              processLocationID(
+                longitude,
+                latitude,
+                (projectid = ProjectID)
+              ).then(locationID => {
+                // on sucesss copy state
+                let StateCopy = Object.assign({}, OfflineStateQ);
+                // create property LocationID and set it
+                StateCopy.items[0].LocationID = locationID;
+                // update our global state
+                dispatcher({ type: "set", payload: StateCopy });
+                // push to the server
+                sendtoServerAnswers(StateCopy.items[0].answers, locationID);
+              });
+            } else {
+              // push to the server
+              sendtoServerAnswers(
+                OfflineStateQ.items[0].answers,
+                StateCopy.items[0].LocationID
+              );
+            }
           }
         }
       }
