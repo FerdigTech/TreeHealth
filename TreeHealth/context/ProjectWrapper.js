@@ -95,41 +95,42 @@ const OfflineReducer = (state, action) => {
       return { items: state.items.filter((_, i) => i !== 0) };
     case "set":
       return action.payload;
+    case "sendAnswers":
+      fetch(globals.SERVER_URL + "/answer/create", {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+          questionid: action.payload.questionid,
+          answeredby: 10,
+          answer: action.payload.answer,
+          locationid: action.payload.locationID
+        })
+      }).then(function(res) {
+        // if a 200s response
+        if (res.ok) {
+          const oldStateItems = state.items;
+          // loop till the last item and remove it from the queue
+          if (
+            oldStateItems[0].answers.filter(
+              answer => typeof answer !== "undefined"
+            ).length == 1
+          ) {
+            return { items: state.items.filter((_, i) => i !== 0) };
+          } else {
+            // more than one question exists so remove finished questions
+            delete oldStateItems[0].answers[action.payload.questionid];
+            return { items: [...oldStateItems] };
+          }
+        }
+        // count the sucessful sends, if all of them then we can remove this item
+      });
+      return state;
     default:
       throw new Error();
   }
-};
-
-const sendtoServerAnswers = async (answers, locationID) => {
-  let sucessCount = 0;
-  answers.map((answer, questionid) => {
-    // post to URL /answer/create
-    // passing questionid: questionID, answeredby:userID, answer: answer[questionID], locationid
-    fetch(globals.SERVER_URL + "/answer/create", {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify({
-        questionid,
-        answeredby: 10,
-        answer,
-        locationID
-      })
-    }).then(function(res) {
-      // if a 200s response
-      if (res.ok) {
-        sucessCount += 1;
-      }
-      // count the sucessful sends, if all of them then we can remove this item
-      if (sucessCount == answers.length) {
-        dispatcher({ type: "pop" });
-        // TODO: refresh the cache for the records
-        // this is so it shows up in manage view
-      }
-    });
-  });
 };
 
 const generateLocationID = async (longitude, latitude, projectid) => {
@@ -213,14 +214,25 @@ export const ProjectWrapper = ({ children }) => {
                 // update our global state
                 dispatcher({ type: "set", payload: StateCopy });
                 // push to the server
-                sendtoServerAnswers(StateCopy.items[0].answers, locationID);
+                StateCopy.items[0].answers.map((answer, questionid) => {
+                  dispatcher({
+                    type: "sendAnswers",
+                    payload: { answer, questionid, locationID }
+                  });
+                });
               });
             } else {
               // push to the server
-              sendtoServerAnswers(
-                OfflineStateQ.items[0].answers,
-                StateCopy.items[0].LocationID
-              );
+              OfflineStateQ.items[0].answers.map((answer, questionid) => {
+                dispatcher({
+                  type: "sendAnswers",
+                  payload: {
+                    answer,
+                    questionid,
+                    locationID: OfflineStateQ.items[0].LocationID
+                  }
+                });
+              });
             }
           }
         }
