@@ -20,6 +20,7 @@ import {
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
+import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 
 getQuestionsData = async ID => {
@@ -82,6 +83,9 @@ export const PointQuestions = props => {
   const addToQueue = () => {
     // send over the location and all the answers
     context.addToOfflineQueue({ location: location, answers: Answers });
+    NavigationService.navigate("Map", {
+      projectName: context.ProjectName
+    });
   };
 
   const finishQuestion = ID => {

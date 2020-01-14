@@ -173,6 +173,7 @@ export const ProjectWrapper = ({ children }) => {
   const setProjects = ProjectsObj.setProjects;
 
   const [ProjectID, setProjectID] = useState(-1);
+  const [ProjectName, setProjectName] = useState("");
 
   const PointsObj = usePoints();
   const Points = PointsObj.Points;
@@ -259,9 +260,15 @@ export const ProjectWrapper = ({ children }) => {
           processPntData(ID).then(results => {
             setPoints(results);
             setProjectID(ID);
+            setProjectName(
+              Projects !== "undefined"
+                ? Projects.filter(project => project.ProjectID == ID)[0].name
+                : ""
+            );
           });
         },
         ProjectID,
+        ProjectName,
         updateProjects: () => {
           processProjData(true).then(results => {
             setProjects(results);
