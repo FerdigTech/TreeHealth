@@ -104,6 +104,7 @@ const OfflineReducer = (state, action) => {
         method: "POST",
         body: JSON.stringify({
           questionid: action.payload.questionid,
+          // TODO: pass User's UUID
           answeredby: 10,
           answer: action.payload.answer,
           locationid: action.payload.locationID
@@ -145,8 +146,10 @@ const generateLocationID = async (longitude, latitude, projectid) => {
       longitude: longitude,
       latitude: latitude,
       projectid: projectid,
+      // TODO: pass User's UUID
       createdby: 10,
-      title: "hi"
+      // TODO: find a way to creatively make a title
+      title: "test"
     })
   })
     .then(response => response.json())
