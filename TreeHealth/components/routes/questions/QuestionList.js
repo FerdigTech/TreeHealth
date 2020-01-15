@@ -1,7 +1,14 @@
 import React, { useContext } from "react";
 import { ScrollView, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { QuestionItem } from "./QuestionItem";
-import { Container, Content, Footer, FooterTab, Button } from "native-base";
+import {
+  Container,
+  Content,
+  Footer,
+  FooterTab,
+  Button,
+  Icon
+} from "native-base";
 import { FilterModal } from "../../reusable/FilterModal";
 import { ProjectContext } from "../../../context/ProjectProvider";
 
@@ -32,8 +39,9 @@ export const QuestionList = props => {
             </Text>
           </FooterTab>
           <FooterTab style={styles.footerStyle}>
-            <Button onPress={() => context.forceSendQueue()}>
-              <Text>Force</Text>
+            <Button vertical onPress={() => context.forceSendQueue()}>
+              <Icon name="cloud-upload" />
+              <Text>Force Upload</Text>
             </Button>
           </FooterTab>
         </Footer>
