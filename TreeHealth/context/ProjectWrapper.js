@@ -120,8 +120,7 @@ const OfflineReducer = (state, action) => {
         method: "POST",
         body: JSON.stringify({
           questionid: action.payload.questionid,
-          // TODO: pass User's UUID
-          answeredby: 10,
+          answeredby: action.payload.userid,
           answer: action.payload.answer,
           locationid: action.payload.locationID
         })
@@ -164,7 +163,7 @@ const processLogin = (email, password) => {
   });
 };
 
-const generateLocationID = async (longitude, latitude, projectid) => {
+const generateLocationID = async (longitude, latitude, projectid, userid) => {
   const locationID = await fetch(
     globals.SERVER_URL.toString() + "/location/create/",
     {
@@ -178,8 +177,7 @@ const generateLocationID = async (longitude, latitude, projectid) => {
         longitude: longitude.toString(),
         latitude: latitude.toString(),
         projectid: projectid,
-        // TODO: pass User's UUID
-        createdby: 10,
+        createdby: userid,
         // TODO: find a way to creatively make a title
         title: "test"
       })
@@ -195,9 +193,9 @@ const generateLocationID = async (longitude, latitude, projectid) => {
   return locationID;
 };
 
-const processLocationID = (longitude, latitude, projectid) => {
+const processLocationID = (longitude, latitude, projectid, userid) => {
   return new Promise(resolve => {
-    resolve(generateLocationID(longitude, latitude, projectid));
+    resolve(generateLocationID(longitude, latitude, projectid, userid));
   });
 };
 
@@ -252,10 +250,10 @@ export const ProjectWrapper = ({ children }) => {
 
   const netInfo = useNetInfo();
 
-  const processAsync = async (answer, questionid, locationID) => {
+  const processAsync = async (answer, questionid, locationID, userid) => {
     return await dispatcher({
       type: "sendAnswers",
-      payload: { answer, questionid, locationID }
+      payload: { answer, questionid, locationID, userid }
     });
   };
 
@@ -279,7 +277,8 @@ export const ProjectWrapper = ({ children }) => {
               processLocationID(
                 longitude,
                 latitude,
-                (projectid = ProjectID)
+                (projectid = ProjectID),
+                (userid = UserID)
               ).then(locationID => {
                 if (locationID != -1) {
                   // on sucesss copy state
@@ -292,7 +291,12 @@ export const ProjectWrapper = ({ children }) => {
 
                   Promise.all(
                     StateCopy.items[0].answers.map((answer, questionid) =>
-                      processAsync(answer, questionid, locationID)
+                      processAsync(
+                        answer,
+                        questionid,
+                        locationID,
+                        (userid = UserID)
+                      )
                     )
                   ).then(() => {
                     dispatcher({
@@ -308,7 +312,8 @@ export const ProjectWrapper = ({ children }) => {
                   processAsync(
                     answer,
                     questionid,
-                    OfflineStateQ.items[0].LocationID
+                    OfflineStateQ.items[0].LocationID,
+                    (userid = UserID)
                   )
                 )
               ).then(() => {
