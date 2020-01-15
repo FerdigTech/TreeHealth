@@ -92,8 +92,22 @@ const usePoints = () => {
 const OfflineReducer = (state, action) => {
   switch (action.type) {
     case "add":
+      Toast.show({
+        text: "Your record has been added to the queue.",
+        buttonText: "Okay",
+        type: "warning",
+        position: "top",
+        duration: 3000
+      });
       return { items: [...state.items, action.payload] };
     case "pop":
+      Toast.show({
+        text: "Your record(s) has been uploaded to the server.",
+        buttonText: "Okay",
+        type: "success",
+        position: "top",
+        duration: 3000
+      });
       return { items: state.items.filter((_, i) => i !== 0) };
     case "set":
       return action.payload;
@@ -238,6 +252,13 @@ export const ProjectWrapper = ({ children }) => {
 
   const netInfo = useNetInfo();
 
+  const processAsync = async (answer, questionid, locationID) => {
+    return await dispatcher({
+      type: "sendAnswers",
+      payload: { answer, questionid, locationID }
+    });
+  };
+
   useEffect(
     () => {
       // if online we should try to push all the data in offline queue
@@ -269,34 +290,30 @@ export const ProjectWrapper = ({ children }) => {
                   dispatcher({ type: "set", payload: StateCopy });
                   // push to the server
 
-                  const processAsync = async (answer, questionid) => {
-                    return await dispatcher({
-                      type: "sendAnswers",
-                      payload: { answer, questionid, locationID }
-                    });
-                  };
-
                   Promise.all(
                     StateCopy.items[0].answers.map((answer, questionid) =>
-                      processAsync(answer, questionid)
+                      processAsync(answer, questionid, locationID)
                     )
-                  ).then(() =>
+                  ).then(() => {
                     dispatcher({
                       type: "pop"
-                    })
-                  );
+                    });
+                  });
                 }
               });
             } else {
               // push to the server
-              OfflineStateQ.items[0].answers.map((answer, questionid) => {
-                dispatcher({
-                  type: "sendAnswers",
-                  payload: {
+              Promise.all(
+                OfflineStateQ.items[0].answers.map((answer, questionid) =>
+                  processAsync(
                     answer,
                     questionid,
-                    locationID: OfflineStateQ.items[0].LocationID
-                  }
+                    OfflineStateQ.items[0].LocationID
+                  )
+                )
+              ).then(() => {
+                dispatcher({
+                  type: "pop"
                 });
               });
             }
