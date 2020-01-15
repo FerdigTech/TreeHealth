@@ -78,24 +78,24 @@ const DropDown = props => {
 export const QuestionModal = props => {
   const [Answer, setAnswer] = useState("");
   const [ImagleViewable, setImagleViewable] = useState(false);
-  const { Question, Options, QuestionType, image, QuestionID } =
+  const { question, options, questiontype, image, questionid } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
       : {
-          Question: "",
-          Options: "",
-          QuestionType: "",
+          question: "",
+          options: "",
+          questiontype: "",
           image: "",
-          QuestionID: -1
+          questionid: -1
         };
   useEffect(
     () => {
       // on load, we should set the answer back to what we got previously
       if (
         props.ShowModal &&
-        typeof props.currentAnswers[QuestionID] !== "undefined"
+        typeof props.currentAnswers[questionid] !== "undefined"
       ) {
-        setAnswer(props.currentAnswers[QuestionID]);
+        setAnswer(props.currentAnswers[questionid]);
       }
     },
     [props.ShowModal]
@@ -127,7 +127,7 @@ export const QuestionModal = props => {
             <Button info style={styles.QuestionIcon}>
               <Icon style={styles.QuestionIconTxt} name="information" />
             </Button>
-            <Text type={styles.QuestionTxt}>{Question}</Text>
+            <Text type={styles.QuestionTxt}>{question}</Text>
             <Button
               block
               rounded
@@ -151,23 +151,23 @@ export const QuestionModal = props => {
               />
             </Modal>
             <Form>
-              {(QuestionType == "multiple-choice" && (
+              {(questiontype == "multiple-choice" && (
                 <MultipleChoice
-                  options={Options}
+                  options={options}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
               )) ||
-                (QuestionType == "Text" && (
+                (questiontype == "Text" && (
                   <TextInput
-                    options={Options}
+                    options={options}
                     savedValue={Answer}
                     handleSave={setAnswer}
                   />
                 )) ||
-                (QuestionType == "Dropdown" && (
+                (questiontype == "Dropdown" && (
                   <DropDown
-                    options={Options}
+                    options={options}
                     savedValue={Answer}
                     handleSave={setAnswer}
                   />

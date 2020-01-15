@@ -127,7 +127,7 @@ export const PointQuestions = props => {
             handleSave={saveAnswers}
             currentAnswers={Answers}
             QuestionData={Questions.filter(
-              question => question.QuestionID === CurrentQuestion
+              question => question.questionid === CurrentQuestion
             )}
           />
           <View style={styles.progressBar}>
@@ -145,7 +145,7 @@ export const PointQuestions = props => {
                   thumbnail
                   key={index}
                   onPress={() => {
-                    handleQuestion(question.QuestionID);
+                    handleQuestion(question.questionid);
                   }}
                 >
                   <Left>
@@ -153,7 +153,7 @@ export const PointQuestions = props => {
                   </Left>
                   <Body>
                     <Text numberOfLines={1} style={styles.questionDesc}>
-                      {question.Description}
+                      {question.description}
                     </Text>
                   </Body>
                   <Right
@@ -161,7 +161,7 @@ export const PointQuestions = props => {
                       styles.rightStyling,
                       {
                         borderColor: CompleteQuestions.includes(
-                          question.QuestionID
+                          question.questionid
                         )
                           ? "green"
                           : "red"
