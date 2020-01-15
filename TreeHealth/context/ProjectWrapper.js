@@ -59,10 +59,10 @@ getPointData = async ID => {
       points => points.projectid == ID
     );
   } else {
-    AllPoints = await fetch(globals.SERVER_URL + "/points/").then(response =>
+    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/").then(response =>
       response.json()
     );
-    pointsData = await fetch(globals.SERVER_URL + "/points/" + projectID).then(
+    pointsData = await fetch(globals.SERVER_URL + "/locationByProject/" + projectID).then(
       response => response.json()
     );
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
