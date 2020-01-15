@@ -42,7 +42,7 @@ export const ProjectOverview = () => {
                     defaultImg={true}
                     projectSummary={project.description}
                     setProjectID={() => {
-                      context.setProjectID(project.ProjectID);
+                      context.setProjectID(project.projectid);
                     }}
                     key={index}
                   />

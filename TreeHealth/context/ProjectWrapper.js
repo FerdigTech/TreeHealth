@@ -268,7 +268,7 @@ export const ProjectWrapper = ({ children }) => {
             setProjectID(ID);
             setProjectName(
               Projects !== "undefined"
-                ? Projects.filter(project => project.ProjectID == ID)[0].name
+                ? Projects.filter(project => project.projectid == ID)[0].name
                 : ""
             );
           });
