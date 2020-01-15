@@ -4,6 +4,7 @@ import { AsyncStorage } from "react-native";
 import globals from "../globals";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../services/NavigationService";
+import { Toast, Root } from "native-base";
 
 const ProjectProvider = ProjectContext.Provider;
 
@@ -214,9 +215,20 @@ export const ProjectWrapper = ({ children }) => {
 
   const HandleLogin = (email, pass) => {
     processLogin(email, pass).then(results => {
-      setUserID(results.userid);
-      setAuthToken(results.userid);
-      NavigationService.navigate("Loading");
+      console.log(results);
+      if (results.hasOwnProperty("userid")) {
+        setUserID(results.userid);
+        setAuthToken(results.token);
+        NavigationService.navigate("Loading");
+      } else {
+        Toast.show({
+          text: "Wrong username or password!",
+          buttonText: "Okay",
+          type: "danger",
+          position: "top",
+          duration: 3000
+        });
+      }
     });
   };
   const HandleLogout = () => {
@@ -346,7 +358,7 @@ export const ProjectWrapper = ({ children }) => {
         AuthToken
       }}
     >
-      {children}
+      <Root>{children}</Root>
     </ProjectProvider>
   );
 };
