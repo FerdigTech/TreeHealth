@@ -3,6 +3,7 @@ import ProjectContext from "./ProjectProvider";
 import { AsyncStorage } from "react-native";
 import globals from "../globals";
 import { useNetInfo } from "@react-native-community/netinfo";
+import NavigationService from "../services/NavigationService";
 
 const ProjectProvider = ProjectContext.Provider;
 
@@ -123,6 +124,31 @@ const OfflineReducer = (state, action) => {
   }
 };
 
+const generateUserToken = async (email, password) => {
+  const UserData = await fetch(
+    globals.SERVER_URL.toString() + "/userAccount/validate/",
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password
+      })
+    }
+  ).then(res => res.json());
+  return UserData;
+};
+
+const processLogin = (email, password) => {
+  return new Promise(resolve => {
+    resolve(generateUserToken(email, password));
+  });
+};
+
 const generateLocationID = async (longitude, latitude, projectid) => {
   const locationID = await fetch(
     globals.SERVER_URL.toString() + "/location/create/",
@@ -182,6 +208,21 @@ export const ProjectWrapper = ({ children }) => {
       return { items: [] };
     }
   );
+
+  const [UserID, setUserID] = useState(null);
+  const [AuthToken, setAuthToken] = useState(null);
+
+  const HandleLogin = (email, pass) => {
+    processLogin(email, pass).then(results => {
+      setUserID(results.userid);
+      setAuthToken(results.userid);
+      NavigationService.navigate("Loading");
+    });
+  };
+  const HandleLogout = () => {
+    setUserID(null);
+    setAuthToken(null);
+  };
 
   const netInfo = useNetInfo();
 
@@ -276,10 +317,12 @@ export const ProjectWrapper = ({ children }) => {
             setProjectID(ID);
             setProjectName(
               Projects !== "undefined"
-              ? Projects.hasOwnProperty("result")
-                ? Projects.result.filter(project => project.projectid == ID)[0].name
-                : Projects.filter(project => project.projectid == ID)[0].name
-              : ""
+                ? Projects.hasOwnProperty("result")
+                  ? Projects.result.filter(
+                      project => project.projectid == ID
+                    )[0].name
+                  : Projects.filter(project => project.projectid == ID)[0].name
+                : ""
             );
           });
         },
@@ -296,7 +339,11 @@ export const ProjectWrapper = ({ children }) => {
         },
         forceSendQueue: () => {
           setForceQueue(!ForceQueue);
-        }
+        },
+        processLogin: (email, pass) => HandleLogin(email, pass),
+        processLogout: () => HandleLogout(),
+        UserID,
+        AuthToken
       }}
     >
       {children}

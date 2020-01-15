@@ -1,61 +1,88 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
 import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { LogoTitle } from "../../reusable/LogoTitle";
+import { ProjectContext } from "../../../context/ProjectProvider";
 
-export class SignInScreen extends React.Component {
-  static navigationOptions = {
-    // Use logo instead of text
-    headerTitle: () => <LogoTitle />,
-    headerRight: null
-  };
+export const SignInScreen = () => {
+  const [Answers, setAnswers] = useState({});
+  const context = useContext(ProjectContext);
 
-  render() {
-    return (
-      <SafeAreaView style={styles.signInView}>
-        <Form style={styles.signInForm}>
-          <Item floatingLabel>
-            <Label>Email</Label>
-            <Input />
-          </Item>
-          <Item floatingLabel last>
-            <Label>Password</Label>
-            <Input secureTextEntry={true} />
-          </Item>
-          <Container style={styles.signInBtns}>
-            <Button block transparent>
-              <Text> Forgot Password? </Text>
-            </Button>
-            <Button style={{ backgroundColor: globals.COLOR.GREEN }}>
-              <Text> Login </Text>
-            </Button>
-          </Container>
-        </Form>
-        <Container style={styles.helpBtnsCtn}>
-          <Button onPress={() => NavigationService.navigate("Register")} style={styles.helpBtns} rounded block light>
-            <Text> Create an Account </Text>
-          </Button>
-          <Button
-            style={styles.helpBtns}
-            rounded
-            block
-            light
-            onPress={this._signInTrial}
-          >
-            <Text> Try Us Out! </Text>
-          </Button>
-        </Container>
-      </SafeAreaView>
-    );
-  }
+  useEffect(() => {
+    setAnswers({
+      email: "",
+      password: ""
+    });
+  }, []);
 
   _signInTrial = async () => {
     await AsyncStorage.setItem("userToken", "trial");
     NavigationService.navigate("Loading");
   };
-}
+
+  _handleLogin = () => {
+    context.processLogin(Answers.email, Answers.password);
+  };
+
+  return (
+    <SafeAreaView style={styles.signInView}>
+      <Form style={styles.signInForm}>
+        <Item floatingLabel>
+          <Label>Email</Label>
+          <Input
+            onChangeText={text => setAnswers({ ...Answers, email: text })}
+          />
+        </Item>
+        <Item floatingLabel last>
+          <Label>Password</Label>
+          <Input
+            secureTextEntry={true}
+            onChangeText={text => setAnswers({ ...Answers, password: text })}
+          />
+        </Item>
+        <Container style={styles.signInBtns}>
+          <Button block transparent>
+            <Text> Forgot Password? </Text>
+          </Button>
+          <Button
+            onPress={() => _handleLogin()}
+            style={{ backgroundColor: globals.COLOR.GREEN }}
+          >
+            <Text> Login </Text>
+          </Button>
+        </Container>
+      </Form>
+      <Container style={styles.helpBtnsCtn}>
+        <Button
+          onPress={() => NavigationService.navigate("Register")}
+          style={styles.helpBtns}
+          rounded
+          block
+          light
+        >
+          <Text> Create an Account </Text>
+        </Button>
+        <Button
+          style={styles.helpBtns}
+          rounded
+          block
+          light
+          onPress={_signInTrial}
+        >
+          <Text> Try Us Out! </Text>
+        </Button>
+      </Container>
+    </SafeAreaView>
+  );
+};
+
+SignInScreen.navigationOptions = {
+  // Use logo instead of text
+  headerTitle: () => <LogoTitle />,
+  headerRight: null
+};
 
 const styles = StyleSheet.create({
   signInView: {
