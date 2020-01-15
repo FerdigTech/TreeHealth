@@ -59,12 +59,12 @@ getPointData = async ID => {
       points => points.projectid == ID
     );
   } else {
-    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/").then(response =>
-      response.json()
-    );
-    pointsData = await fetch(globals.SERVER_URL + "/locationByProject/" + projectID).then(
+    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/").then(
       response => response.json()
     );
+    pointsData = await fetch(
+      globals.SERVER_URL + "/locationByProject/" + projectID
+    ).then(response => response.json());
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
   }
   return pointsData;
@@ -124,23 +124,26 @@ const OfflineReducer = (state, action) => {
 };
 
 const generateLocationID = async (longitude, latitude, projectid) => {
-  const locationID = await fetch(globals.SERVER_URL.toString() + "/location/create/", {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json"
-    },
-    method: "POST",
-    body: JSON.stringify({
-      longitude: longitude.toString(),
-      latitude: latitude.toString(),
-      projectid: projectid,
-      // TODO: pass User's UUID
-      createdby: 10,
-      // TODO: find a way to creatively make a title
-      title: "test"
-    })
-  })
+  const locationID = await fetch(
+    globals.SERVER_URL.toString() + "/location/create/",
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        longitude: longitude.toString(),
+        latitude: latitude.toString(),
+        projectid: projectid,
+        // TODO: pass User's UUID
+        createdby: 10,
+        // TODO: find a way to creatively make a title
+        title: "test"
+      })
+    }
+  )
     .then(res => res.json())
     .then(response => {
       return response.projectid;
@@ -255,7 +258,12 @@ export const ProjectWrapper = ({ children }) => {
   return (
     <ProjectProvider
       value={{
-        Projects: Projects !== "undefined" ? Projects : [],
+        Projects:
+          Projects !== "undefined"
+            ? Projects.hasOwnProperty("result")
+              ? Projects.result
+              : []
+            : [],
         Points:
           Points !== "undefined"
             ? Points.hasOwnProperty("result")
@@ -268,8 +276,10 @@ export const ProjectWrapper = ({ children }) => {
             setProjectID(ID);
             setProjectName(
               Projects !== "undefined"
-                ? Projects.filter(project => project.projectid == ID)[0].name
-                : ""
+              ? Projects.hasOwnProperty("result")
+                ? Projects.result.filter(project => project.projectid == ID)[0].name
+                : Projects.filter(project => project.projectid == ID)[0].name
+              : ""
             );
           });
         },

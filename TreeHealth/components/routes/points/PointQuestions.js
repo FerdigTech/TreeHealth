@@ -51,7 +51,6 @@ const processQuestData = ID => {
 };
 
 export const PointQuestions = props => {
-
   // TODO: if a locationID is passed via navagation props
   // then all of the answers should be set
 
@@ -111,7 +110,13 @@ export const PointQuestions = props => {
   useEffect(
     () => {
       processQuestData(-1).then(results => {
-        setQuestions(results);
+        setQuestions(
+          results !== "undefined"
+            ? results.hasOwnProperty("result")
+              ? results.result
+              : []
+            : []
+        );
       });
       Animated.timing(animation.current, {
         toValue: progress,
