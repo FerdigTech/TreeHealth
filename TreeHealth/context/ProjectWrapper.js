@@ -109,25 +109,14 @@ const OfflineReducer = (state, action) => {
           answer: action.payload.answer,
           locationid: action.payload.locationID
         })
-      }).then(function(res) {
-        // if a 200s response
+      }).then(res => {
         if (res.ok) {
           const oldStateItems = state.items;
-          // loop till the last item and remove it from the queue
-          if (
-            oldStateItems[0].answers.filter(
-              answer => typeof answer !== "undefined"
-            ).length == 1
-          ) {
-            return { items: state.items.filter((_, i) => i !== 0) };
-          } else {
-            // more than one question exists so remove finished questions
-            delete oldStateItems[0].answers[action.payload.questionid];
-            return { items: [...oldStateItems] };
-          }
+          delete oldStateItems[0].answers[action.payload.questionid];
+          return { items: [...oldStateItems] };
         }
-        // count the sucessful sends, if all of them then we can remove this item
       });
+
       return state;
     default:
       throw new Error();
@@ -135,7 +124,7 @@ const OfflineReducer = (state, action) => {
 };
 
 const generateLocationID = async (longitude, latitude, projectid) => {
-  const locationID = await fetch(globals.SERVER_URL + "/location/create", {
+  const locationID = await fetch(globals.SERVER_URL.toString() + "/location/create/", {
     cache: "no-store",
     headers: {
       Accept: "application/json",
@@ -143,8 +132,8 @@ const generateLocationID = async (longitude, latitude, projectid) => {
     },
     method: "POST",
     body: JSON.stringify({
-      longitude: longitude,
-      latitude: latitude,
+      longitude: longitude.toString(),
+      latitude: latitude.toString(),
       projectid: projectid,
       // TODO: pass User's UUID
       createdby: 10,
@@ -152,9 +141,11 @@ const generateLocationID = async (longitude, latitude, projectid) => {
       title: "test"
     })
   })
-    .then(response => response.json())
-    .then(response => response.projectid)
-    .catch(() => {
+    .then(res => res.json())
+    .then(response => {
+      return response.projectid;
+    })
+    .catch(err => {
       return -1;
     });
   return locationID;
@@ -178,6 +169,8 @@ export const ProjectWrapper = ({ children }) => {
   const PointsObj = usePoints();
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
+
+  const [ForceQueue, setForceQueue] = useState(false);
 
   const [OfflineStateQ, dispatcher] = useReducer(
     OfflineReducer,
@@ -211,19 +204,32 @@ export const ProjectWrapper = ({ children }) => {
                 latitude,
                 (projectid = ProjectID)
               ).then(locationID => {
-                // on sucesss copy state
-                let StateCopy = Object.assign({}, OfflineStateQ);
-                // create property LocationID and set it
-                StateCopy.items[0].LocationID = locationID;
-                // update our global state
-                dispatcher({ type: "set", payload: StateCopy });
-                // push to the server
-                StateCopy.items[0].answers.map((answer, questionid) => {
-                  dispatcher({
-                    type: "sendAnswers",
-                    payload: { answer, questionid, locationID }
-                  });
-                });
+                if (locationID != -1) {
+                  // on sucesss copy state
+                  let StateCopy = Object.assign({}, OfflineStateQ);
+                  // create property LocationID and set it
+                  StateCopy.items[0].LocationID = locationID;
+                  // update our global state
+                  dispatcher({ type: "set", payload: StateCopy });
+                  // push to the server
+
+                  const processAsync = async (answer, questionid) => {
+                    return await dispatcher({
+                      type: "sendAnswers",
+                      payload: { answer, questionid, locationID }
+                    });
+                  };
+
+                  Promise.all(
+                    StateCopy.items[0].answers.map((answer, questionid) =>
+                      processAsync(answer, questionid)
+                    )
+                  ).then(() =>
+                    dispatcher({
+                      type: "pop"
+                    })
+                  );
+                }
               });
             } else {
               // push to the server
@@ -243,7 +249,7 @@ export const ProjectWrapper = ({ children }) => {
       }
     },
     // if change in item queue or net connectivity try to do something
-    [OfflineStateQ.items, netInfo.isConnected]
+    [OfflineStateQ.items, netInfo.isConnected, ForceQueue]
   );
 
   return (
@@ -277,6 +283,9 @@ export const ProjectWrapper = ({ children }) => {
         OfflineQueue: OfflineStateQ.items,
         addToOfflineQueue: locationItem => {
           dispatcher({ type: "add", payload: locationItem });
+        },
+        forceSendQueue: () => {
+          setForceQueue(!ForceQueue);
         }
       }}
     >

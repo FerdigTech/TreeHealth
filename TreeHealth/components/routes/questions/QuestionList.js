@@ -23,13 +23,21 @@ export const QuestionList = props => {
         </ScrollView>
         <FilterModal navigation={props.navigation} />
       </Content>
-      <Footer>
-        <FooterTab style={styles.footerStyle}>
-          <Text style={styles.footerTxt}>
-            You have {context.OfflineQueue.length.toString()} items in offline queue.
-          </Text>
-        </FooterTab>
-      </Footer>
+      {context.OfflineQueue.length > 0 && (
+        <Footer>
+          <FooterTab style={styles.footerStyle}>
+            <Text style={styles.footerTxt}>
+              You have {context.OfflineQueue.length.toString()} items in offline
+              queue.
+            </Text>
+          </FooterTab>
+          <FooterTab style={styles.footerStyle}>
+            <Button onPress={() => context.forceSendQueue()}>
+              <Text>Force</Text>
+            </Button>
+          </FooterTab>
+        </Footer>
+      )}
     </Container>
   );
 };
