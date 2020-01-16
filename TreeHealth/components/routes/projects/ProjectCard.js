@@ -13,10 +13,13 @@ export class ProjectCard extends React.Component {
       <TouchableOpacity
         activeOpacity={0.5}
         onPress={() => {
-          this.props.setProjectID(this.props.projectID);
-          NavigationService.navigate("Map", {
-            projectName: this.props.projectName
-          });
+          // prevents from actions during demo
+          if (this.props.projectID != null) {
+            this.props.setProjectID(this.props.projectID);
+            NavigationService.navigate("Map", {
+              projectName: this.props.projectName
+            });
+          }
         }}
       >
         <Card>
@@ -39,7 +42,7 @@ export class ProjectCard extends React.Component {
 
 ProjectCard.propTypes = {
   defaultImg: PropTypes.bool.isRequired,
-  projectName: PropTypes.string.isRequired,
+  projectName: PropTypes.string,
   projectSummary: PropTypes.string.isRequired
 };
 

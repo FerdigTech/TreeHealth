@@ -23,7 +23,7 @@ const ThirdIntroScreen = props => {
     props.start();
     props.copilotEvents.on("stepChange", handleStepChange);
     props.copilotEvents.on("stop", () => {
-      NavigationService.navigate("ThirdIntroScreen");
+      NavigationService.navigate("FourthIntroScreen");
     });
   }, []);
 
@@ -150,7 +150,7 @@ export default copilot({
   animated: true,
   androidStatusBarVisible: true,
   overlay: "svg",
-  verticalOffset: -32,
+  verticalOffset: -30,
   tooltipStyle: {
     borderRadius: 10,
     borderColor: "#000",

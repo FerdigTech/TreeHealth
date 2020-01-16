@@ -58,7 +58,7 @@ export default copilot({
   animated: true,
   androidStatusBarVisible: true,
   overlay: "svg",
-  verticalOffset: -32,
+  verticalOffset: -42,
   tooltipStyle: {
     borderRadius: 10,
     borderColor: "#000",

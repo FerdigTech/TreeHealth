@@ -15,6 +15,7 @@ import { PointsStacked } from "./components/routes/map/PointsStacked";
 import IntroScreen from "./components/routes/intro/IntroScreen";
 import SecondIntroScreen from "./components/routes/intro/SecondIntroScreen";
 import ThirdIntroScreen from "./components/routes/intro/ThirdIntroScreen";
+import FourthIntroScreen from "./components/routes/intro/FourthIntroScreen";
 import { ProjectWrapper } from "./context/ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
@@ -29,6 +30,7 @@ const MainNavigator = createStackNavigator(
     IntroScreen: IntroScreen,
     SecondIntroScreen: SecondIntroScreen,
     ThirdIntroScreen: ThirdIntroScreen,
+    FourthIntroScreen: FourthIntroScreen,
     QuestionList: {
       screen: QuestionList,
       navigationOptions: {
