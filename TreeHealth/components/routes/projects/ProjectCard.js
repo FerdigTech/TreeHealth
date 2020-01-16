@@ -14,7 +14,7 @@ export class ProjectCard extends React.Component {
         activeOpacity={0.5}
         onPress={() => {
           // prevents from actions during demo
-          if (this.props.projectID != null) {
+          if (this.props.setProjectID != null) {
             this.props.setProjectID(this.props.projectID);
             NavigationService.navigate("Map", {
               projectName: this.props.projectName
@@ -42,7 +42,7 @@ export class ProjectCard extends React.Component {
 
 ProjectCard.propTypes = {
   defaultImg: PropTypes.bool.isRequired,
-  projectName: PropTypes.string,
+  projectName: PropTypes.string.isRequired,
   projectSummary: PropTypes.string.isRequired
 };
 
