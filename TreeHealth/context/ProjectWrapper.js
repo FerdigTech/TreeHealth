@@ -227,7 +227,6 @@ export const ProjectWrapper = ({ children }) => {
 
   const HandleLogin = (email, pass) => {
     processLogin(email, pass).then(results => {
-      console.log(results);
       if (results.hasOwnProperty("userid")) {
         setUserID(results.userid);
         setAuthToken(results.token);

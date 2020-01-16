@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { AppLoading } from 'expo';
+import { AppLoading } from "expo";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
@@ -12,6 +12,7 @@ import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { AddPoint } from "./components/routes/points/AddPoint";
 import { PointQuestions } from "./components/routes/points/PointQuestions";
 import { PointsStacked } from "./components/routes/map/PointsStacked";
+import { IntroScreen } from "./components/routes/intro/IntroScreen";
 import { ProjectWrapper } from "./context/ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
@@ -23,6 +24,7 @@ const MainNavigator = createStackNavigator(
     Map: {
       screen: MapDisplay
     },
+    IntroScreen: IntroScreen,
     QuestionList: {
       screen: QuestionList,
       navigationOptions: {
