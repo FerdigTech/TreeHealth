@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { SafeAreaView, StyleSheet, ScrollView, View } from "react-native";
 import {
   Button,
@@ -13,9 +13,11 @@ import {
   CheckBox
 } from "native-base";
 import { LogoTitle } from "../../reusable/LogoTitle";
+import { ProjectContext } from "../../../context/ProjectProvider";
 
 export const RegisterScreen = () => {
   const [Answers, setAnswers] = useState({});
+  const context = useContext(ProjectContext);
 
   useEffect(() => {
     setAnswers({
@@ -32,8 +34,7 @@ export const RegisterScreen = () => {
   const notValid = Answers.name == "" || Answers.email == "" || Answers.password == "" || !Answers.thirteen || !Answers.tos;
 
   const handleSignUp = () => {
-    // should hit /userAccount/create
-    // and give name, email and password
+    context.processSignup(Answers.name, Answers.email, Answers.password);
   };
 
   return (

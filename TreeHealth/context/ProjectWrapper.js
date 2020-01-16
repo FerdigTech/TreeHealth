@@ -137,6 +137,31 @@ const OfflineReducer = (state, action) => {
       throw new Error();
   }
 };
+const generateUser = async (name, email, password) => {
+  const RequestResult = await fetch(
+    globals.SERVER_URL.toString() + "/userAccount/create/",
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        email,
+        password
+      })
+    }
+  ).then(res => res.json());
+  return RequestResult;
+};
+
+const processSignup = (name, email, pass) => {
+  return new Promise(resolve => {
+    resolve(generateUser(name, email, pass));
+  });
+};
 
 const generateUserToken = async (email, password) => {
   const UserData = await fetch(
@@ -225,6 +250,32 @@ export const ProjectWrapper = ({ children }) => {
   const [UserID, setUserID] = useState(null);
   const [AuthToken, setAuthToken] = useState(null);
 
+  const HandleSignup = (name, email, pass) => {
+    processSignup(name, email, pass).then(results => {
+      if (results.hasOwnProperty("result")) {
+        if (results.result) {
+          Toast.show({
+            text: "Your account has successfully been created!",
+            buttonText: "Okay",
+            type: "success",
+            position: "top",
+            duration: 3000
+          });
+          // TODO: Log the user in here?
+        }
+      } else {
+        Toast.show({
+          text:
+            "Something went wrong with the account creation process, try again.",
+          buttonText: "Okay",
+          type: "danger",
+          position: "top",
+          duration: 3000
+        });
+      }
+    });
+  };
+
   const HandleLogin = (email, pass) => {
     processLogin(email, pass).then(results => {
       if (results.hasOwnProperty("userid")) {
@@ -242,6 +293,7 @@ export const ProjectWrapper = ({ children }) => {
       }
     });
   };
+
   const HandleLogout = () => {
     setUserID(null);
     setAuthToken(null);
@@ -373,6 +425,7 @@ export const ProjectWrapper = ({ children }) => {
         forceSendQueue: () => {
           setForceQueue(!ForceQueue);
         },
+        processSignup: (name, email, pass) => HandleSignup(name, email, pass),
         processLogin: (email, pass) => HandleLogin(email, pass),
         processLogout: () => HandleLogout(),
         UserID,
