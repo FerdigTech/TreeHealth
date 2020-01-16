@@ -12,7 +12,9 @@ import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { AddPoint } from "./components/routes/points/AddPoint";
 import { PointQuestions } from "./components/routes/points/PointQuestions";
 import { PointsStacked } from "./components/routes/map/PointsStacked";
-import { IntroScreen } from "./components/routes/intro/IntroScreen";
+import IntroScreen from "./components/routes/intro/IntroScreen";
+import SecondIntroScreen from "./components/routes/intro/SecondIntroScreen";
+import ThirdIntroScreen from "./components/routes/intro/ThirdIntroScreen";
 import { ProjectWrapper } from "./context/ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
@@ -25,6 +27,8 @@ const MainNavigator = createStackNavigator(
       screen: MapDisplay
     },
     IntroScreen: IntroScreen,
+    SecondIntroScreen: SecondIntroScreen,
+    ThirdIntroScreen: ThirdIntroScreen,
     QuestionList: {
       screen: QuestionList,
       navigationOptions: {

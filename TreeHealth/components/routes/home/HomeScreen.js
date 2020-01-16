@@ -24,7 +24,7 @@ export const HomeScreen = () => {
           menuName="About Us"
         />
         <HomeList
-          menuAction={() => NavigationService.navigate("IntroScreen")}
+          menuAction={() => NavigationService.navigate("ThirdIntroScreen")}
           iconName="hand"
           menuName="Introduction"
         />
