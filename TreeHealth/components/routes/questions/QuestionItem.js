@@ -3,10 +3,12 @@ import PropTypes from "prop-types";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Button, ListItem, Text, Icon, Left, Body, Right } from "native-base";
 import { SwipeRow } from "react-native-swipe-list-view";
+import Moment from "moment";
 
 export const QuestionItem = props => {
   return (
-    <SwipeRow key={props.indexVal}
+    <SwipeRow
+      key={props.indexVal}
       style={styles.standalone}
       disableRightSwipe={true}
       rightOpenValue={-75}
@@ -23,7 +25,9 @@ export const QuestionItem = props => {
       <View style={styles.standaloneRowFront}>
         <ListItem style={styles.listItemStyle}>
           <Left style={styles.leftHandInfo}>
-            <Text style={styles.itemDate}>October 14, 2019</Text>
+            <Text style={styles.itemDate}>
+              {Moment.unix(props.pointData.createddate).format("LL")}
+            </Text>
             <Text style={styles.itemDraft}>
               {props.isDraft ? "Draft" : " "}
             </Text>
@@ -52,7 +56,8 @@ export const QuestionItem = props => {
 
 QuestionItem.propTypes = {
   isDraft: PropTypes.bool.isRequired,
-  indexVal: PropTypes.number.isRequired
+  indexVal: PropTypes.number.isRequired,
+  pointData: PropTypes.object.isRequired
 };
 
 const styles = StyleSheet.create({

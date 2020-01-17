@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ScrollView, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { QuestionItem } from "./QuestionItem";
 import {
@@ -13,6 +13,7 @@ import { FilterModal } from "../../reusable/FilterModal";
 import { ProjectContext } from "../../../context/ProjectProvider";
 
 export const QuestionList = props => {
+  const [Points, setPoints] = useState([]);
   const context = useContext(ProjectContext);
   // from the filter
   const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
@@ -21,12 +22,24 @@ export const QuestionList = props => {
   const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
+
+  useEffect(() => {
+    setPoints(context.Points);
+  }, []);
   return (
     <Container>
       <Content>
         <ScrollView style={{ flex: 1 }}>
-          <QuestionItem indexVal={1} isDraft={true} />
-          <QuestionItem indexVal={2} isDraft={false} />
+          {Points.map((point, index) => {
+            return (
+              <QuestionItem
+                key={index}
+                indexVal={index}
+                pointData={point}
+                isDraft={false}
+              />
+            );
+          })}
         </ScrollView>
         <FilterModal navigation={props.navigation} />
       </Content>
