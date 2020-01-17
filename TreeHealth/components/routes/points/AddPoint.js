@@ -5,9 +5,10 @@ import {
   SafeAreaView,
   Text,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  AsyncStorage
 } from "react-native";
-import { Form, Item, Input, Button, Label } from "native-base";
+import { Form, Item, Input, Button, Label, Toast } from "native-base";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { useNetInfo } from "@react-native-community/netinfo";
@@ -17,9 +18,11 @@ export const AddPoint = () => {
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
   const netInfo = useNetInfo();
+  const [UserToken, setUserToken] = useState(null);
 
   useEffect(() => {
     _getLocationAsync();
+    _bootstrapAsync();
     Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High
     }).then(location => {
@@ -27,6 +30,10 @@ export const AddPoint = () => {
     });
   }, []);
 
+  _bootstrapAsync = async () => {
+    const token = await AsyncStorage.getItem("userToken", null);
+    setUserToken(token);
+  };
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
@@ -54,6 +61,24 @@ export const AddPoint = () => {
       newState.coords.longitude = "";
     }
     setLocation(newState);
+  };
+
+  _handleSubmit = () => {
+    // this isn't a guest user
+    if (UserToken == null) {
+      NavigationService.navigate("PointQuestions", {
+        location: location
+      });
+    } else {
+      Toast.show({
+        text:
+          "“Warning! Your data will not be submitted unless you register. This is only to test the app”",
+        buttonText: "Okay",
+        type: "warning",
+        position: "top",
+        duration: 3000
+      });
+    }
   };
 
   return (
@@ -114,9 +139,7 @@ export const AddPoint = () => {
           rounded
           block
           onPress={() => {
-            NavigationService.navigate("PointQuestions", {
-              location: location
-            });
+            _handleSubmit();
           }}
         >
           <Text style={styles.RecordBtnTxt}> Add Record</Text>
