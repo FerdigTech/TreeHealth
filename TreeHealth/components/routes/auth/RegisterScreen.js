@@ -73,25 +73,8 @@ export const RegisterScreen = () => {
               secureTextEntry={true}
             />
           </Item>
-          <Item picker style={styles.pickers}>
-            <Picker
-              note
-              mode="dropdown"
-              iosIcon={<Icon name="arrow-down" />}
-              placeholder="Select Affliation"
-              placeholderStyle={styles.labels}
-              placeholderIconColor="#000"
-              onValueChange={value =>
-                setAnswers({ ...Answers, affliation: value })
-              }
-              selectedValue={Answers.affliation}
-            >
-              <Picker.Item label="Affliation 1" value="affliation1" />
-              <Picker.Item label="Affliation 2" value="affliation2" />
-            </Picker>
-          </Item>
           <Item style={styles.checkboxes}>
-            <Label style={styles.labels}>Atleast 13 years old?</Label>
+            <Label style={styles.labels}>Atleast 14 years old?</Label>
             <CheckBox
               onPress={() =>
                 setAnswers({ ...Answers, thirteen: !Answers.thirteen })

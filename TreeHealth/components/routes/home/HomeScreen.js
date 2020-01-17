@@ -19,7 +19,7 @@ export const HomeScreen = () => {
       <Button title="Logout" onPress={this._signOutAsync} />
       <View style={styles.listLayout}>
         <HomeList
-          menuAction={() => NavigationService.navigate("Map")}
+          menuAction={() => NavigationService.navigate("AboutUsScreen")}
           iconName="people"
           menuName="About Us"
         />

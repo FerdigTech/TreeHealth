@@ -6,6 +6,7 @@ import { LoadingScreen } from "./components/routes/auth/LoadingScreen";
 import { SignInScreen } from "./components/routes/auth/SignInScreen";
 import { RegisterScreen } from "./components/routes/auth/RegisterScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
+import { AboutUsScreen } from "./components/routes/home/AboutUsScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
 import { QuestionList } from "./components/routes/questions/QuestionList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
@@ -35,6 +36,12 @@ const MainNavigator = createStackNavigator(
       screen: QuestionList,
       navigationOptions: {
         title: "Projects Questions"
+      }
+    },
+    AboutUsScreen: {
+      screen: AboutUsScreen,
+      navigationOptions: {
+        title: "About Us"
       }
     },
     AddPoint: {
