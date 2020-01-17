@@ -7,7 +7,8 @@ import {
   Footer,
   FooterTab,
   Button,
-  Icon
+  Icon,
+  Fab
 } from "native-base";
 import { FilterModal } from "../../reusable/FilterModal";
 import { ProjectContext } from "../../../context/ProjectProvider";
@@ -23,6 +24,14 @@ export const QuestionList = props => {
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
 
+  toggleDropVis = () => {
+    const DropDownVisible = props.navigation.getParam("DropDownVisible");
+
+    props.navigation.setParams({
+      DropDownVisible: !DropDownVisible
+    });
+  };
+
   useEffect(() => {
     setPoints(context.Points);
   }, []);
@@ -30,19 +39,66 @@ export const QuestionList = props => {
     <Container>
       <Content>
         <ScrollView style={{ flex: 1 }}>
-          {Points.map((point, index) => {
-            return (
-              <QuestionItem
-                key={index}
-                indexVal={index}
-                pointData={point}
-                isDraft={false}
-              />
-            );
-          })}
+          {Points.filter(
+            point => !FilterAffilation || !point.hasOwnProperty("affiliationid")
+          )
+            .filter(
+              point => !OnlyAffilation || point.hasOwnProperty("affiliationid")
+            )
+            .filter(
+              point =>
+                Operator != "before" ||
+                Moment(Moment.unix(point.createddate)).isSameOrBefore(
+                  Moment(dateFilter)
+                )
+            )
+            .filter(
+              point =>
+                Operator != "after" ||
+                Moment(Moment.unix(point.createddate)).isSameOrAfter(
+                  Moment(dateFilter)
+                )
+            )
+            .filter(
+              point =>
+                Operator != "dayof" ||
+                Moment(Moment.unix(point.createddate)).isSame(
+                  Moment(dateFilter),
+                  "day"
+                )
+            )
+            .filter(
+              point =>
+                Operator != "range" ||
+                (Moment(Moment.unix(point.createddate)).isSameOrAfter(
+                  Moment(dateFilter)
+                ) &&
+                  Moment(Moment.unix(point.createddate)).isSameOrBefore(
+                    Moment(EndDateFilter)
+                  ))
+            )
+            .map((point, index) => {
+              return (
+                <QuestionItem
+                  key={index}
+                  indexVal={index}
+                  pointData={point}
+                  isDraft={false}
+                />
+              );
+            })}
         </ScrollView>
         <FilterModal navigation={props.navigation} />
       </Content>
+      <Fab
+        active={false}
+        direction="up"
+        style={styles.filterIcon}
+        position="bottomRight"
+        onPress={() => toggleDropVis()}
+      >
+        <Icon type="Feather" name="filter" />
+      </Fab>
       {context.OfflineQueue.length > 0 && (
         <Footer>
           <FooterTab style={styles.footerStyle}>
@@ -86,5 +142,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#f4f4f4",
     borderTopColor: "#ccc",
     borderTopWidth: 1
+  },
+  filterIcon: {
+    backgroundColor: "#d9534f"
   }
 });
