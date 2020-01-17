@@ -103,15 +103,12 @@ export const QuestionList = props => {
         <Footer>
           <FooterTab style={styles.footerStyle}>
             <Text style={styles.footerTxt}>
-              You have {context.OfflineQueue.length.toString()} items in offline
-              queue.
+              You have {context.OfflineQueue.length.toString()} item{context
+                .OfflineQueue.length > 1
+                ? "s"
+                : ""}{" "}
+              in offline queue.
             </Text>
-          </FooterTab>
-          <FooterTab style={styles.footerStyle}>
-            <Button vertical onPress={() => context.forceSendQueue()}>
-              <Icon name="cloud-upload" />
-              <Text>Force Upload</Text>
-            </Button>
           </FooterTab>
         </Footer>
       )}
@@ -141,9 +138,11 @@ const styles = StyleSheet.create({
   footerStyle: {
     backgroundColor: "#f4f4f4",
     borderTopColor: "#ccc",
-    borderTopWidth: 1
+    borderTopWidth: 1,
+    zIndex: 2
   },
   filterIcon: {
-    backgroundColor: "#d9534f"
+    backgroundColor: "#d9534f",
+    zIndex: 5
   }
 });
