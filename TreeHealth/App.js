@@ -35,7 +35,7 @@ const MainNavigator = createStackNavigator(
     QuestionList: {
       screen: QuestionList,
       navigationOptions: {
-        title: "Projects Questions"
+        title: "Records"
       }
     },
     AboutUsScreen: {
