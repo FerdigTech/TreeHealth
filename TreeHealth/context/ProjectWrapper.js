@@ -355,9 +355,11 @@ export const ProjectWrapper = ({ children }) => {
     });
   };
 
-  const HandleLogout = () => {
+  const HandleLogout = async() => {
     setUserID(null);
     setAuthToken(null);
+    await SecureStore.deleteItemAsync("userToken");
+    await SecureStore.deleteItemAsync("userAuth");
   };
 
   const netInfo = useNetInfo();
