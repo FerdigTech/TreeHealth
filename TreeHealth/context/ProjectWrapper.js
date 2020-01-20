@@ -5,6 +5,7 @@ import globals from "../globals";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../services/NavigationService";
 import { Toast, Root } from "native-base";
+import * as SecureStore from 'expo-secure-store';
 
 const ProjectProvider = ProjectContext.Provider;
 
@@ -183,8 +184,8 @@ const generateUserToken = async (email, password) => {
       })
     }
   ).then(res => res.json());
-  await AsyncStorage.setItem("userToken", UserData.userid.toString());
-  await AsyncStorage.setItem("userAuth", UserData.secret.toString());
+  await SecureStore.setItemAsync("userToken", UserData.userid.toString());
+  await SecureStore.setItemAsync("userAuth", UserData.secret.toString());
   return UserData;
 };
 
@@ -231,8 +232,8 @@ const processLocationID = (longitude, latitude, projectid, userid) => {
 };
 
 const getUserInfo = async () => {
-  const asyncUserID = await AsyncStorage.getItem("userToken");
-  const asyncToken = await AsyncStorage.getItem("userAuth");
+  const asyncUserID = await SecureStore.getItemAsync("userToken");
+  const asyncToken = await SecureStore.getItemAsync("userAuth");
   return { asyncUserID, asyncToken };
 };
 const processUserAuth = () => {

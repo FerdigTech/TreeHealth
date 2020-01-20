@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, AsyncStorage, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
 import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { LogoTitle } from "../../reusable/LogoTitle";
 import { ProjectContext } from "../../../context/ProjectProvider";
+import * as SecureStore from "expo-secure-store";
 
 export const SignInScreen = () => {
   const [Answers, setAnswers] = useState({});
@@ -18,7 +19,7 @@ export const SignInScreen = () => {
   }, []);
 
   _signInTrial = async () => {
-    await AsyncStorage.setItem("userToken", "trial");
+    await SecureStore.setItemAsync("userToken", "trial");
     NavigationService.navigate("Loading");
   };
 
