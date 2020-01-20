@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -6,23 +6,23 @@ import {
   Text,
   View,
   ActivityIndicator,
-  AsyncStorage
 } from "react-native";
 import { Form, Item, Input, Button, Label, Toast } from "native-base";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../../../services/NavigationService";
+import { ProjectContext } from "../../../context/ProjectProvider";
+
 
 export const AddPoint = () => {
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
   const netInfo = useNetInfo();
-  const [UserToken, setUserToken] = useState(null);
+  const context = useContext(ProjectContext);
 
   useEffect(() => {
     _getLocationAsync();
-    _bootstrapAsync();
     Location.getCurrentPositionAsync({
       accuracy: Location.Accuracy.High
     }).then(location => {
@@ -30,10 +30,6 @@ export const AddPoint = () => {
     });
   }, []);
 
-  _bootstrapAsync = async () => {
-    const token = await AsyncStorage.getItem("userToken", null);
-    setUserToken(token);
-  };
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
@@ -65,7 +61,7 @@ export const AddPoint = () => {
 
   _handleSubmit = () => {
     // this isn't a guest user
-    if (UserToken == null) {
+    if (context.UserID != null) {
       NavigationService.navigate("PointQuestions", {
         location: location
       });
