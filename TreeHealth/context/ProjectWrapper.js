@@ -183,6 +183,8 @@ const generateUserToken = async (email, password) => {
       })
     }
   ).then(res => res.json());
+  await AsyncStorage.setItem("userToken", UserData.userid.toString());
+  await AsyncStorage.setItem("userAuth", UserData.secret.toString());
   return UserData;
 };
 
@@ -228,6 +230,16 @@ const processLocationID = (longitude, latitude, projectid, userid) => {
   });
 };
 
+const getUserInfo = async () => {
+  const asyncUserID = await AsyncStorage.getItem("userToken");
+  const asyncToken = await AsyncStorage.getItem("userAuth");
+  return { asyncUserID, asyncToken };
+};
+const processUserAuth = () => {
+  return new Promise(resolve => {
+    resolve(getUserInfo());
+  });
+};
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
   const ProjectsObj = useProjects();
@@ -251,6 +263,10 @@ export const ProjectWrapper = ({ children }) => {
     }
   );
 
+  const userInfo = processUserAuth().then(res => {
+    setUserID(res.asyncUserID != null ? parseInt(res.asyncUserID) : null);
+    setAuthToken(res.asyncToken != null ? parseInt(res.asyncToken) : null);
+  });
   const [UserID, setUserID] = useState(null);
   const [AuthToken, setAuthToken] = useState(null);
 
@@ -284,7 +300,7 @@ export const ProjectWrapper = ({ children }) => {
     processLogin(email, pass).then(results => {
       if (results.hasOwnProperty("userid")) {
         setUserID(results.userid);
-        setAuthToken(results.token);
+        setAuthToken(results.secret);
         NavigationService.navigate("Loading");
       } else {
         Toast.show({

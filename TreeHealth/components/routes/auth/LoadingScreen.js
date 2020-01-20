@@ -15,9 +15,7 @@ export const LoadingScreen = () => {
   _bootstrapAsync = async () => {
     const userToken = await AsyncStorage.getItem("userToken");
     // if token exist goes to Homepage, otherwise login
-    NavigationService.navigate(
-      userToken || context.UserID != null ? "Home" : "Auth"
-    );
+    NavigationService.navigate(userToken != null ? "Home" : "Auth");
   };
 
   useEffect(() => {
