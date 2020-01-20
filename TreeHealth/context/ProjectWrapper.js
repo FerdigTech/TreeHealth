@@ -5,7 +5,7 @@ import globals from "../globals";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../services/NavigationService";
 import { Toast, Root } from "native-base";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 const ProjectProvider = ProjectContext.Provider;
 
@@ -103,6 +103,7 @@ const OfflineReducer = (state, action) => {
         position: "top",
         duration: 3000
       });
+      waitAndUpdateStorage({ items: [...state.items, action.payload] });
       return { items: [...state.items, action.payload] };
     case "pop":
       Toast.show({
@@ -112,6 +113,7 @@ const OfflineReducer = (state, action) => {
         position: "top",
         duration: 3000
       });
+      waitAndUpdateStorage({ items: state.items.filter((_, i) => i !== 0) });
       return { items: state.items.filter((_, i) => i !== 0) };
     case "set":
       return action.payload;
@@ -241,6 +243,30 @@ const processUserAuth = () => {
     resolve(getUserInfo());
   });
 };
+
+const updateStorage = async value => {
+  const oldStorage = await AsyncStorage.getItem("offlineQueue");
+  if (oldStorage != null) {
+    await AsyncStorage.removeItem("offlineQueue");
+  }
+  await AsyncStorage.setItem("offlineQueue", JSON.stringify(value));
+};
+const waitAndUpdateStorage = value => {
+  return new Promise(resolve => {
+    resolve(updateStorage(value));
+  });
+};
+
+const getQueueFromStorage = async () => {
+  const asyncUserID = await AsyncStorage.getItem("offlineQueue");
+  return JSON.parse(asyncUserID);
+};
+const loadStoredQueue = () => {
+  return new Promise(resolve => {
+    resolve(getQueueFromStorage());
+  });
+};
+
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
   const ProjectsObj = useProjects();
@@ -264,11 +290,25 @@ export const ProjectWrapper = ({ children }) => {
     }
   );
 
-  const userInfo = processUserAuth().then(res => {
-    setUserID(res.asyncUserID != null ? parseInt(res.asyncUserID) : null);
-    setAuthToken(res.asyncToken != null ? parseInt(res.asyncToken) : null);
+  const offlineQueueLoad = loadStoredQueue().then(res => {
+    // if more things are in the backstorage than current queue than we need to update
+    if (res != null && OfflineStateQ.items.length < res.items.length) {
+      dispatcher({
+        type: "set",
+        payload: res
+      });
+    }
   });
+
   const [UserID, setUserID] = useState(null);
+
+  const userInfo = processUserAuth().then(res => {
+    if (res.asyncUserID != UserID && res.asyncToken != AuthToken) {
+      setUserID(res.asyncUserID != null ? parseInt(res.asyncUserID) : null);
+      setAuthToken(res.asyncToken != null ? parseInt(res.asyncToken) : null);
+    }
+  });
+
   const [AuthToken, setAuthToken] = useState(null);
 
   const HandleSignup = (name, email, pass) => {
