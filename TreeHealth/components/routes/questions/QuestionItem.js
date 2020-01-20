@@ -26,13 +26,13 @@ export const QuestionItem = props => {
         <ListItem style={styles.listItemStyle}>
           <Left style={styles.leftHandInfo}>
             <Text style={styles.itemDate}>
-              {Moment.unix(props.pointData.createddate).format("LL")}
+              {Moment.unix(props.pointData.createddate).format("LL") + " - " + props.pointData.county}
             </Text>
             <Text style={styles.itemDraft}>
               {props.isDraft ? "Draft" : " "}
             </Text>
             <Text style={styles.itemUpdated} note>
-              last updated August 3, 2019
+              last updated {Moment.unix(props.pointData.updateddate).format("LL")}
             </Text>
           </Left>
           <Body />
