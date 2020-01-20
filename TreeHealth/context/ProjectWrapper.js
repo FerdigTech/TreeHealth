@@ -17,9 +17,9 @@ getProjectData = async (forceUpdate = false) => {
   if (projectData !== null && !forceUpdate) {
     projectData = JSON.parse(projectData);
   } else {
-    projectData = await fetch(globals.SERVER_URL + "/projects/").then(
-      response => response.json()
-    );
+    projectData = await fetch(globals.SERVER_URL + "/projects/", {
+      cache: "no-store"
+    }).then(response => response.json());
     // TODO: if offline/fails, we should try return cache and that it failed to get updated data
     // Since AsyncStorage is immunitable, the projects object should be deleted before being set
     if (projectData !== null) {
@@ -61,11 +61,14 @@ getPointData = async ID => {
       points => points.projectid == ID
     );
   } else {
-    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/").then(
-      response => response.json()
-    );
+    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
+      cache: "no-store"
+    }).then(response => response.json());
     pointsData = await fetch(
-      globals.SERVER_URL + "/locationByProject/" + projectID
+      globals.SERVER_URL + "/locationByProject/" + projectID,
+      {
+        cache: "no-store"
+      }
     ).then(response => response.json());
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
   }
@@ -113,6 +116,7 @@ const OfflineReducer = (state, action) => {
       return action.payload;
     case "sendAnswers":
       fetch(globals.SERVER_URL + "/answer/create", {
+        cache: "no-store",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json"
