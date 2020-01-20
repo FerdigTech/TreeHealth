@@ -1,9 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  Button,
-} from "react-native";
+import { View, StyleSheet, Button, Text } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import NavigationService from "../../../services/NavigationService";
 import { HomeList } from "./../home/HomeList";
@@ -53,7 +49,6 @@ const FirstStep = () => {
   );
 };
 
-
 export default copilot({
   animated: true,
   androidStatusBarVisible: true,
@@ -65,8 +60,9 @@ export default copilot({
     borderWidth: 1,
     paddingTop: 5
   },
+  stepNumberComponent: () => null,
   labels: {
-    finish: 'Next'
+    finish: "Next"
   }
 })(IntroScreen);
 

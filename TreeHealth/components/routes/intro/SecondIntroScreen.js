@@ -60,8 +60,9 @@ export default copilot({
     borderRadius: 10,
     borderColor: "#000",
     borderWidth: 1,
-    paddingTop: 5
+    paddingTop: 5,
   },
+  stepNumberComponent: () => null,
   labels: {
     finish: "Next"
   }

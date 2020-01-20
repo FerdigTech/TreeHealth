@@ -17,6 +17,7 @@ import IntroScreen from "./components/routes/intro/IntroScreen";
 import SecondIntroScreen from "./components/routes/intro/SecondIntroScreen";
 import ThirdIntroScreen from "./components/routes/intro/ThirdIntroScreen";
 import FourthIntroScreen from "./components/routes/intro/FourthIntroScreen";
+import FifthIntroScreen from "./components/routes/intro/FifthIntroScreen";
 import { ProjectWrapper } from "./context/ProjectWrapper";
 import { View } from "react-native";
 import globals from "./globals";
@@ -32,6 +33,7 @@ const MainNavigator = createStackNavigator(
     SecondIntroScreen: SecondIntroScreen,
     ThirdIntroScreen: ThirdIntroScreen,
     FourthIntroScreen: FourthIntroScreen,
+    FifthIntroScreen: FifthIntroScreen,
     QuestionList: {
       screen: QuestionList,
       navigationOptions: {
