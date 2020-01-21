@@ -24,7 +24,7 @@ export const QuestionItem = props => {
       </View>
       <View style={styles.standaloneRowFront}>
         <ListItem style={styles.listItemStyle}>
-          <Left style={styles.leftHandInfo}>
+          <Body style={styles.leftHandInfo}>
             <Text style={styles.itemDate}>
               {Moment.unix(props.pointData.createddate).format("LL") + " - " + props.pointData.county}
             </Text>
@@ -34,8 +34,7 @@ export const QuestionItem = props => {
             <Text style={styles.itemUpdated} note>
               last updated {Moment.unix(props.pointData.updateddate).format("LL")}
             </Text>
-          </Left>
-          <Body />
+          </Body>
           <Right>
             <Button
               style={styles.lstIconBtn}
@@ -88,7 +87,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     alignContent: "flex-start",
-    textAlign: "left"
+    textAlign: "left",
   },
   standalone: {
     flex: 1
