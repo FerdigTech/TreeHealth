@@ -13,13 +13,17 @@ const setProjectData = async data => {
   return await AsyncStorage.setItem("Projects", JSON.stringify(data));
 };
 // try to get the Project data from cache, if not get from the site.
-getProjectData = async (forceUpdate = false) => {
+getProjectData = async (forceUpdate = false, UserID) => {
   let projectData = await AsyncStorage.getItem("Projects");
   if (projectData !== null && !forceUpdate) {
     projectData = JSON.parse(projectData);
   } else {
     projectData = await fetch(globals.SERVER_URL + "/projects/", {
-      cache: "no-store"
+      cache: "no-store",
+      method: "POST",
+      body: JSON.stringify({
+        userid: UserID != null ? UserID : -1
+      })
     }).then(response => response.json());
     // TODO: if offline/fails, we should try return cache and that it failed to get updated data
     // Since AsyncStorage is immunitable, the projects object should be deleted before being set
@@ -34,17 +38,17 @@ getProjectData = async (forceUpdate = false) => {
   return projectData;
 };
 
-const processProjData = (forceUpdate = false) => {
+const processProjData = (forceUpdate = false, UserID) => {
   return new Promise(resolve => {
-    resolve(getProjectData(forceUpdate));
+    resolve(getProjectData(forceUpdate, UserID));
   });
 };
 
 // use hook to get the project data
-const useProjects = () => {
+const useProjects = UserID => {
   const [Projects, setProjects] = useState([]);
   useEffect(() => {
-    processProjData(false).then(results => {
+    processProjData(false, UserID).then(results => {
       setProjects(results);
     });
   }, []);
@@ -52,10 +56,10 @@ const useProjects = () => {
 };
 
 // try to get the  point data from cache, if not get from the site.
-getPointData = async ID => {
-  const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
+getPointData = async (ID, userID, forceUpdate = false) => {
+  const projectID = ID == -1 || typeof ID == "undefined" ? "" : ID.toString();
   let pointsData = await AsyncStorage.getItem("Points");
-  if (pointsData !== null) {
+  if (pointsData !== null && !forceUpdate) {
     // get all the storied points and filter the ones with the correct ID
     pointsData = JSON.parse(pointsData);
     pointsData.result = pointsData.result.filter(
@@ -63,12 +67,20 @@ getPointData = async ID => {
     );
   } else {
     AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
-      cache: "no-store"
+      cache: "no-store",
+      method: "POST",
+      body: JSON.stringify({
+        userid: userID != null ? userID : -1
+      })
     }).then(response => response.json());
     pointsData = await fetch(
       globals.SERVER_URL + "/locationByProject/" + projectID,
       {
-        cache: "no-store"
+        cache: "no-store",
+        method: "POST",
+        body: JSON.stringify({
+          userid: userID != null ? userID : -1
+        })
       }
     ).then(response => response.json());
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
@@ -76,17 +88,17 @@ getPointData = async ID => {
   return pointsData;
 };
 
-const processPntData = ID => {
+const processPntData = (ID, userID, forceUpdate = false) => {
   return new Promise(resolve => {
-    resolve(getPointData(ID));
+    resolve(getPointData(ID, userID, forceUpdate));
   });
 };
 
 // use hook to get the data
-const usePoints = () => {
+const usePoints = userID => {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
-    processPntData(-1).then(results => {
+    processPntData(-1, userID).then(results => {
       setPoints(results);
     });
   }, []);
@@ -211,9 +223,7 @@ const generateLocationID = async (longitude, latitude, projectid, userid) => {
         longitude: longitude.toString(),
         latitude: latitude.toString(),
         projectid: projectid,
-        createdby: userid,
-        // TODO: find a way to creatively make a title
-        title: "test"
+        createdby: userid
       })
     }
   )
@@ -269,14 +279,14 @@ const loadStoredQueue = () => {
 
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
-  const ProjectsObj = useProjects();
+  const ProjectsObj = useProjects(UserID);
   const Projects = ProjectsObj.Projects;
   const setProjects = ProjectsObj.setProjects;
 
   const [ProjectID, setProjectID] = useState(-1);
   const [ProjectName, setProjectName] = useState("");
 
-  const PointsObj = usePoints();
+  const PointsObj = usePoints(UserID);
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
 
@@ -340,6 +350,14 @@ export const ProjectWrapper = ({ children }) => {
   const HandleLogin = (email, pass) => {
     processLogin(email, pass).then(results => {
       if (results.hasOwnProperty("userid")) {
+        // when we login update project visibility
+        processProjData(true, UserID).then(results => {
+          setProjects(results);
+        });
+        // when we login update records visibility
+        processPntData(-1, UserID, true).then(results => {
+          setPoints(results);
+        });
         setUserID(results.userid);
         setAuthToken(results.secret);
         NavigationService.navigate("Loading");
@@ -355,9 +373,17 @@ export const ProjectWrapper = ({ children }) => {
     });
   };
 
-  const HandleLogout = async() => {
+  const HandleLogout = async () => {
     setUserID(null);
     setAuthToken(null);
+    // when we logout update project visibility
+    processProjData(true, UserID).then(results => {
+      setProjects(results);
+    });
+    // when we logout update records visibility
+    processPntData(-1, UserID, true).then(results => {
+      setPoints(results);
+    });
     await SecureStore.deleteItemAsync("userToken");
     await SecureStore.deleteItemAsync("userAuth");
   };
@@ -448,23 +474,23 @@ export const ProjectWrapper = ({ children }) => {
     <ProjectProvider
       value={{
         Projects:
-          Projects !== "undefined"
+          typeof Projects !== "undefined"
             ? Projects.hasOwnProperty("result")
               ? Projects.result
               : []
             : [],
         Points:
-          Points !== "undefined"
+          typeof Points !== "undefined"
             ? Points.hasOwnProperty("result")
               ? Points.result
               : []
             : [],
         setProjectID: ID => {
-          processPntData(ID).then(results => {
+          processPntData(ID, UserID).then(results => {
             setPoints(results);
             setProjectID(ID);
             setProjectName(
-              Projects !== "undefined"
+              typeof Projects !== "undefined"
                 ? Projects.hasOwnProperty("result")
                   ? Projects.result.filter(
                       project => project.projectid == ID
@@ -477,7 +503,7 @@ export const ProjectWrapper = ({ children }) => {
         ProjectID,
         ProjectName,
         updateProjects: () => {
-          processProjData(true).then(results => {
+          processProjData(true, UserID).then(results => {
             setProjects(results);
           });
         },
