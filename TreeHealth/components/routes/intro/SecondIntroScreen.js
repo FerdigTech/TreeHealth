@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { View, SafeAreaView, ScrollView, Platform } from "react-native";
+import { View, SafeAreaView, ScrollView } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import { ProjectCard } from "./../projects/ProjectCard";
 import NavigationService from "../../../services/NavigationService";
+import { ProgressBar } from "../../reusable/ProgessBar";
 
 const SecondIntroScreen = props => {
   useEffect(() => {
@@ -52,6 +53,10 @@ const SecondStep = () => {
     </SafeAreaView>
   );
 };
+
+SecondIntroScreen.navigationOptions = ({ navigation }) => ({
+  headerTitle: () => <ProgressBar progress={"40%"} />
+});
 
 export default copilot({
   animated: true,

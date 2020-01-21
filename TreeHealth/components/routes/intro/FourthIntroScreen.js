@@ -19,7 +19,7 @@ import {
   Thumbnail,
   Button
 } from "native-base";
-import globals from "../../../globals";
+import { ProgressBar } from "../../reusable/ProgessBar";
 
 const FourthIntroScreen = props => {
   useEffect(() => {
@@ -44,15 +44,7 @@ const FourthStep = () => {
     <SafeAreaView style={styles.container}>
       <Container>
         <Content>
-          <View style={styles.progressBar}>
-            <View
-              style={
-                ([StyleSheet.absoluteFill],
-                { backgroundColor: globals.COLOR.GREEN, width: "33%" })
-              }
-              Platform
-            />
-          </View>
+          <ProgressBar progress={"33%"}/>
           <ScrollView style={styles.questionList}>
             <ListItem thumbnail key={0} onPress={() => {}}>
               <Left>
@@ -143,6 +135,11 @@ const FourthStep = () => {
   );
 };
 
+FourthIntroScreen.navigationOptions = ({ navigation }) => ({
+  headerTitle: () => <ProgressBar progress={"80%"} />
+});
+
+
 export default copilot({
   animated: true,
   overlay: "svg",
@@ -184,15 +181,5 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
     marginBottom: 1,
     marginTop: 1
-  },
-  progressBar: {
-    flexDirection: "row",
-    height: 20,
-    width: "100%",
-    backgroundColor: "white",
-    borderColor: "#000",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderRightWidth: 0
   }
 });

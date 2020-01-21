@@ -22,6 +22,7 @@ import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
+import {ProgressBar} from "../../reusable/ProgessBar";
 
 getQuestionsData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
@@ -139,14 +140,7 @@ export const PointQuestions = props => {
               question => question.questionid === CurrentQuestion
             )}
           />
-          <View style={styles.progressBar}>
-            <Animated.View
-              style={
-                ([StyleSheet.absoluteFill],
-                { backgroundColor: globals.COLOR.GREEN, width })
-              }
-            />
-          </View>
+          <ProgressBar progress={width}/>
           <ScrollView style={styles.questionList}>
             {Questions.map((question, index) => {
               return (
@@ -224,15 +218,5 @@ const styles = StyleSheet.create({
     borderBottomColor: "#ccc",
     marginBottom: 1,
     marginTop: 1
-  },
-  progressBar: {
-    flexDirection: "row",
-    height: 20,
-    width: "100%",
-    backgroundColor: "white",
-    borderColor: "#000",
-    borderWidth: 1,
-    borderLeftWidth: 0,
-    borderRightWidth: 0
   }
 });

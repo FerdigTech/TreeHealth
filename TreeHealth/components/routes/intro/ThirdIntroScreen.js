@@ -17,6 +17,7 @@ import {
   Button
 } from "native-base";
 import NavigationService from "../../../services/NavigationService";
+import { ProgressBar } from "../../reusable/ProgessBar";
 
 const ThirdIntroScreen = props => {
   const [stepName, setstate] = useState(null);
@@ -148,6 +149,10 @@ const ThirdStep = props => {
     </SafeAreaView>
   );
 };
+
+ThirdIntroScreen.navigationOptions = ({ navigation }) => ({
+  headerTitle: () => <ProgressBar progress={"60%"} />
+});
 
 export default copilot({
   animated: true,

@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Button, Platform } from "react-native";
+import { View, StyleSheet, Button } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import NavigationService from "../../../services/NavigationService";
 import { HomeList } from "./../home/HomeList";
+import { ProgressBar } from "../../reusable/ProgessBar";
 
 const IntroScreen = props => {
   useEffect(() => {
@@ -50,6 +51,10 @@ const FirstStep = () => {
     </View>
   );
 };
+
+IntroScreen.navigationOptions = ({ navigation }) => ({
+  headerTitle: () => <ProgressBar progress={"20%"} />
+});
 
 export default copilot({
   animated: true,
