@@ -110,7 +110,7 @@ export const AddPoint = () => {
               keyboardType={"decimal-pad"}
               style={styles.itemStyle}
               value={
-                location != null ? location.coords.latitude.toString() : ""
+                location != null ? location.coords.latitude.toString() : " "
               }
               placeholder="Latitude"
               onChangeText={text => _updateLatitude({ text })}
@@ -122,7 +122,7 @@ export const AddPoint = () => {
               keyboardType={"decimal-pad"}
               style={styles.itemStyle}
               value={
-                location != null ? location.coords.longitude.toString() : ""
+                location != null ? location.coords.longitude.toString() : " "
               }
               placeholder="Longitude"
               onChangeText={text => _updateLongitude({ text })}
