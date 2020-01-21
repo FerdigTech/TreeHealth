@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import {
   DatePicker,
@@ -16,6 +16,31 @@ import Modal from "react-native-modal";
 import Moment from "moment";
 
 export const FilterModal = props => {
+  // reset the settings
+  cleanUP = () => {
+    props.navigation.setParams({
+      DropDownVisible: false
+    });
+    /*
+    setOperator("none");
+    props.navigation.setParams({
+      FilterAffilation: false
+    });
+    props.navigation.setParams({
+      OnlyAffilation: false
+    });
+    setDateFilter("");
+    setEndDateFilter("");
+    */
+  };
+
+  useEffect(() => {
+    cleanUP();
+    return () => {
+      cleanUP();
+    };
+  }, []);
+  
   setDateFilter = date => {
     props.navigation.setParams({
       dateFilter: date
@@ -46,7 +71,6 @@ export const FilterModal = props => {
     });
   };
 
-  FilterAffilation;
   toggleDropVis = () => {
     const DropDownVisible = props.navigation.getParam("DropDownVisible");
 
@@ -68,6 +92,11 @@ export const FilterModal = props => {
       <Modal
         onSwipeThreshold={750}
         onSwipeComplete={() => this.toggleDropVis()}
+        onBackButtonPress={() =>
+          props.navigation.setParams({
+            DropDownVisible: false
+          })
+        }
         swipeDirection="down"
         isVisible={DropDownVisible}
         scrollHorizontal={true}

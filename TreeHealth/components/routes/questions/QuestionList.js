@@ -14,7 +14,6 @@ import { FilterModal } from "../../reusable/FilterModal";
 import { ProjectContext } from "../../../context/ProjectProvider";
 import Moment from "moment";
 
-
 export const QuestionList = props => {
   const [Points, setPoints] = useState([]);
   const context = useContext(ProjectContext);
@@ -118,10 +117,26 @@ export const QuestionList = props => {
   );
 };
 
-QuestionList.navigationOptions = ({ navigation }) => ({
+QuestionList.navigationOptions = ({ navigation, navigationOptions }) => ({
   headerRight: () => (
     <TouchableOpacity onPress={() => navigation.navigate("AddPoint")}>
       <Text style={styles.NavText}>Add Record</Text>
+    </TouchableOpacity>
+  ),
+  headerLeft: () => (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Map", navigation.state.params);
+      }}
+    >
+      <Icon
+        name="arrow-back"
+        style={{
+          color: navigationOptions.headerTintColor,
+          paddingLeft: 14,
+          fontSize: 24
+        }}
+      />
     </TouchableOpacity>
   )
 });

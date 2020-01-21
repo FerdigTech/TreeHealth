@@ -173,7 +173,12 @@ export const MapDisplay = props => {
           listIcon="list"
           switchView={() =>
             NavigationService.navigate("QuestionList", {
-              projectName: currentProject
+              projectName: currentProject,
+              Operator,
+              FilterAffilation,
+              OnlyAffilation,
+              EndDateFilter,
+              dateFilter
             })
           }
           funnelToggle={() => toggleDropVis()}
