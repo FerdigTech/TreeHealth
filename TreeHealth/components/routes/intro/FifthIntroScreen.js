@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, SafeAreaView, ScrollView, Text } from "react-native";
+import { View, StyleSheet, SafeAreaView, ScrollView, Text, Platform } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import NavigationService from "../../../services/NavigationService";
 import { QuestionItem } from "../questions/QuestionItem";
@@ -7,7 +7,9 @@ import { Container, Content, Footer, FooterTab, Icon, Fab } from "native-base";
 
 const FifthIntroScreen = props => {
   useEffect(() => {
-    props.start();
+    setTimeout(() => {
+        props.start();
+      }, 500);
     props.copilotEvents.on("stop", () => {
       NavigationService.navigate("Home");
     });
@@ -88,9 +90,7 @@ const FifthStep = () => {
 
 export default copilot({
   animated: true,
-  androidStatusBarVisible: true,
   overlay: "svg",
-  verticalOffset: -62,
   tooltipStyle: {
     borderRadius: 10,
     borderColor: "#000",

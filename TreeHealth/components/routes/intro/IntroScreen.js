@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, Button, Text } from "react-native";
+import { View, StyleSheet, Button, Platform } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import NavigationService from "../../../services/NavigationService";
 import { HomeList } from "./../home/HomeList";
 
 const IntroScreen = props => {
   useEffect(() => {
-    props.start();
+    setTimeout(() => {
+      props.start();
+    }, 500);
     props.copilotEvents.on("stop", () => {
       NavigationService.navigate("SecondIntroScreen");
     });
@@ -51,9 +53,7 @@ const FirstStep = () => {
 
 export default copilot({
   animated: true,
-  androidStatusBarVisible: true,
   overlay: "svg",
-  verticalOffset: -42,
   tooltipStyle: {
     borderRadius: 10,
     borderColor: "#000",

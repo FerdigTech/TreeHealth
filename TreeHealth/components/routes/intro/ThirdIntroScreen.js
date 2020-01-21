@@ -3,7 +3,8 @@ import {
   View,
   SafeAreaView,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  Platform
 } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import MapView, { Marker } from "react-native-maps";
@@ -20,7 +21,9 @@ import NavigationService from "../../../services/NavigationService";
 const ThirdIntroScreen = props => {
   const [stepName, setstate] = useState(null);
   useEffect(() => {
-    props.start();
+    setTimeout(() => {
+      props.start();
+    }, 500);
     props.copilotEvents.on("stepChange", handleStepChange);
     props.copilotEvents.on("stop", () => {
       NavigationService.navigate("FourthIntroScreen");
@@ -128,7 +131,7 @@ const ThirdStep = props => {
               name="add record"
             >
               <WalkthroughableView>
-                {props.currentStep == "add record" && (
+                {(props.currentStep == "add record" || props.currentStep == null) && (
                   <Button>
                     <Icon
                       type="Feather"
@@ -148,9 +151,7 @@ const ThirdStep = props => {
 
 export default copilot({
   animated: true,
-  androidStatusBarVisible: true,
   overlay: "svg",
-  verticalOffset: -30,
   tooltipStyle: {
     borderRadius: 10,
     borderColor: "#000",

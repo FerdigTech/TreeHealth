@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { View, StyleSheet, ScrollView, SafeAreaView, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  SafeAreaView,
+  Text,
+  Platform
+} from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import NavigationService from "../../../services/NavigationService";
 import {
@@ -16,7 +23,9 @@ import globals from "../../../globals";
 
 const FourthIntroScreen = props => {
   useEffect(() => {
-    props.start();
+    setTimeout(() => {
+      props.start();
+    }, 500);
     props.copilotEvents.on("stop", () => {
       NavigationService.navigate("FifthIntroScreen");
     });
@@ -41,6 +50,7 @@ const FourthStep = () => {
                 ([StyleSheet.absoluteFill],
                 { backgroundColor: globals.COLOR.GREEN, width: "33%" })
               }
+              Platform
             />
           </View>
           <ScrollView style={styles.questionList}>
@@ -135,19 +145,17 @@ const FourthStep = () => {
 
 export default copilot({
   animated: true,
-  androidStatusBarVisible: true,
   overlay: "svg",
-  verticalOffset: -42,
   tooltipStyle: {
     borderRadius: 10,
     borderColor: "#000",
     borderWidth: 1,
-    paddingTop: 5,
+    paddingTop: 5
   },
   stepNumberComponent: () => null,
   labels: {
     finish: "Next",
-    skip: '\0'
+    skip: "\0"
   }
 })(FourthIntroScreen);
 
