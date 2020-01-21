@@ -133,7 +133,7 @@ QuestionList.navigationOptions = ({ navigation, navigationOptions }) => ({
         name="arrow-back"
         style={{
           color: navigationOptions.headerTintColor,
-          paddingLeft: 14,
+          paddingLeft: 20,
           fontSize: 24
         }}
       />
