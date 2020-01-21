@@ -142,6 +142,7 @@ export const QuestionModal = props => {
               style={styles.imgModal}
               visible={ImagleViewable}
               transparent={false}
+              onRequestClose={() => setImagleViewable(false)}
             >
               <ImageViewer
                 enableSwipeDown={true}
