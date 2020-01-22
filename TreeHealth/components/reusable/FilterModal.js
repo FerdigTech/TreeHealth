@@ -75,23 +75,29 @@ export const FilterModal = props => {
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
 
-  const DatePickerRef = useCallback(datepicker => {
-    if (datepicker != null) {
-      if (datepicker.props.dateFilter != null) {
-        datepicker.state.chosenDate = datepicker.props.dateFilter;
-        datepicker.props.onDateChange(datepicker.state.chosenDate);
+  const DatePickerRef = useCallback(
+    datepicker => {
+      if (datepicker != null) {
+        if (datepicker.props.dateFilter != null) {
+          datepicker.state.chosenDate = datepicker.props.dateFilter;
+          datepicker.props.onDateChange(datepicker.state.chosenDate);
+        }
       }
-    }
-  }, []);
+    },
+    [dateFilter]
+  );
 
-  const EndDatePickerRef = useCallback(datepicker => {
-    if (datepicker != null) {
-      if (datepicker.props.EndDateFilter != null) {
-        datepicker.state.chosenDate = datepicker.props.EndDateFilter;
-        datepicker.props.onDateChange(datepicker.state.chosenDate);
+  const EndDatePickerRef = useCallback(
+    datepicker => {
+      if (datepicker != null) {
+        if (datepicker.props.EndDateFilter != null) {
+          datepicker.state.chosenDate = datepicker.props.EndDateFilter;
+          datepicker.props.onDateChange(datepicker.state.chosenDate);
+        }
       }
-    }
-  }, []);
+    },
+    [EndDateFilter]
+  );
   return (
     <View style={{ flex: 1 }}>
       <Modal
@@ -155,12 +161,12 @@ export const FilterModal = props => {
                   placeHolderText="Select a date"
                   placeHolderTextStyle={{ color: "#d3d3d3" }}
                   onDateChange={setEndDateFilter}
-                  // to make sure they can't select a date before startDate
                   minimumDate={
                     dateFilter != "" && dateFilter != null
                       ? dateFilter
                       : Date.now()
                   }
+                  // to make sure they can't select a date before startDate
                   disabled={dateFilter == "" || dateFilter == null}
                   maximumDate={Date.now()}
                   formatChosenDate={date => {
@@ -219,8 +225,8 @@ export const FilterModal = props => {
                   primary
                   onPress={() => {
                     setOperator(null);
-                    setDateFilter(null);
-                    setEndDateFilter(null);
+                    setDateFilter("");
+                    setEndDateFilter("");
                     //if (EndDatePickerRef.current != null) {
                     //  EndDatePickerRef.current.state.chosenDate = null;
                     // }
