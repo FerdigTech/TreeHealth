@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import { View, ScrollView, StyleSheet, Text } from "react-native";
 import {
   DatePicker,
@@ -21,17 +21,6 @@ export const FilterModal = props => {
     props.navigation.setParams({
       DropDownVisible: false
     });
-    /*
-    setOperator("none");
-    props.navigation.setParams({
-      FilterAffilation: false
-    });
-    props.navigation.setParams({
-      OnlyAffilation: false
-    });
-    setDateFilter("");
-    setEndDateFilter("");
-    */
   };
 
   useEffect(() => {
@@ -40,7 +29,7 @@ export const FilterModal = props => {
       cleanUP();
     };
   }, []);
-  
+
   setDateFilter = date => {
     props.navigation.setParams({
       dateFilter: date
@@ -85,8 +74,24 @@ export const FilterModal = props => {
   const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
-  const DatePickerRef = useRef(null);
-  const EndDatePickerRef = useRef(null);
+
+  const DatePickerRef = useCallback(datepicker => {
+    if (datepicker != null) {
+      if (datepicker.props.dateFilter != null) {
+        datepicker.state.chosenDate = datepicker.props.dateFilter;
+        datepicker.props.onDateChange(datepicker.state.chosenDate);
+      }
+    }
+  }, []);
+
+  const EndDatePickerRef = useCallback(datepicker => {
+    if (datepicker != null) {
+      if (datepicker.props.EndDateFilter != null) {
+        datepicker.state.chosenDate = datepicker.props.EndDateFilter;
+        datepicker.props.onDateChange(datepicker.state.chosenDate);
+      }
+    }
+  }, []);
   return (
     <View style={{ flex: 1 }}>
       <Modal
@@ -115,6 +120,7 @@ export const FilterModal = props => {
                 {Operator == "range" ? "Start Date: " : "Date Selected: "}
               </Text>
               <DatePicker
+                dateFilter={dateFilter}
                 ref={DatePickerRef}
                 locale={"en"}
                 modalTransparent={false}
@@ -126,7 +132,7 @@ export const FilterModal = props => {
                 // to make sure they can't select a day past the endDate
                 maximumDate={
                   Operator == "range"
-                    ? EndDateFilter != ""
+                    ? EndDateFilter != "" && EndDateFilter != null
                       ? EndDateFilter
                       : Date.now()
                     : Date.now()
@@ -140,6 +146,7 @@ export const FilterModal = props => {
               <ListItem>
                 <Text>End Date: </Text>
                 <DatePicker
+                  EndDateFilter={EndDateFilter}
                   ref={EndDatePickerRef}
                   locale={"en"}
                   modalTransparent={false}
@@ -149,7 +156,12 @@ export const FilterModal = props => {
                   placeHolderTextStyle={{ color: "#d3d3d3" }}
                   onDateChange={setEndDateFilter}
                   // to make sure they can't select a date before startDate
-                  minimumDate={dateFilter}
+                  minimumDate={
+                    dateFilter != "" && dateFilter != null
+                      ? dateFilter
+                      : Date.now()
+                  }
+                  disabled={dateFilter == "" || dateFilter == null}
                   maximumDate={Date.now()}
                   formatChosenDate={date => {
                     return Moment(date).format("ll");
@@ -209,10 +221,10 @@ export const FilterModal = props => {
                     setOperator(null);
                     setDateFilter(null);
                     setEndDateFilter(null);
-                    if (EndDatePickerRef.current != null) {
-                      EndDatePickerRef.current.state.chosenDate = null;
-                    }
-                    DatePickerRef.current.state.chosenDate = null;
+                    //if (EndDatePickerRef.current != null) {
+                    //  EndDatePickerRef.current.state.chosenDate = null;
+                    // }
+                    //DatePickerRef.current.state.chosenDate = null;
                     props.navigation.setParams({
                       OnlyAffilation: false
                     });
