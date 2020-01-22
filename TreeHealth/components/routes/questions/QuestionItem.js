@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Button, ListItem, Text, Icon, Left, Body, Right } from "native-base";
+import { ProjectContext } from "../../../context/ProjectProvider";
 import { SwipeRow } from "react-native-swipe-list-view";
 import NavigationService from "../../../services/NavigationService";
 import Moment from "moment";
 
 export const QuestionItem = props => {
+  const context = useContext(ProjectContext);
   const editRecord = locationid => {
     NavigationService.navigate("AddPoint", {
       locationid
@@ -17,6 +19,8 @@ export const QuestionItem = props => {
       key={props.indexVal}
       style={styles.standalone}
       disableRightSwipe={true}
+      // guest users shouldn't be able to edit points
+      disableLeftSwipe={context.UserID == null}
       rightOpenValue={-75}
     >
       <View style={styles.rowBack}>

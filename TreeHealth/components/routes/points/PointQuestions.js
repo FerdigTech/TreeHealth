@@ -52,8 +52,6 @@ const processQuestData = ID => {
 };
 
 export const PointQuestions = props => {
-  // TODO: if a locationID is passed via navagation props
-  // then all of the answers should be set
 
   const [Questions, setQuestions] = useState([]);
   const [Answers, setAnswers] = useState([]);
