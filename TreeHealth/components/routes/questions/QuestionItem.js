@@ -3,9 +3,15 @@ import PropTypes from "prop-types";
 import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Button, ListItem, Text, Icon, Left, Body, Right } from "native-base";
 import { SwipeRow } from "react-native-swipe-list-view";
+import NavigationService from "../../../services/NavigationService";
 import Moment from "moment";
 
 export const QuestionItem = props => {
+  const editRecord = locationid => {
+    NavigationService.navigate("AddPoint", {
+      locationid
+    });
+  };
   return (
     <SwipeRow
       key={props.indexVal}
@@ -16,7 +22,9 @@ export const QuestionItem = props => {
       <View style={styles.rowBack}>
         <TouchableOpacity
           style={styles.standaloneRowBack}
-          onPress={() => {}}
+          onPress={() => {
+            editRecord(props.pointData.locationid);
+          }}
           activeOpacity={0.5}
         >
           <Text style={styles.backTextWhite}>Edit</Text>
@@ -26,13 +34,16 @@ export const QuestionItem = props => {
         <ListItem style={styles.listItemStyle}>
           <Body style={styles.leftHandInfo}>
             <Text style={styles.itemDate}>
-              {Moment.unix(props.pointData.createddate).format("LL") + " - " + props.pointData.county}
+              {Moment.unix(props.pointData.createddate).format("LL") +
+                " - " +
+                props.pointData.county}
             </Text>
             <Text style={styles.itemDraft}>
               {props.isDraft ? "Draft" : " "}
             </Text>
             <Text style={styles.itemUpdated} note>
-              last updated {Moment.unix(props.pointData.updateddate).format("LL")}
+              last updated{" "}
+              {Moment.unix(props.pointData.updateddate).format("LL")}
             </Text>
           </Body>
           <Right>
@@ -87,7 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     alignContent: "flex-start",
-    textAlign: "left",
+    textAlign: "left"
   },
   standalone: {
     flex: 1

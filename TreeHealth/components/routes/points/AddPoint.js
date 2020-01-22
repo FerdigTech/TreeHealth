@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   Text,
   View,
-  ActivityIndicator,
+  ActivityIndicator
 } from "react-native";
 import { Form, Item, Input, Button, Label, Toast } from "native-base";
 import * as Location from "expo-location";
@@ -14,20 +14,37 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 
-
-export const AddPoint = () => {
+export const AddPoint = props => {
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
   const netInfo = useNetInfo();
   const context = useContext(ProjectContext);
 
+  const ExistingLocation = props.navigation.getParam("locationid", null);
+
+  const FilteredPoints = context.Points.filter(
+    point => point.locationid == ExistingLocation
+  );
+
+  const { longitude, latitude } =
+    FilteredPoints.length >= 1 ? FilteredPoints[0] : {};
+
   useEffect(() => {
-    _getLocationAsync();
-    Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High
-    }).then(location => {
-      setLocation(location);
-    });
+    if (ExistingLocation == null) {
+      _getLocationAsync();
+      Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High
+      }).then(location => {
+        setLocation(location);
+      });
+    } else {
+      setLocation({
+        coords: {
+          longitude: longitude,
+          latitude: latitude
+        }
+      });
+    }
   }, []);
 
   _getLocationAsync = async () => {
@@ -62,9 +79,26 @@ export const AddPoint = () => {
   _handleSubmit = () => {
     // this isn't a guest user
     if (context.UserID != null) {
-      NavigationService.navigate("PointQuestions", {
-        location: location
-      });
+      // if we are editing..
+      if (ExistingLocation != null) {
+        // Then the current coordinates do not match that off the old coordinates
+        // we need to update that information
+        if (
+          longitude != location.coords.longitude ||
+          latitude != location.coords.latitude
+        ) {
+          // TODO: push this information to the server
+        }
+      }
+      // if we are editting, send over a locationID otherwise send over the location
+      NavigationService.navigate(
+        "PointQuestions",
+        ExistingLocation == null
+          ? {
+              location: location
+            }
+          : { locationid: ExistingLocation }
+      );
     } else {
       Toast.show({
         text:
@@ -81,7 +115,8 @@ export const AddPoint = () => {
     <SafeAreaView style={styles.AddPtView}>
       <ScrollView>
         {location == null &&
-          netInfo.isConnected && (
+          netInfo.isConnected &&
+          ExistingLocation == null && (
             <View style={styles.loadingView}>
               <Text style={styles.loadingInstrHeader}>Processing Location</Text>
               <ActivityIndicator />
@@ -94,12 +129,23 @@ export const AddPoint = () => {
               </Text>
             </View>
           )}
-        {!netInfo.isConnected && (
+        {!netInfo.isConnected &&
+          ExistingLocation == null && (
+            <View style={styles.offlineView}>
+              <Text style={styles.offlineHeadInstr}>Offline Mode</Text>
+              <Text style={styles.offlineInstr}>
+                The data will be queued to be uploaded when your device appears
+                to have service.
+              </Text>
+            </View>
+          )}
+
+        {ExistingLocation != null && (
           <View style={styles.offlineView}>
-            <Text style={styles.offlineHeadInstr}>Offline Mode</Text>
+            <Text style={styles.offlineHeadInstr}>Edit Mode</Text>
             <Text style={styles.offlineInstr}>
-              The data will be queued to be uploaded when your device appears to
-              have service.
+              Warnning, you are editing already existing data. Saving will
+              result in overwritting.
             </Text>
           </View>
         )}
