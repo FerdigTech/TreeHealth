@@ -127,6 +127,8 @@ export const PointQuestions = props => {
     [progress]
   );
 
+  // TODO: if we get passed a locationID, then we must send a request to /answerByLocationID/<locationID>
+  // and set the Answers state to be all the response values
   return (
     <SafeAreaView style={styles.container}>
       <Container>
