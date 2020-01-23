@@ -23,6 +23,7 @@ import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 import { ProgressBar } from "../../reusable/ProgessBar";
+import _ from "underscore";
 
 getQuestionsData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
@@ -105,11 +106,18 @@ export const PointQuestions = props => {
       });
     } else {
       // if there are any difference in answers we must send it to the server
-      SavedAnswers.filter(
-        savedAnswer =>
-          JSON.stringify(Answers[savedAnswer.questionID]) !=
-          JSON.stringify(savedAnswer.answer)
-      ).map(differentAnswer => {
+      SavedAnswers.filter(savedAnswer => {
+        const answerOne = Answers[savedAnswer.questionID];
+        const answerTwo = savedAnswer.answer;
+        const differentOfLarger =
+          answerOne.length > answerTwo.length
+            ? _.difference(answerOne, answerTwo)
+            : _.difference(answerTwo, answerOne);
+        return Array.isArray(answerOne)
+          ? differentOfLarger.length !== 0
+          : answerOne !== answerTwo;
+      }).map(differentAnswer => {
+        console.log(differentAnswer.answerID.toString() + " is different.");
         // we must send an update to /answer/update for answerID of differentAnswer.answerID
         // to have an updated value
       });
