@@ -17,10 +17,16 @@ const MultipleChoice = props => {
     <Item>
       <SelectMultiple
         items={options}
-        // if you want to extract just the values of selected answers
-        // value.map(({ value }) => value)
-        onSelectionsChange={value => props.handleSave(value)}
-        selectedItems={Array.isArray(props.savedValue) ? props.savedValue : []}
+        // strip out label that is returned by the component
+        onSelectionsChange={value =>
+          props.handleSave(value.map(({ value }) => value))
+        }
+        selectedItems={
+          Array.isArray(props.savedValue)
+            ? // rebuild the answer to be properly be an object
+              props.savedValue.map(value => ({ label: value, value: value }))
+            : []
+        }
       />
     </Item>
   );
