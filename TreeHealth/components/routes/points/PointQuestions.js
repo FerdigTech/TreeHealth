@@ -4,7 +4,7 @@ import {
   StyleSheet,
   SafeAreaView,
   Text,
-  View,
+  Image,
   Animated,
   AsyncStorage
 } from "react-native";
@@ -140,9 +140,11 @@ export const PointQuestions = props => {
               question => question.questionid === CurrentQuestion
             )}
           />
-          <ProgressBar progress={width}/>
+          <ProgressBar progress={width} />
           <ScrollView style={styles.questionList}>
             {Questions.map((question, index) => {
+              // cache the image, could be swapped out for a cache management to avoid flickering
+              Image.prefetch(question.image);
               return (
                 <ListItem
                   thumbnail
