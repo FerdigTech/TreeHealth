@@ -22,7 +22,7 @@ import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
-import {ProgressBar} from "../../reusable/ProgessBar";
+import { ProgressBar } from "../../reusable/ProgessBar";
 
 getQuestionsData = async ID => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
@@ -51,8 +51,21 @@ const processQuestData = ID => {
   });
 };
 
-export const PointQuestions = props => {
+getAnswerData = async ID => {
+  const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
+  const questionsData = await fetch(
+    globals.SERVER_URL + "/answerByLocationID/" + projectID
+  ).then(response => response.json());
+  return questionsData;
+};
 
+const processAnswerData = ID => {
+  return new Promise(resolve => {
+    resolve(getAnswerData(ID));
+  });
+};
+
+export const PointQuestions = props => {
   const [Questions, setQuestions] = useState([]);
   const [Answers, setAnswers] = useState([]);
   const [progress, setProgress] = useState(0);
@@ -62,6 +75,7 @@ export const PointQuestions = props => {
   let animation = useRef(new Animated.Value(0));
   const context = useContext(ProjectContext);
   const location = props.navigation.getParam("location", null);
+  const locationID = props.navigation.getParam("locationid", null);
 
   const handleQuestion = ID => {
     // first we must pass to current question to the navigator
@@ -71,7 +85,9 @@ export const PointQuestions = props => {
   };
 
   const saveAnswers = answer => {
-    // save the answer locally
+    // we must see if any changes has been actutally be made
+    // if so we'll have to prepare to send them to the server on complete
+
     let newAnswerObj = Answers;
     newAnswerObj[CurrentQuestion] = answer;
     setAnswers(newAnswerObj);
@@ -106,17 +122,45 @@ export const PointQuestions = props => {
     extrapolate: "clamp"
   });
 
+  // when the component is mounted
+  useEffect(() => {
+    // we pull in all questions for this project
+    processQuestData(context.ProjectID).then(results => {
+      setQuestions(
+        results !== "undefined"
+          ? results.hasOwnProperty("result")
+            ? results.result
+            : []
+          : []
+      );
+    });
+
+    // if a locationID is present, the user is editing submited data
+    // so we must pull in their previous answers
+    if (locationID != null) {
+      processAnswerData(locationID).then(results => {
+        let newAnswerObj = [];
+
+        results.result.map(answerObj => {
+          // set the answer to its repsect questionID
+          newAnswerObj[answerObj.questionid] = answerObj.answer;
+          // notated the user has already finished the question
+          setCompleteQuestions(CompleteQuestions => [
+            ...CompleteQuestions,
+            answerObj.questionid
+          ]);
+        });
+        // set all the answers
+        setAnswers(newAnswerObj);
+        // answers have been loaded, so the user has perms to submit the data
+        setProgress(100);
+      });
+    }
+  }, []);
+
+  // whenever progress is updated, we must Animate it
   useEffect(
     () => {
-      processQuestData(-1).then(results => {
-        setQuestions(
-          results !== "undefined"
-            ? results.hasOwnProperty("result")
-              ? results.result
-              : []
-            : []
-        );
-      });
       Animated.timing(animation.current, {
         toValue: progress,
         duration: 100

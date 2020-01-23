@@ -20,17 +20,17 @@ export const AddPoint = props => {
   const netInfo = useNetInfo();
   const context = useContext(ProjectContext);
 
-  const ExistingLocation = props.navigation.getParam("locationid", null);
+  const locationID = props.navigation.getParam("locationid", null);
 
   const FilteredPoints = context.Points.filter(
-    point => point.locationid == ExistingLocation
+    point => point.locationid == locationID
   );
 
   const { longitude, latitude } =
     FilteredPoints.length >= 1 ? FilteredPoints[0] : {};
 
   useEffect(() => {
-    if (ExistingLocation == null) {
+    if (locationID == null) {
       _getLocationAsync();
       Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High
@@ -80,7 +80,7 @@ export const AddPoint = props => {
     // this isn't a guest user
     if (context.UserID != null) {
       // if we are editing..
-      if (ExistingLocation != null) {
+      if (locationID != null) {
         // Then the current coordinates do not match that off the old coordinates
         // we need to update that information
         if (
@@ -93,11 +93,11 @@ export const AddPoint = props => {
       // if we are editting, send over a locationID otherwise send over the location
       NavigationService.navigate(
         "PointQuestions",
-        ExistingLocation == null
+        locationID == null
           ? {
               location: location
             }
-          : { locationid: ExistingLocation }
+          : { locationid: locationID }
       );
     } else {
       Toast.show({
@@ -116,7 +116,7 @@ export const AddPoint = props => {
       <ScrollView>
         {location == null &&
           netInfo.isConnected &&
-          ExistingLocation == null && (
+          locationID == null && (
             <View style={styles.loadingView}>
               <Text style={styles.loadingInstrHeader}>Processing Location</Text>
               <ActivityIndicator />
@@ -130,7 +130,7 @@ export const AddPoint = props => {
             </View>
           )}
         {!netInfo.isConnected &&
-          ExistingLocation == null && (
+          locationID == null && (
             <View style={styles.offlineView}>
               <Text style={styles.offlineHeadInstr}>Offline Mode</Text>
               <Text style={styles.offlineInstr}>
@@ -140,7 +140,7 @@ export const AddPoint = props => {
             </View>
           )}
 
-        {ExistingLocation != null && (
+        {locationID != null && (
           <View style={styles.offlineView}>
             <Text style={styles.offlineHeadInstr}>Edit Mode</Text>
             <Text style={styles.offlineInstr}>
