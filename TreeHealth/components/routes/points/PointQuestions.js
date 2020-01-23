@@ -68,6 +68,7 @@ const processAnswerData = ID => {
 export const PointQuestions = props => {
   const [Questions, setQuestions] = useState([]);
   const [Answers, setAnswers] = useState([]);
+  const [SavedAnswers, setSavedAnswers] = useState([]);
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [ShowModal, setShowModal] = useState(false);
@@ -85,9 +86,6 @@ export const PointQuestions = props => {
   };
 
   const saveAnswers = answer => {
-    // we must see if any changes has been actutally be made
-    // if so we'll have to prepare to send them to the server on complete
-
     let newAnswerObj = Answers;
     newAnswerObj[CurrentQuestion] = answer;
     setAnswers(newAnswerObj);
@@ -99,11 +97,23 @@ export const PointQuestions = props => {
   };
 
   const addToQueue = () => {
-    // send over the location and all the answers
-    context.addToOfflineQueue({ location: location, answers: Answers });
-    NavigationService.navigate("Map", {
-      projectName: context.ProjectName
-    });
+    if (locationID == null) {
+      // send over the location and all the answers
+      context.addToOfflineQueue({ location: location, answers: Answers });
+      NavigationService.navigate("Map", {
+        projectName: context.ProjectName
+      });
+    } else {
+      // if there are any difference in answers we must send it to the server
+      SavedAnswers.filter(
+        savedAnswer =>
+          JSON.stringify(Answers[savedAnswer.questionID]) !=
+          JSON.stringify(savedAnswer.answer)
+      ).map(differentAnswer => {
+        // we must send an update to /answer/update for answerID of differentAnswer.answerID
+        // to have an updated value
+      });
+    }
   };
 
   const finishQuestion = ID => {
@@ -149,7 +159,20 @@ export const PointQuestions = props => {
             ...CompleteQuestions,
             answerObj.questionid
           ]);
+
+          // save the old values to compare to later
+          const SavedAnswerObj = {
+            questionID: answerObj.questionid,
+            answerID: answerObj.answerid,
+            answer: answerObj.answer
+          };
+
+          let OldSavedAnswersVal = SavedAnswers;
+
+          OldSavedAnswersVal.push(SavedAnswerObj);
+          setSavedAnswers(OldSavedAnswersVal);
         });
+
         // set all the answers
         setAnswers(newAnswerObj);
         // answers have been loaded, so the user has perms to submit the data
