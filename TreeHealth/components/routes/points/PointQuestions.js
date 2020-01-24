@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect, useContext } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useContext,
+  useReducer
+} from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -16,7 +22,8 @@ import {
   Right,
   Body,
   Thumbnail,
-  Button
+  Button,
+  Toast
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
@@ -101,9 +108,6 @@ export const PointQuestions = props => {
     if (locationID == null) {
       // send over the location and all the answers
       context.addToOfflineQueue({ location: location, answers: Answers });
-      NavigationService.navigate("Map", {
-        projectName: context.ProjectName
-      });
     } else {
       // if there are any difference in answers we must send it to the server
       SavedAnswers.filter(savedAnswer => {
@@ -115,15 +119,20 @@ export const PointQuestions = props => {
             : _.difference(answerTwo, answerOne);
         return Array.isArray(answerOne)
           ? differentOfLarger.length !== 0
-          : answerOne !== answerTwo;
+          : // old answer is a string so could be carded to int (so no strict typing)
+            answerOne != answerTwo;
       }).map(differentAnswer => {
-        console.log(differentAnswer.answerID.toString() + " is different.");
-        // we must send an update to /answer/update for answerID of differentAnswer.answerID
-        // to have an updated value
+        const AnswerToUpdate = {
+          answerID: differentAnswer.answerID,
+          answer: Answers[differentAnswer.questionID]
+        };
+        context.addToOfflineQueue(AnswerToUpdate);
       });
     }
+    NavigationService.navigate("Map", {
+      projectName: context.ProjectName
+    });
   };
-
   const finishQuestion = ID => {
     if (!CompleteQuestions.includes(ID)) {
       setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
@@ -155,7 +164,7 @@ export const PointQuestions = props => {
 
     // if a locationID is present, the user is editing submited data
     // so we must pull in their previous answers
-    if (locationID != null) {
+    if (locationID != null && SavedAnswers.length == 0) {
       processAnswerData(locationID).then(results => {
         let newAnswerObj = [];
 

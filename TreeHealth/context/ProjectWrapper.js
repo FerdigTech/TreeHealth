@@ -129,6 +129,27 @@ const OfflineReducer = (state, action) => {
       return { items: state.items.filter((_, i) => i !== 0) };
     case "set":
       return action.payload;
+    case "updateAnswers":
+      fetch(globals.SERVER_URL + "/answer/update", {
+        cache: "no-store",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        method: "POST",
+        body: JSON.stringify({
+          answerid: state.items[0].answerID,
+          answer: state.items[0].answer
+        })
+      }).then(res => {
+        if (res.ok) {
+          // if the update happens, then we will update the queue
+          const oldStateItems = state.items;
+          delete oldStateItems[0];
+          return { items: [...oldStateItems] };
+        }
+      });
+      return state;
     case "sendAnswers":
       fetch(globals.SERVER_URL + "/answer/create", {
         cache: "no-store",
@@ -390,7 +411,19 @@ export const ProjectWrapper = ({ children }) => {
 
   const netInfo = useNetInfo();
 
-  const processAsync = async (answer, questionid, locationID, userid) => {
+  const processUpdaeAsync = async (answer, userid, answerID) => {
+    return await dispatcher({
+      type: "updateAnswers",
+      payload: { answer, userid, answerID }
+    });
+  };
+
+  const processAsync = async (
+    answer,
+    questionid = null,
+    locationID = null,
+    userid
+  ) => {
     return await dispatcher({
       type: "sendAnswers",
       payload: { answer, questionid, locationID, userid }
@@ -407,60 +440,89 @@ export const ProjectWrapper = ({ children }) => {
           if (OfflineStateQ.items.length > 0) {
             // if the location ID hasn't been set
             if (!OfflineStateQ.items[0].hasOwnProperty("LocationID")) {
-              // get the coordinates and convert it to a coordinateID
-              const {
-                longitude,
-                latitude
-              } = OfflineStateQ.items[0].location.coords;
-
-              // once we get the ID for the location
-              processLocationID(
-                longitude,
-                latitude,
-                (projectid = ProjectID),
-                (userid = UserID)
-              ).then(locationID => {
-                if (locationID != -1) {
-                  // on sucesss copy state
-                  let StateCopy = Object.assign({}, OfflineStateQ);
-                  // create property LocationID and set it
-                  StateCopy.items[0].LocationID = locationID;
-                  // update our global state
-                  dispatcher({ type: "set", payload: StateCopy });
-                  // push to the server
-
-                  Promise.all(
-                    StateCopy.items[0].answers.map((answer, questionid) =>
-                      processAsync(
-                        answer,
-                        questionid,
-                        locationID,
-                        (userid = UserID)
-                      )
-                    )
-                  ).then(() => {
-                    dispatcher({
-                      type: "pop"
-                    });
+              if (OfflineStateQ.items[0].hasOwnProperty("answerID")) {
+                let StateCopy = Object.assign({}, OfflineStateQ);
+                Promise.all(
+                  processUpdaeAsync(
+                    (answer = StateCopy.items[0].answer),
+                    (userid = UserID),
+                    (answerID = StateCopy.items[0].answerID)
+                  )
+                ).then(() => {
+                  dispatcher({
+                    type: "pop"
                   });
-                }
-              });
+                });
+              } else {
+                // get the coordinates and convert it to a coordinateID
+                const {
+                  longitude,
+                  latitude
+                } = OfflineStateQ.items[0].location.coords;
+
+                // once we get the ID for the location
+                processLocationID(
+                  longitude,
+                  latitude,
+                  (projectid = ProjectID),
+                  (userid = UserID)
+                ).then(locationID => {
+                  if (locationID != -1) {
+                    // on sucesss copy state
+                    let StateCopy = Object.assign({}, OfflineStateQ);
+                    // create property LocationID and set it
+                    StateCopy.items[0].LocationID = locationID;
+                    // update our global state
+                    dispatcher({ type: "set", payload: StateCopy });
+                    // push to the server
+
+                    Promise.all(
+                      StateCopy.items[0].answers.map((answer, questionid) =>
+                        processAsync(
+                          answer,
+                          questionid,
+                          locationID,
+                          (userid = UserID)
+                        )
+                      )
+                    ).then(() => {
+                      dispatcher({
+                        type: "pop"
+                      });
+                    });
+                  }
+                });
+              }
             } else {
               // push to the server
-              Promise.all(
-                OfflineStateQ.items[0].answers.map((answer, questionid) =>
-                  processAsync(
-                    answer,
-                    questionid,
-                    OfflineStateQ.items[0].LocationID,
-                    (userid = UserID)
+              if (OfflineStateQ.items[0].hasOwnProperty("answerID")) {
+                Promise.all(
+                  processUpdaeAsync(
+                    (answer = StateCopy.items[0].answer),
+                    (userid = UserID),
+                    (answerID = StateCopy.items[0].answerID)
                   )
-                )
-              ).then(() => {
-                dispatcher({
-                  type: "pop"
+                ).then(() => {
+                  dispatcher({
+                    type: "pop"
+                  });
                 });
-              });
+              } else {
+                Promise.all(
+                  OfflineStateQ.items[0].answers.map((answer, questionid) =>
+                    processAsync(
+                      answer,
+                      questionid,
+                      OfflineStateQ.items[0].LocationID,
+                      (userid = UserID)
+                    )
+                  )
+                ).then(() => {
+                  dispatcher({
+                    type: "pop"
+                  });
+                });
+              }
             }
           }
         }
