@@ -14,6 +14,7 @@
     "moment": "^2.24.0",
     "native-base": "^2.13.8",
     "prop-types": "^15.7.2",
+    "rbush": "^3.0.1",
     "react": "16.8.3",
     "react-dom": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-35.0.0.tar.gz",

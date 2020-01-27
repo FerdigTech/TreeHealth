@@ -16,6 +16,7 @@ import { ProjectCosumer } from "../../../context/ProjectProvider";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import Moment from "moment";
+import RBush from "rbush";
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
@@ -26,6 +27,7 @@ export const MapDisplay = props => {
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
   let mapRef = null;
+  const tree = new RBush();
 
   // from the filter
   const DropDownVisible = props.navigation.getParam("DropDownVisible", false);
@@ -34,6 +36,23 @@ export const MapDisplay = props => {
   const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
+  const VisibleMarkers = props.navigation.getParam("VisibleMarkers", "");
+
+  _onRegionChangeComplete = region => {
+    let { width, height } = Dimensions.get("window");
+    const ASPECT_RATIO = width / height;
+    // Get points that are inside the region.
+    visibleItems = tree.search({
+      // Provide the coordinates of the south-west, north-east corners of the region.
+      minX: region.longitude - region.longitudeDelta * ASPECT_RATIO,
+      minY: region.latitude - region.latitudeDelta * ASPECT_RATIO,
+      maxX: region.longitude + region.longitudeDelta * ASPECT_RATIO,
+      maxY: region.latitude + region.latitudeDelta * ASPECT_RATIO
+    });
+    props.navigation.setParams({
+      VisibleMarkers: visibleItems
+    });
+  };
 
   _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
@@ -91,9 +110,22 @@ export const MapDisplay = props => {
             showsTraffic={false}
             loadingEnabled={true}
             cacheEnabled={true}
+            onRegionChangeComplete={_onRegionChangeComplete}
           >
             <ProjectCosumer>
-              {context => setPoints(context.Points)}
+              {context => {
+                setPoints(context.Points);
+                tree.load(
+                  context.Points.map(point => {
+                    return {
+                      minY: point.latitude,
+                      minX: point.longitude,
+                      maxY: point.latitude,
+                      maxX: point.longitude
+                    };
+                  })
+                );
+              }}
             </ProjectCosumer>
             {Points.filter(
               point =>
@@ -186,7 +218,8 @@ export const MapDisplay = props => {
               FilterAffilation,
               OnlyAffilation,
               EndDateFilter,
-              dateFilter
+              dateFilter,
+              VisibleMarkers
             })
           }
           funnelToggle={() => toggleDropVis()}

@@ -1,5 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ScrollView, TouchableOpacity, Text, StyleSheet } from "react-native";
+import {
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  View
+} from "react-native";
 import { QuestionItem } from "./QuestionItem";
 import {
   Container,
@@ -13,6 +19,7 @@ import {
 import { FilterModal } from "../../reusable/FilterModal";
 import { ProjectContext } from "../../../context/ProjectProvider";
 import Moment from "moment";
+import RBush from "rbush";
 
 export const QuestionList = props => {
   const [Points, setPoints] = useState([]);
@@ -24,6 +31,8 @@ export const QuestionList = props => {
   const OnlyAffilation = props.navigation.getParam("OnlyAffilation", false);
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
+  const VisibleMarkers = props.navigation.getParam("VisibleMarkers", []);
+  const tree = new RBush();
 
   toggleDropVis = () => {
     const DropDownVisible = props.navigation.getParam("DropDownVisible");
@@ -40,6 +49,16 @@ export const QuestionList = props => {
     <Container>
       <Content>
         <ScrollView style={{ flex: 1 }}>
+          {VisibleMarkers.length != Points.length && (
+            <View style={styles.ZoomWarning}>
+              <Text style={styles.ZoomWarnTxt}>
+                A zoom filter has been applied
+              </Text>
+              <Text style={styles.ZoomWarnTxt}>
+                This will remove records that you're unable to see on the map
+              </Text>
+            </View>
+          )}
           {Points.filter(
             point => !FilterAffilation || !point.hasOwnProperty("affiliationid")
           )
@@ -78,6 +97,15 @@ export const QuestionList = props => {
                     Moment(EndDateFilter)
                   ))
             )
+            .filter(point => {
+              tree.load(VisibleMarkers);
+              return tree.collides({
+                minY: point.latitude,
+                minX: point.longitude,
+                maxY: point.latitude,
+                maxX: point.longitude
+              });
+            })
             .map((point, index) => {
               return (
                 <QuestionItem
@@ -161,5 +189,13 @@ const styles = StyleSheet.create({
   filterIcon: {
     backgroundColor: "#d9534f",
     zIndex: 5
+  },
+  ZoomWarning: {
+    backgroundColor: "#f0ad4e"
+  },
+  ZoomWarnTxt: {
+    textAlign: "center",
+    fontWeight: "bold",
+    padding: 5
   }
 });
