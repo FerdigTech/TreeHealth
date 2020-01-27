@@ -128,12 +128,12 @@ export const MapDisplay = props => {
               .filter(
                 point =>
                   Operator != "range" ||
-                  Moment(Moment.unix(point.createddate)).isSameOrAfter(
+                  (Moment(Moment.unix(point.createddate)).isSameOrAfter(
                     Moment(dateFilter)
                   ) &&
-                  Moment(Moment.unix(point.createddate)).isSameOrBefore(
-                    Moment(EndDateFilter)
-                  )
+                    Moment(Moment.unix(point.createddate)).isSameOrBefore(
+                      Moment(EndDateFilter)
+                    ))
               )
               .map((point, index) => {
                 return (
@@ -142,7 +142,11 @@ export const MapDisplay = props => {
                       longitude: point.longitude,
                       latitude: point.latitude
                     }}
-                    title={point.title}
+                    title={
+                      Moment.unix(point.createddate).format("LL") +
+                      " - " +
+                      point.county
+                    }
                     // seems like when rerendering, react uses the key to update
                     // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
                     // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684
@@ -152,6 +156,10 @@ export const MapDisplay = props => {
                     pinColor={
                       point.hasOwnProperty("affiliationid") ? "blue" : "red"
                     }
+                    // this pends if the user can edit the point
+                    draggable={true}
+                    // TODO: once a user drags a point, it should bring them to the edit screen
+                    onDragEnd={() => {}}
                   />
                 );
               })}
