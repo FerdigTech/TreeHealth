@@ -4,6 +4,29 @@ import { Button, Text, Icon, Form, Item, Picker, Textarea } from "native-base";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import SelectMultiple from "react-native-select-multiple";
+import { Camera } from "expo-camera";
+import * as Permissions from "expo-permissions";
+
+const ImageAnswer = props => {
+  const [hasPermission, setHasPermission] = useState(null);
+  useEffect(() => {
+    (async () => {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA);
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+  if (hasPermission === false || hasPermission === null) {
+    return <Text>Please give access to use the camera</Text>;
+  }
+  return (
+    <View style={styles.ImageAnswer}>
+      <Button iconLeft round danger>
+        <Icon name="camera" />
+        <Text>Use Camera</Text>
+      </Button>
+    </View>
+  );
+};
 
 const MultipleChoice = props => {
   useEffect(() => {
@@ -178,7 +201,8 @@ export const QuestionModal = props => {
                     savedValue={Answer}
                     handleSave={setAnswer}
                   />
-                ))}
+                )) ||
+                (questiontype == "Image" && <ImageAnswer />)}
             </Form>
           </ScrollView>
         </ScrollView>
@@ -232,5 +256,9 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: "100%"
+  },
+  ImageAnswer: {
+    alignSelf: "center",
+    maxWidth: "50%"
   }
 });
