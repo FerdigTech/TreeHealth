@@ -311,8 +311,6 @@ export const ProjectWrapper = ({ children }) => {
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
 
-  const [ForceQueue, setForceQueue] = useState(false);
-
   const [OfflineStateQ, dispatcher] = useReducer(
     OfflineReducer,
     { items: [] },
@@ -495,41 +493,27 @@ export const ProjectWrapper = ({ children }) => {
               }
             } else {
               // push to the server
-              if (OfflineStateQ.items[0].hasOwnProperty("answerID")) {
-                Promise.all(
-                  processUpdaeAsync(
-                    (answer = StateCopy.items[0].answer),
-                    (userid = UserID),
-                    (answerID = StateCopy.items[0].answerID)
+              Promise.all(
+                OfflineStateQ.items[0].answers.map((answer, questionid) =>
+                  processAsync(
+                    answer,
+                    questionid,
+                    OfflineStateQ.items[0].LocationID,
+                    (userid = UserID)
                   )
-                ).then(() => {
-                  dispatcher({
-                    type: "pop"
-                  });
+                )
+              ).then(() => {
+                dispatcher({
+                  type: "pop"
                 });
-              } else {
-                Promise.all(
-                  OfflineStateQ.items[0].answers.map((answer, questionid) =>
-                    processAsync(
-                      answer,
-                      questionid,
-                      OfflineStateQ.items[0].LocationID,
-                      (userid = UserID)
-                    )
-                  )
-                ).then(() => {
-                  dispatcher({
-                    type: "pop"
-                  });
-                });
-              }
+              });
             }
           }
         }
       }
     },
     // if change in item queue or net connectivity try to do something
-    [OfflineStateQ.items, netInfo.isConnected, ForceQueue]
+    [OfflineStateQ.items, netInfo.isConnected]
   );
 
   return (
@@ -572,9 +556,6 @@ export const ProjectWrapper = ({ children }) => {
         OfflineQueue: OfflineStateQ.items,
         addToOfflineQueue: locationItem => {
           dispatcher({ type: "add", payload: locationItem });
-        },
-        forceSendQueue: () => {
-          setForceQueue(!ForceQueue);
         },
         processSignup: (name, email, pass) => HandleSignup(name, email, pass),
         processLogin: (email, pass) => HandleLogin(email, pass),

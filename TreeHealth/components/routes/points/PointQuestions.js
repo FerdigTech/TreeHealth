@@ -152,15 +152,18 @@ export const PointQuestions = props => {
   // when the component is mounted
   useEffect(() => {
     // we pull in all questions for this project
-    processQuestData(context.ProjectID).then(results => {
-      setQuestions(
-        results !== "undefined"
-          ? results.hasOwnProperty("result")
-            ? results.result
+
+    if (Questions.length <= 0) {
+      processQuestData(context.ProjectID).then(results => {
+        setQuestions(
+          results !== "undefined"
+            ? results.hasOwnProperty("result")
+              ? results.result
+              : []
             : []
-          : []
-      );
-    });
+        );
+      });
+    }
 
     // if a locationID is present, the user is editing submited data
     // so we must pull in their previous answers
