@@ -58,6 +58,12 @@ export const MapDisplay = props => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION);
     if (status !== "granted") {
       setError("Permission to access location was denied");
+    } else {
+      Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High
+      }).then(location => {
+        setLocation(location);
+      });
     }
   };
 
@@ -82,11 +88,6 @@ export const MapDisplay = props => {
 
   useEffect(() => {
     _getLocationAsync();
-    Location.getCurrentPositionAsync({
-      accuracy: Location.Accuracy.High
-    }).then(location => {
-      setLocation(location);
-    });
   }, []);
 
   toggleDropVis = () => {
