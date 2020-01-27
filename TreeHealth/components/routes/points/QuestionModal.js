@@ -20,7 +20,7 @@ const ImageAnswer = props => {
   }
   return (
     <View style={styles.ImageAnswer}>
-      <Button iconLeft round danger>
+      <Button iconLeft round>
         <Icon name="camera" />
         <Text>Use Camera</Text>
       </Button>
@@ -156,30 +156,36 @@ export const QuestionModal = props => {
             <Button info style={styles.QuestionIcon}>
               <Icon style={styles.QuestionIconTxt} name="information" />
             </Button>
-            <Text type={styles.QuestionTxt}>{question}</Text>
-            <Button
-              block
-              rounded
-              style={styles.imageBtn}
-              onPress={() => setImagleViewable(!ImagleViewable)}
-            >
-              <Text style={{ color: "white" }}>
-                {ImagleViewable ? "Hide" : "View"} Image
-              </Text>
-            </Button>
-            <Modal
-              style={styles.imgModal}
-              visible={ImagleViewable}
-              transparent={false}
-              onRequestClose={() => setImagleViewable(false)}
-            >
-              <ImageViewer
-                enableSwipeDown={true}
-                swipeDownThreshold={200}
-                onSwipeDown={() => setImagleViewable(false)}
-                imageUrls={[{ url: image }]}
-              />
-            </Modal>
+            {question != "" && (
+              <Text type={styles.QuestionTxt}>{question}</Text>
+            )}
+            {questiontype != "Image" && (
+              <React.Fragment>
+                <Button
+                  block
+                  rounded
+                  style={styles.imageBtn}
+                  onPress={() => setImagleViewable(!ImagleViewable)}
+                >
+                  <Text style={{ color: "white" }}>
+                    {ImagleViewable ? "Hide" : "View"} Image
+                  </Text>
+                </Button>
+                <Modal
+                  style={styles.imgModal}
+                  visible={ImagleViewable}
+                  transparent={false}
+                  onRequestClose={() => setImagleViewable(false)}
+                >
+                  <ImageViewer
+                    enableSwipeDown={true}
+                    swipeDownThreshold={200}
+                    onSwipeDown={() => setImagleViewable(false)}
+                    imageUrls={[{ url: image }]}
+                  />
+                </Modal>
+              </React.Fragment>
+            )}
             <Form>
               {(questiontype == "multiple-choice" && (
                 <MultipleChoice
