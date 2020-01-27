@@ -30,6 +30,7 @@ import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 import { ProgressBar } from "../../reusable/ProgessBar";
+import { AppLoading } from "expo";
 import _ from "underscore";
 
 getQuestionsData = async ID => {
@@ -211,6 +212,13 @@ export const PointQuestions = props => {
     },
     [progress]
   );
+
+  if (
+    (SavedAnswers.length <= 0 && locationID != null) ||
+    Questions.length <= 0
+  ) {
+    return <AppLoading />;
+  }
 
   // TODO: if we get passed a locationID, then we must send a request to /answerByLocationID/<locationID>
   // and set the Answers state to be all the response values
