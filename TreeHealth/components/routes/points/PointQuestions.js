@@ -65,9 +65,9 @@ const processQuestData = ID => {
 };
 
 getAnswerData = async ID => {
-  const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
+  const locationID = ID == -1 || ID == "undefined" ? "" : ID.toString();
   const questionsData = await fetch(
-    globals.SERVER_URL + "/answerByLocationID/" + projectID
+    globals.SERVER_URL + "/answerByLocationID/" + locationID
   ).then(response => response.json());
   return questionsData;
 };
@@ -111,7 +111,9 @@ export const PointQuestions = props => {
   };
 
   const handleCamera = async cb => {
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      base64: true
+    });
     if (!result.cancelled) {
       saveAnswers(result.uri);
       cb.apply(result.uri);
@@ -121,8 +123,7 @@ export const PointQuestions = props => {
 
   const handlePicker = async cb => {
     const result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [4, 3]
+      base64: true
     });
     if (!result.cancelled) {
       saveAnswers(result.uri);
@@ -260,8 +261,7 @@ export const PointQuestions = props => {
   if (HasPermission === false) {
     return <Text>Please give access to use the camera and camera roll.</Text>;
   }
-  // TODO: if we get passed a locationID, then we must send a request to /answerByLocationID/<locationID>
-  // and set the Answers state to be all the response values
+
   return (
     <SafeAreaView style={styles.container}>
       <Container>

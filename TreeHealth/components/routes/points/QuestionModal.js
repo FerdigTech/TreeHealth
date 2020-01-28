@@ -160,6 +160,7 @@ export const QuestionModal = props => {
     setAnswer("");
   };
   return (
+    // TODO: Add a time picker, so that users can edit their time
     <View style={{ flex: 1 }}>
       <Modal
         visible={props.ShowModal}
