@@ -1,28 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView } from "react-native";
+import { StyleSheet, View, ScrollView, Image } from "react-native";
 import { Button, Text, Icon, Form, Item, Picker, Textarea } from "native-base";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 import SelectMultiple from "react-native-select-multiple";
-import { Camera } from "expo-camera";
-import * as Permissions from "expo-permissions";
 
 const ImageAnswer = props => {
-  const [hasPermission, setHasPermission] = useState(null);
-  useEffect(() => {
-    (async () => {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA);
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-  if (hasPermission === false || hasPermission === null) {
-    return <Text>Please give access to use the camera</Text>;
-  }
   return (
     <View style={styles.ImageAnswer}>
-      <Button iconLeft round>
+      {props.savedValue != "" && (
+        <Image
+          source={{
+            uri: props.savedValue
+          }}
+          // 3x4 since the pictures are 3x4
+          style={styles.currentImg}
+        />
+      )}
+      <Button
+        style={styles.ImageAnsBtn}
+        onPress={() => props.handleCamera(() => props.handleSave)}
+        iconLeft
+        round
+      >
         <Icon name="camera" />
         <Text>Use Camera</Text>
+      </Button>
+      <Button
+        style={styles.ImageAnsBtn}
+        onPress={() => props.handlePicker(() => props.handleSave)}
+        iconLeft
+        round
+      >
+        <Icon name="images" />
+        <Text>Select from gallary</Text>
       </Button>
     </View>
   );
@@ -37,21 +48,23 @@ const MultipleChoice = props => {
   const { options } = props;
 
   return (
-    <Item>
-      <SelectMultiple
-        items={options}
-        // strip out label that is returned by the component
-        onSelectionsChange={value =>
-          props.handleSave(value.map(({ value }) => value))
-        }
-        selectedItems={
-          Array.isArray(props.savedValue)
-            ? // rebuild the answer to be properly be an object
-              props.savedValue.map(value => ({ label: value, value: value }))
-            : []
-        }
-      />
-    </Item>
+    <Form>
+      <Item>
+        <SelectMultiple
+          items={options}
+          // strip out label that is returned by the component
+          onSelectionsChange={value =>
+            props.handleSave(value.map(({ value }) => value))
+          }
+          selectedItems={
+            Array.isArray(props.savedValue)
+              ? // rebuild the answer to be properly be an object
+                props.savedValue.map(value => ({ label: value, value: value }))
+              : []
+          }
+        />
+      </Item>
+    </Form>
   );
 };
 
@@ -62,16 +75,18 @@ const TextInput = props => {
     }
   }, []);
   return (
-    <Item>
-      <Textarea
-        style={styles.textInput}
-        rowSpan={5}
-        bordered
-        value={props.savedValue}
-        onChangeText={value => props.handleSave(value.toString())}
-        placeholder="Type your answer"
-      />
-    </Item>
+    <Form>
+      <Item>
+        <Textarea
+          style={styles.textInput}
+          rowSpan={5}
+          bordered
+          value={props.savedValue}
+          onChangeText={value => props.handleSave(value.toString())}
+          placeholder="Type your answer"
+        />
+      </Item>
+    </Form>
   );
 };
 
@@ -83,24 +98,32 @@ const DropDown = props => {
     }
   }, []);
   return (
-    <Item picker>
-      <Picker
-        mode="dropdown"
-        iosIcon={<Icon name="arrow-down" />}
-        style={{ width: undefined }}
-        placeholder="Select your answer"
-        placeholderStyle={{ color: "#ccc" }}
-        placeholderIconColor="black"
-        selectedValue={props.savedValue == "" ? 0 : parseInt(props.savedValue)}
-        onValueChange={value => props.handleSave(value.toString())}
-      >
-        {options.map((option, index) => {
-          return (
-            <Picker.Item label={option.toString()} key={index} value={index} />
-          );
-        })}
-      </Picker>
-    </Item>
+    <Form>
+      <Item picker>
+        <Picker
+          mode="dropdown"
+          iosIcon={<Icon name="arrow-down" />}
+          style={{ width: undefined }}
+          placeholder="Select your answer"
+          placeholderStyle={{ color: "#ccc" }}
+          placeholderIconColor="black"
+          selectedValue={
+            props.savedValue == "" ? 0 : parseInt(props.savedValue)
+          }
+          onValueChange={value => props.handleSave(value.toString())}
+        >
+          {options.map((option, index) => {
+            return (
+              <Picker.Item
+                label={option.toString()}
+                key={index}
+                value={index}
+              />
+            );
+          })}
+        </Picker>
+      </Item>
+    </Form>
   );
 };
 
@@ -186,30 +209,36 @@ export const QuestionModal = props => {
                 </Modal>
               </React.Fragment>
             )}
-            <Form>
-              {(questiontype == "multiple-choice" && (
-                <MultipleChoice
+
+            {(questiontype == "multiple-choice" && (
+              <MultipleChoice
+                options={options}
+                savedValue={Answer}
+                handleSave={setAnswer}
+              />
+            )) ||
+              (questiontype == "Text" && (
+                <TextInput
                   options={options}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
               )) ||
-                (questiontype == "Text" && (
-                  <TextInput
-                    options={options}
-                    savedValue={Answer}
-                    handleSave={setAnswer}
-                  />
-                )) ||
-                (questiontype == "Dropdown" && (
-                  <DropDown
-                    options={options}
-                    savedValue={Answer}
-                    handleSave={setAnswer}
-                  />
-                )) ||
-                (questiontype == "Image" && <ImageAnswer />)}
-            </Form>
+              (questiontype == "Dropdown" && (
+                <DropDown
+                  options={options}
+                  savedValue={Answer}
+                  handleSave={setAnswer}
+                />
+              )) ||
+              (questiontype == "Image" && (
+                <ImageAnswer
+                  handlePicker={props.handlePicker}
+                  handleCamera={props.handleCamera}
+                  savedValue={Answer}
+                  handleSave={setAnswer}
+                />
+              ))}
           </ScrollView>
         </ScrollView>
       </Modal>
@@ -265,6 +294,15 @@ const styles = StyleSheet.create({
   },
   ImageAnswer: {
     alignSelf: "center",
-    maxWidth: "50%"
+    padding: 10
+  },
+  currentImg: {
+    height: 300,
+    width: 225,
+    marginBottom: 10
+  },
+  ImageAnsBtn: {
+    marginBottom: 10,
+    marginTop: 10
   }
 });

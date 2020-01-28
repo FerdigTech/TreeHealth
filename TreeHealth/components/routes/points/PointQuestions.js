@@ -12,7 +12,8 @@ import {
   Text,
   Image,
   Animated,
-  AsyncStorage
+  AsyncStorage,
+  TouchableOpacity
 } from "react-native";
 import {
   Container,
@@ -23,7 +24,8 @@ import {
   Body,
   Thumbnail,
   Button,
-  Toast
+  Toast,
+  View
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
@@ -31,6 +33,8 @@ import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 import { ProgressBar } from "../../reusable/ProgessBar";
 import { AppLoading } from "expo";
+import * as ImagePicker from "expo-image-picker";
+import * as Permissions from "expo-permissions";
 import _ from "underscore";
 
 getQuestionsData = async ID => {
@@ -81,6 +85,7 @@ export const PointQuestions = props => {
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [ShowModal, setShowModal] = useState(false);
+  const [HasPermission, setHasPermission] = useState(true);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   let animation = useRef(new Animated.Value(0));
   const context = useContext(ProjectContext);
@@ -105,6 +110,26 @@ export const PointQuestions = props => {
     setShowModal(false);
   };
 
+  const handleCamera = async cb => {
+    const result = await ImagePicker.launchCameraAsync();
+    if (!result.cancelled) {
+      saveAnswers(result.uri);
+      cb.apply(result.uri);
+    }
+    cb.apply("");
+  };
+
+  const handlePicker = async cb => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3]
+    });
+    if (!result.cancelled) {
+      saveAnswers(result.uri);
+      cb.apply(result.uri);
+    }
+    cb.apply("");
+  };
   const addToQueue = () => {
     if (locationID == null) {
       // send over the location and all the answers
@@ -152,8 +177,20 @@ export const PointQuestions = props => {
 
   // when the component is mounted
   useEffect(() => {
-    // we pull in all questions for this project
+    // get perms for camera
+    if (!HasPermission) {
+      (async () => {
+        const cameraPerm = await Permissions.askAsync(Permissions.CAMERA);
+        const cameraRollPerm = await Permissions.askAsync(
+          Permissions.CAMERA_ROLL
+        );
+        setHasPermission(
+          cameraPerm.status === "granted" && cameraRollPerm.status === "granted"
+        );
+      })();
+    }
 
+    // we pull in all questions for this project
     if (Questions.length <= 0) {
       processQuestData(context.ProjectID).then(results => {
         setQuestions(
@@ -220,6 +257,9 @@ export const PointQuestions = props => {
     return <AppLoading />;
   }
 
+  if (HasPermission === false) {
+    return <Text>Please give access to use the camera and camera roll.</Text>;
+  }
   // TODO: if we get passed a locationID, then we must send a request to /answerByLocationID/<locationID>
   // and set the Answers state to be all the response values
   return (
@@ -231,6 +271,8 @@ export const PointQuestions = props => {
             // should save on close and untoggle modal visibility
             handleSave={saveAnswers}
             currentAnswers={Answers}
+            handleCamera={handleCamera}
+            handlePicker={handlePicker}
             QuestionData={Questions.filter(
               question => question.questionid === CurrentQuestion
             )}
