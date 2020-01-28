@@ -191,7 +191,9 @@ const styles = StyleSheet.create({
     zIndex: 5
   },
   ZoomWarning: {
-    backgroundColor: "#f0ad4e"
+    backgroundColor: "#f0ad4e",
+    borderBottomColor: "#c7c7c7",
+    borderBottomWidth: 1
   },
   ZoomWarnTxt: {
     textAlign: "center",

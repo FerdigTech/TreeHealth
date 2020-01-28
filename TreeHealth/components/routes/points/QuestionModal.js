@@ -6,12 +6,22 @@ import ImageViewer from "react-native-image-zoom-viewer";
 import SelectMultiple from "react-native-select-multiple";
 
 const ImageAnswer = props => {
+  let imagePath = "";
+  if (props.savedValue != "") {
+    // if it is a link
+    if (props.savedValue.startsWith("http", 0)) {
+      Image.prefetch(props.savedValue);
+      imagePath = props.savedValue;
+    } else {
+      imagePath = "data:image/png;base64," + props.savedValue;
+    }
+  }
   return (
     <View style={styles.ImageAnswer}>
-      {props.savedValue != "" && (
+      {imagePath != "" && (
         <Image
           source={{
-            uri: props.savedValue
+            uri: imagePath
           }}
           // 3x4 since the pictures are 3x4
           style={styles.currentImg}

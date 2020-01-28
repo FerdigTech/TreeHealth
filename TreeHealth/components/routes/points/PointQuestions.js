@@ -115,8 +115,8 @@ export const PointQuestions = props => {
       base64: true
     });
     if (!result.cancelled) {
-      saveAnswers(result.uri);
-      cb.apply(result.uri);
+      saveAnswers(result.base64);
+      cb.apply(result.base64);
     }
     cb.apply("");
   };
@@ -126,8 +126,8 @@ export const PointQuestions = props => {
       base64: true
     });
     if (!result.cancelled) {
-      saveAnswers(result.uri);
-      cb.apply(result.uri);
+      saveAnswers(result.base64);
+      cb.apply(result.base64);
     }
     cb.apply("");
   };
