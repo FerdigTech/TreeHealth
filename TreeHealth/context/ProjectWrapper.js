@@ -250,7 +250,7 @@ const generateLocationID = async (longitude, latitude, projectid, userid) => {
   )
     .then(res => res.json())
     .then(response => {
-      return response.projectid;
+      return response.locationid;
     })
     .catch(err => {
       return -1;

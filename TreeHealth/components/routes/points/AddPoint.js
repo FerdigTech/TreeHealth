@@ -13,6 +13,7 @@ import * as Permissions from "expo-permissions";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
+import globals from "../../../globals";
 
 export const AddPoint = props => {
   const [location, setLocation] = useState(null);
@@ -76,7 +77,7 @@ export const AddPoint = props => {
     setLocation(newState);
   };
 
-  _handleSubmit = () => {
+  _handleSubmit = async () => {
     // this isn't a guest user
     if (context.UserID != null) {
       // if we are editing..
@@ -87,22 +88,70 @@ export const AddPoint = props => {
           longitude != location.coords.longitude ||
           latitude != location.coords.latitude
         ) {
-          // TODO: push this information to the server
-        }
-      }
-      // if we are editting, send over a locationID otherwise send over the location
-      NavigationService.navigate(
-        "PointQuestions",
-        locationID == null
-          ? {
-              location: location
+          // push this information to the server
+          const sucessUpdate = await fetch(
+            globals.SERVER_URL.toString() + "/location/update/",
+            {
+              cache: "no-store",
+              headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+              },
+              method: "POST",
+              body: JSON.stringify({
+                longitude: location.coords.longitude.toString(),
+                latitude: location.coords.latitude.toString(),
+                locationid: locationID,
+                userid: context.UserID
+              })
             }
-          : { locationid: locationID }
-      );
+          )
+            .then(res => {
+              return res.ok;
+            })
+            .catch(err => {
+              return false;
+            });
+
+          if (sucessUpdate) {
+            Toast.show({
+              text:
+                "Your record location values have been adjusted and updated to the server.",
+              buttonText: "Okay",
+              type: "success",
+              position: "top",
+              duration: 3000
+            });
+            NavigationService.navigate("PointQuestions", {
+              locationid: locationID
+            });
+          } else {
+            // let the user know to retry
+            Toast.show({
+              text:
+                "Attempting to update your record data on the server has failed, please try again in a moment.",
+              buttonText: "Okay",
+              type: "danger",
+              position: "top",
+              duration: 3000
+            });
+          }
+        } else {
+          // no data has changed and continue
+          NavigationService.navigate("PointQuestions", {
+            locationid: locationID
+          });
+        }
+      } else {
+        // not editing
+        NavigationService.navigate("PointQuestions", {
+          location: location
+        });
+      }
     } else {
       Toast.show({
         text:
-          "“Warning! Your data will not be submitted unless you register. This is only to test the app”",
+          "Warning! Your data will not be submitted unless you register. This is only to test the app",
         buttonText: "Okay",
         type: "warning",
         position: "top",
