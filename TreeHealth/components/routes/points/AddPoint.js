@@ -95,7 +95,8 @@ export const AddPoint = props => {
               cache: "no-store",
               headers: {
                 Accept: "application/json",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                'Authorization' : `Bearer ${context.AuthToken}`
               },
               method: "POST",
               body: JSON.stringify({

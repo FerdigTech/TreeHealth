@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@react-native-community/netinfo": "~3.2.1",
+    "base-64": "^0.1.0",
     "expo": "^35.0.0",
+    "expo-image-picker": "~7.0.0",
     "expo-secure-store": "~7.0.0",
     "moment": "^2.24.0",
     "native-base": "^2.13.8",

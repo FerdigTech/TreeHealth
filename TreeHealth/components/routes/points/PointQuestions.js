@@ -37,7 +37,7 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import _ from "underscore";
 
-getQuestionsData = async ID => {
+getQuestionsData = async (ID, AuthToken) => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
   let questionsStored = await AsyncStorage.getItem(
     "questions-PID-" + projectID
@@ -47,7 +47,14 @@ getQuestionsData = async ID => {
     questionsData = JSON.parse(questionsStored);
   } else {
     questionsData = await fetch(
-      globals.SERVER_URL + "/questions/" + projectID
+      globals.SERVER_URL + "/questions/" + projectID,
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${AuthToken}`
+        },
+        method: "POST"
+      }
     ).then(response => response.json());
     await AsyncStorage.setItem(
       "questions-PID-" + projectID,
@@ -58,23 +65,30 @@ getQuestionsData = async ID => {
   return questionsData;
 };
 
-const processQuestData = ID => {
+const processQuestData = (ID, AuthToken) => {
   return new Promise(resolve => {
-    resolve(getQuestionsData(ID));
+    resolve(getQuestionsData(ID, AuthToken));
   });
 };
 
-getAnswerData = async ID => {
+getAnswerData = async (ID, AuthToken) => {
   const locationID = ID == -1 || ID == "undefined" ? "" : ID.toString();
   const questionsData = await fetch(
-    globals.SERVER_URL + "/answerByLocationID/" + locationID
+    globals.SERVER_URL + "/answerByLocationID/" + locationID,
+    {
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${AuthToken}`
+      },
+      method: "POST"
+    }
   ).then(response => response.json());
   return questionsData;
 };
 
-const processAnswerData = ID => {
+const processAnswerData = (ID, AuthToken) => {
   return new Promise(resolve => {
-    resolve(getAnswerData(ID));
+    resolve(getAnswerData(ID, AuthToken));
   });
 };
 
@@ -193,7 +207,7 @@ export const PointQuestions = props => {
 
     // we pull in all questions for this project
     if (Questions.length <= 0) {
-      processQuestData(context.ProjectID).then(results => {
+      processQuestData(context.ProjectID, context.AuthToken).then(results => {
         setQuestions(
           results !== "undefined"
             ? results.hasOwnProperty("result")
@@ -207,7 +221,7 @@ export const PointQuestions = props => {
     // if a locationID is present, the user is editing submited data
     // so we must pull in their previous answers
     if (locationID != null && SavedAnswers.length == 0) {
-      processAnswerData(locationID).then(results => {
+      processAnswerData(locationID, context.AuthToken).then(results => {
         let newAnswerObj = [];
 
         results.result.map(answerObj => {

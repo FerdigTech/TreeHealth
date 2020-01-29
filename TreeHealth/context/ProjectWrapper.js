@@ -6,6 +6,7 @@ import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../services/NavigationService";
 import { Toast, Root } from "native-base";
 import * as SecureStore from "expo-secure-store";
+import { decode } from "base-64";
 
 const ProjectProvider = ProjectContext.Provider;
 
@@ -13,7 +14,7 @@ const setProjectData = async data => {
   return await AsyncStorage.setItem("Projects", JSON.stringify(data));
 };
 // try to get the Project data from cache, if not get from the site.
-getProjectData = async (forceUpdate = false, UserID) => {
+getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
   let projectData = await AsyncStorage.getItem("Projects");
   if (projectData !== null && !forceUpdate) {
     projectData = JSON.parse(projectData);
@@ -21,6 +22,9 @@ getProjectData = async (forceUpdate = false, UserID) => {
     projectData = await fetch(globals.SERVER_URL + "/projects/", {
       cache: "no-store",
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${AuthToken}`
+      },
       body: JSON.stringify({
         userid: UserID != null ? UserID : -1
       })
@@ -38,17 +42,17 @@ getProjectData = async (forceUpdate = false, UserID) => {
   return projectData;
 };
 
-const processProjData = (forceUpdate = false, UserID) => {
+const processProjData = (forceUpdate = false, UserID, AuthToken) => {
   return new Promise(resolve => {
-    resolve(getProjectData(forceUpdate, UserID));
+    resolve(getProjectData(forceUpdate, UserID, AuthToken));
   });
 };
 
 // use hook to get the project data
-const useProjects = UserID => {
+const useProjects = (UserID, AuthToken) => {
   const [Projects, setProjects] = useState([]);
   useEffect(() => {
-    processProjData(false, UserID).then(results => {
+    processProjData(false, UserID, AuthToken).then(results => {
       setProjects(results);
     });
   }, []);
@@ -56,7 +60,7 @@ const useProjects = UserID => {
 };
 
 // try to get the  point data from cache, if not get from the site.
-getPointData = async (ID, userID, forceUpdate = false) => {
+getPointData = async (ID, userID, forceUpdate = false, AuthToken = "") => {
   const projectID = ID == -1 || typeof ID == "undefined" ? "" : ID.toString();
   let pointsData = await AsyncStorage.getItem("Points");
   if (pointsData !== null && !forceUpdate) {
@@ -69,6 +73,9 @@ getPointData = async (ID, userID, forceUpdate = false) => {
     AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
       cache: "no-store",
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${AuthToken}`
+      },
       body: JSON.stringify({
         userid: userID != null ? userID : -1
       })
@@ -78,6 +85,9 @@ getPointData = async (ID, userID, forceUpdate = false) => {
       {
         cache: "no-store",
         method: "POST",
+        headers: {
+          Authorization: `Bearer ${AuthToken}`
+        },
         body: JSON.stringify({
           userid: userID != null ? userID : -1
         })
@@ -88,17 +98,17 @@ getPointData = async (ID, userID, forceUpdate = false) => {
   return pointsData;
 };
 
-const processPntData = (ID, userID, forceUpdate = false) => {
+const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {
   return new Promise(resolve => {
-    resolve(getPointData(ID, userID, forceUpdate));
+    resolve(getPointData(ID, userID, forceUpdate, AuthToken));
   });
 };
 
 // use hook to get the data
-const usePoints = userID => {
+const usePoints = (userID, AuthToken) => {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
-    processPntData(-1, userID).then(results => {
+    processPntData(-1, userID, false, AuthToken).then(results => {
       setPoints(results);
     });
   }, []);
@@ -134,7 +144,8 @@ const OfflineReducer = (state, action) => {
         cache: "no-store",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${action.payload.AuthToken}`
         },
         method: "POST",
         body: JSON.stringify({
@@ -155,7 +166,8 @@ const OfflineReducer = (state, action) => {
         cache: "no-store",
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${action.payload.AuthToken}`
         },
         method: "POST",
         body: JSON.stringify({
@@ -220,7 +232,7 @@ const generateUserToken = async (email, password) => {
     }
   ).then(res => res.json());
   await SecureStore.setItemAsync("userToken", UserData.userid.toString());
-  await SecureStore.setItemAsync("userAuth", UserData.secret.toString());
+  await SecureStore.setItemAsync("userAuth", UserData.access_token.toString());
   return UserData;
 };
 
@@ -230,14 +242,21 @@ const processLogin = (email, password) => {
   });
 };
 
-const generateLocationID = async (longitude, latitude, projectid, userid) => {
+const generateLocationID = async (
+  longitude,
+  latitude,
+  projectid,
+  userid,
+  AuthToken = ""
+) => {
   const locationID = await fetch(
     globals.SERVER_URL.toString() + "/location/create/",
     {
       cache: "no-store",
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthToken}`
       },
       method: "POST",
       body: JSON.stringify({
@@ -258,9 +277,17 @@ const generateLocationID = async (longitude, latitude, projectid, userid) => {
   return locationID;
 };
 
-const processLocationID = (longitude, latitude, projectid, userid) => {
+const processLocationID = (
+  longitude,
+  latitude,
+  projectid,
+  userid,
+  AuthToken
+) => {
   return new Promise(resolve => {
-    resolve(generateLocationID(longitude, latitude, projectid, userid));
+    resolve(
+      generateLocationID(longitude, latitude, projectid, userid, AuthToken)
+    );
   });
 };
 
@@ -300,14 +327,14 @@ const loadStoredQueue = () => {
 
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
-  const ProjectsObj = useProjects(UserID);
+  const ProjectsObj = useProjects(UserID, AuthToken);
   const Projects = ProjectsObj.Projects;
   const setProjects = ProjectsObj.setProjects;
 
   const [ProjectID, setProjectID] = useState(-1);
   const [ProjectName, setProjectName] = useState("");
 
-  const PointsObj = usePoints(UserID);
+  const PointsObj = usePoints(UserID, AuthToken);
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
 
@@ -334,7 +361,7 @@ export const ProjectWrapper = ({ children }) => {
   const userInfo = processUserAuth().then(res => {
     if (res.asyncUserID != UserID && res.asyncToken != AuthToken) {
       setUserID(res.asyncUserID != null ? parseInt(res.asyncUserID) : null);
-      setAuthToken(res.asyncToken != null ? parseInt(res.asyncToken) : null);
+      setAuthToken(res.asyncToken != null ? res.asyncToken : null);
     }
   });
 
@@ -370,15 +397,15 @@ export const ProjectWrapper = ({ children }) => {
     processLogin(email, pass).then(results => {
       if (results.hasOwnProperty("userid")) {
         // when we login update project visibility
-        processProjData(true, UserID).then(results => {
+        processProjData(true, UserID, AuthToken).then(results => {
           setProjects(results);
         });
         // when we login update records visibility
-        processPntData(-1, UserID, true).then(results => {
+        processPntData(-1, UserID, true, AuthToken).then(results => {
           setPoints(results);
         });
         setUserID(results.userid);
-        setAuthToken(results.secret);
+        setAuthToken(results.access_token);
         NavigationService.navigate("Loading");
       } else {
         Toast.show({
@@ -396,11 +423,11 @@ export const ProjectWrapper = ({ children }) => {
     setUserID(null);
     setAuthToken(null);
     // when we logout update project visibility
-    processProjData(true, UserID).then(results => {
+    processProjData(true, UserID, AuthToken).then(results => {
       setProjects(results);
     });
     // when we logout update records visibility
-    processPntData(-1, UserID, true).then(results => {
+    processPntData(-1, UserID, true, AuthToken).then(results => {
       setPoints(results);
     });
     await SecureStore.deleteItemAsync("userToken");
@@ -412,7 +439,7 @@ export const ProjectWrapper = ({ children }) => {
   const processUpdaeAsync = async (answer, userid, answerID) => {
     return await dispatcher({
       type: "updateAnswers",
-      payload: { answer, userid, answerID }
+      payload: { answer, userid, answerID, AuthToken }
     });
   };
 
@@ -424,10 +451,31 @@ export const ProjectWrapper = ({ children }) => {
   ) => {
     return await dispatcher({
       type: "sendAnswers",
-      payload: { answer, questionid, locationID, userid }
+      payload: { answer, questionid, locationID, userid, AuthToken }
     });
   };
+  // TODO: Write a task to check this at intervals
+  useEffect(() => {
+    // if the user is logged in
+    if (AuthToken != null) {
+      // get the expiration date
+      const { exp } = JSON.parse(decode(AuthToken.split(".")[1]));
 
+      // if the JWT has expired
+      if (Math.floor(Date.now() / 1000) > exp) {
+        Toast.show({
+          text:
+            "Your session has expired and you have been logged out as a result.",
+          buttonText: "Okay",
+          type: "warning",
+          position: "top",
+          duration: 3000
+        });
+        HandleLogout();
+        NavigationService.navigate("Loading");
+      }
+    }
+  });
   useEffect(
     () => {
       // if online we should try to push all the data in offline queue
@@ -463,7 +511,8 @@ export const ProjectWrapper = ({ children }) => {
                   longitude,
                   latitude,
                   (projectid = ProjectID),
-                  (userid = UserID)
+                  (userid = UserID),
+                  AuthToken
                 ).then(locationID => {
                   if (locationID != -1) {
                     // on sucesss copy state
@@ -532,7 +581,7 @@ export const ProjectWrapper = ({ children }) => {
               : []
             : [],
         setProjectID: ID => {
-          processPntData(ID, UserID).then(results => {
+          processPntData(ID, UserID, false, AuthToken).then(results => {
             setPoints(results);
             setProjectID(ID);
             setProjectName(
@@ -549,7 +598,7 @@ export const ProjectWrapper = ({ children }) => {
         ProjectID,
         ProjectName,
         updateProjects: () => {
-          processProjData(true, UserID).then(results => {
+          processProjData(true, UserID, AuthToken).then(results => {
             setProjects(results);
           });
         },
