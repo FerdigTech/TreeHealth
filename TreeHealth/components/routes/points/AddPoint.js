@@ -90,7 +90,7 @@ export const AddPoint = props => {
         ) {
           // push this information to the server
           const sucessUpdate = await fetch(
-            globals.SERVER_URL.toString() + "/location/update/",
+            globals.SERVER_URL.toString() + "/location/update",
             {
               cache: "no-store",
               headers: {

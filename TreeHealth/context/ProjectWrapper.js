@@ -191,7 +191,7 @@ const OfflineReducer = (state, action) => {
 };
 const generateUser = async (name, email, password) => {
   const RequestResult = await fetch(
-    globals.SERVER_URL.toString() + "/userAccount/create/",
+    globals.SERVER_URL.toString() + "/userAccount/create",
     {
       cache: "no-store",
       headers: {
@@ -217,7 +217,7 @@ const processSignup = (name, email, pass) => {
 
 const generateUserToken = async (email, password) => {
   const UserData = await fetch(
-    globals.SERVER_URL.toString() + "/userAccount/validate/",
+    globals.SERVER_URL.toString() + "/userAccount/validate",
     {
       cache: "no-store",
       headers: {
@@ -250,7 +250,7 @@ const generateLocationID = async (
   AuthToken = ""
 ) => {
   const locationID = await fetch(
-    globals.SERVER_URL.toString() + "/location/create/",
+    globals.SERVER_URL.toString() + "/location/create",
     {
       cache: "no-store",
       headers: {

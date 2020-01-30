@@ -14,12 +14,15 @@ import {
 } from "native-base";
 import { LogoTitle } from "../../reusable/LogoTitle";
 import { ProjectContext } from "../../../context/ProjectProvider";
+import globals from "../../../globals";
 
 export const RegisterScreen = () => {
   const [Answers, setAnswers] = useState({});
+  const [Affilations, setAffilations] = useState([]);
   const context = useContext(ProjectContext);
 
   useEffect(() => {
+    getAffilations();
     setAnswers({
       name: "",
       email: "",
@@ -31,12 +34,30 @@ export const RegisterScreen = () => {
     });
   }, []);
 
-  const notValid = Answers.name == "" || Answers.email == "" || Answers.password == "" || !Answers.thirteen || !Answers.tos;
+  const notValid =
+    Answers.name == "" ||
+    Answers.email == "" ||
+    Answers.password == "" ||
+    !Answers.thirteen ||
+    !Answers.tos;
 
   const handleSignUp = () => {
     context.processSignup(Answers.name, Answers.email, Answers.password);
   };
 
+  const getAffilations = async () => {
+    await fetch(globals.SERVER_URL + "/affiliations", { method: "POST" })
+      .then(res => res.json())
+      .then(res => {
+        // if we get a result otherwise return nothing
+        if (res.hasOwnProperty("result")) {
+          setAffilations(res.result);
+        } else {
+          setAffilations([]);
+        }
+      })
+      .catch(err => console.log(err));
+  };
   return (
     <SafeAreaView style={styles.signUpView}>
       <ScrollView>
@@ -73,6 +94,29 @@ export const RegisterScreen = () => {
               secureTextEntry={true}
             />
           </Item>
+          <Item picker style={styles.pickers}>
+            <Picker
+              note
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
+              placeholder="Select Affliation"
+              placeholderStyle={styles.labels}
+              placeholderIconColor="#000"
+              onValueChange={value =>
+                setAnswers({ ...Answers, affliation: value })
+              }
+              selectedValue={Answers.affliation}
+            >
+              {Affilations.map(affliate => {
+                return (
+                  <Picker.Item
+                    label={affliate.name}
+                    value={affliate.affiliationid}
+                  />
+                );
+              })}
+            </Picker>
+          </Item>
           <Item style={styles.checkboxes}>
             <Label style={styles.labels}>Atleast 14 years old?</Label>
             <CheckBox
@@ -86,9 +130,7 @@ export const RegisterScreen = () => {
           <Item style={styles.checkboxes}>
             <Label style={styles.labels}>Request Data Access?</Label>
             <CheckBox
-              onPress={() =>
-                setAnswers({ ...Answers, data: !Answers.data })
-              }
+              onPress={() => setAnswers({ ...Answers, data: !Answers.data })}
               checked={Answers.data}
               color="black"
             />
@@ -96,9 +138,7 @@ export const RegisterScreen = () => {
           <View style={styles.terms}>
             <Text>I agree to the terms</Text>
             <CheckBox
-              onPress={() =>
-                setAnswers({ ...Answers, tos: !Answers.tos })
-              }
+              onPress={() => setAnswers({ ...Answers, tos: !Answers.tos })}
               checked={Answers.tos}
               color="black"
             />
@@ -106,7 +146,9 @@ export const RegisterScreen = () => {
         </Form>
         <Container style={styles.SignUpBtnCtn}>
           <Button
-            onPress={() => {handleSignUp()}}
+            onPress={() => {
+              handleSignUp();
+            }}
             style={styles.SignUpBtn}
             rounded
             block
