@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
 import NavigationService from "../../../services/NavigationService";
-import { QuestionItem } from "../questions/QuestionItem";
+import { RecordItem } from "../records/RecordItem";
 import { Container, Content, Footer, FooterTab, Icon, Fab } from "native-base";
 import { ProgressBar } from "../../reusable/ProgessBar";
 
@@ -43,7 +43,7 @@ const FifthStep = () => {
               name="manage"
             >
               <WalkthroughableView>
-                <QuestionItem
+                <RecordItem
                   key={0}
                   indexVal={0}
                   pointData={{
@@ -55,7 +55,7 @@ const FifthStep = () => {
                 />
               </WalkthroughableView>
             </CopilotStep>
-            <QuestionItem
+            <RecordItem
               key={1}
               indexVal={1}
               pointData={{

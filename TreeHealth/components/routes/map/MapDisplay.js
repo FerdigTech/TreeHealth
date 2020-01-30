@@ -213,7 +213,7 @@ export const MapDisplay = props => {
         <FooterTabs
           listIcon="list"
           switchView={() =>
-            NavigationService.navigate("QuestionList", {
+            NavigationService.navigate("RecordList", {
               projectName: currentProject,
               Operator,
               FilterAffilation,

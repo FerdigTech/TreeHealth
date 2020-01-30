@@ -8,11 +8,10 @@ import { RegisterScreen } from "./components/routes/auth/RegisterScreen";
 import { HomeScreen } from "./components/routes/home/HomeScreen";
 import { AboutUsScreen } from "./components/routes/home/AboutUsScreen";
 import { MapDisplay } from "./components/routes/map/MapDisplay";
-import { QuestionList } from "./components/routes/questions/QuestionList";
+import { RecordList } from "./components/routes/records/RecordList";
 import { ProjectOverview } from "./components/routes/projects/ProjectOverview";
 import { AddPoint } from "./components/routes/points/AddPoint";
 import { PointQuestions } from "./components/routes/points/PointQuestions";
-import { PointsStacked } from "./components/routes/map/PointsStacked";
 import IntroScreen from "./components/routes/intro/IntroScreen";
 import SecondIntroScreen from "./components/routes/intro/SecondIntroScreen";
 import ThirdIntroScreen from "./components/routes/intro/ThirdIntroScreen";
@@ -34,8 +33,8 @@ const MainNavigator = createStackNavigator(
     ThirdIntroScreen: ThirdIntroScreen,
     FourthIntroScreen: FourthIntroScreen,
     FifthIntroScreen: FifthIntroScreen,
-    QuestionList: {
-      screen: QuestionList,
+    RecordList: {
+      screen: RecordList,
       navigationOptions: {
         title: "Records"
       }
@@ -63,9 +62,6 @@ const MainNavigator = createStackNavigator(
       navigationOptions: {
         title: "Projects"
       }
-    },
-    PointsStacked: {
-      screen: PointsStacked
     }
   },
   {

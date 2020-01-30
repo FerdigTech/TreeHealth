@@ -7,7 +7,7 @@ import { SwipeRow } from "react-native-swipe-list-view";
 import NavigationService from "../../../services/NavigationService";
 import Moment from "moment";
 
-export const QuestionItem = props => {
+export const RecordItem = props => {
   const context = useContext(ProjectContext);
   const editRecord = locationid => {
     NavigationService.navigate("AddPoint", {
@@ -68,7 +68,7 @@ export const QuestionItem = props => {
   );
 };
 
-QuestionItem.propTypes = {
+RecordItem.propTypes = {
   isDraft: PropTypes.bool.isRequired,
   indexVal: PropTypes.number.isRequired,
   pointData: PropTypes.object.isRequired

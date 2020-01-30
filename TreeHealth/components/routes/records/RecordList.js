@@ -6,7 +6,7 @@ import {
   StyleSheet,
   View
 } from "react-native";
-import { QuestionItem } from "./QuestionItem";
+import { RecordItem } from "./RecordItem";
 import {
   Container,
   Content,
@@ -21,7 +21,7 @@ import { ProjectContext } from "../../../context/ProjectProvider";
 import Moment from "moment";
 import RBush from "rbush";
 
-export const QuestionList = props => {
+export const RecordList = props => {
   const [Points, setPoints] = useState([]);
   const context = useContext(ProjectContext);
   // from the filter
@@ -108,7 +108,7 @@ export const QuestionList = props => {
             })
             .map((point, index) => {
               return (
-                <QuestionItem
+                <RecordItem
                   key={index}
                   indexVal={index}
                   pointData={point}
@@ -145,7 +145,7 @@ export const QuestionList = props => {
   );
 };
 
-QuestionList.navigationOptions = ({ navigation, navigationOptions }) => ({
+RecordList.navigationOptions = ({ navigation, navigationOptions }) => ({
   headerRight: () => (
     <TouchableOpacity onPress={() => navigation.navigate("AddPoint")}>
       <Text style={styles.NavText}>Add Record</Text>
