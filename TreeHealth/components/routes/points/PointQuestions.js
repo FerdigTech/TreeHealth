@@ -117,9 +117,17 @@ export const PointQuestions = props => {
     let newAnswerObj = Answers;
     newAnswerObj[CurrentQuestion] = answer;
     setAnswers(newAnswerObj);
+    if (
+      (CurrentPointData[0].questiontype == "Text" ||
+        CurrentPointData[0].questiontype == "Image") &&
+      answer == ""
+    ) {
+      // was image question or text question and they gave no answer, so it wasn't finished
+    } else {
+      // marked finished
+      finishQuestion(CurrentQuestion);
+    }
 
-    // marked finished
-    finishQuestion(CurrentQuestion);
     // closed modal
     setShowModal(false);
   };
@@ -276,20 +284,21 @@ export const PointQuestions = props => {
     return <Text>Please give access to use the camera and camera roll.</Text>;
   }
 
+  const CurrentPointData = Questions.filter(
+    question => question.questionid === CurrentQuestion
+  );
   return (
     <SafeAreaView style={styles.container}>
       <Container>
         <Content>
           <QuestionModal
             ShowModal={ShowModal}
-            // should save on close and untoggle modal visibility
+            // should save on close and untoggle modal visibility unless image, then we just close the modal
             handleSave={saveAnswers}
             currentAnswers={Answers}
             handleCamera={handleCamera}
             handlePicker={handlePicker}
-            QuestionData={Questions.filter(
-              question => question.questionid === CurrentQuestion
-            )}
+            QuestionData={CurrentPointData}
           />
           <ProgressBar progress={width} />
           <ScrollView style={styles.questionList}>
