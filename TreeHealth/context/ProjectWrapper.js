@@ -189,7 +189,13 @@ const OfflineReducer = (state, action) => {
       throw new Error();
   }
 };
-const generateUser = async (name, email, password) => {
+const generateUser = async (
+  name,
+  email,
+  password,
+  affiliationid = -1,
+  roleid
+) => {
   const RequestResult = await fetch(
     globals.SERVER_URL.toString() + "/userAccount/create",
     {
@@ -202,16 +208,18 @@ const generateUser = async (name, email, password) => {
       body: JSON.stringify({
         name,
         email,
-        password
+        password,
+        affiliationid,
+        roleid
       })
     }
   ).then(res => res.json());
   return RequestResult;
 };
 
-const processSignup = (name, email, pass) => {
+const processSignup = (name, email, pass, affiliationid, roleid) => {
   return new Promise(resolve => {
-    resolve(generateUser(name, email, pass));
+    resolve(generateUser(name, email, pass, affiliationid, roleid));
   });
 };
 
@@ -367,8 +375,8 @@ export const ProjectWrapper = ({ children }) => {
 
   const [AuthToken, setAuthToken] = useState(null);
 
-  const HandleSignup = (name, email, pass) => {
-    processSignup(name, email, pass).then(results => {
+  const HandleSignup = (name, email, pass, affiliationid, roleid) => {
+    processSignup(name, email, pass, affiliationid, roleid).then(results => {
       if (results.hasOwnProperty("result")) {
         if (results.result) {
           Toast.show({
@@ -606,7 +614,8 @@ export const ProjectWrapper = ({ children }) => {
         addToOfflineQueue: locationItem => {
           dispatcher({ type: "add", payload: locationItem });
         },
-        processSignup: (name, email, pass) => HandleSignup(name, email, pass),
+        processSignup: (name, email, pass, affiliationid, roleid) =>
+          HandleSignup(name, email, pass, affiliationid, roleid),
         processLogin: (email, pass) => HandleLogin(email, pass),
         processLogout: () => HandleLogout(),
         UserID,

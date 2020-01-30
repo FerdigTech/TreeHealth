@@ -10,7 +10,8 @@ import {
   Container,
   Picker,
   Icon,
-  CheckBox
+  CheckBox,
+  Toast
 } from "native-base";
 import { LogoTitle } from "../../reusable/LogoTitle";
 import { ProjectContext } from "../../../context/ProjectProvider";
@@ -19,34 +20,71 @@ import globals from "../../../globals";
 export const RegisterScreen = () => {
   const [Answers, setAnswers] = useState({});
   const [Affilations, setAffilations] = useState([]);
+  const [UserRoles, setUserRoles] = useState([]);
   const context = useContext(ProjectContext);
 
   useEffect(() => {
     getAffilations();
+    getRoles();
     setAnswers({
       name: "",
       email: "",
       password: "",
-      affliation: null,
+      affliation: -1,
+      roleid: -1,
       thirteen: false,
       data: false,
       tos: false
     });
   }, []);
 
+  const validateAndError = () => {
+    let errors = [];
+    // email
+    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(Answers.email)) {
+      errors = [...errors, "Invalid email address"];
+    }
+    // password
+    if (Answers.password.length < 8) {
+      errors = [
+        ...errors,
+        "Your password should be at least 8 characters long."
+      ];
+    }
+    return errors;
+  };
+
   const notValid =
     Answers.name == "" ||
     Answers.email == "" ||
     Answers.password == "" ||
+    Answers.roleid < 0 ||
     !Answers.thirteen ||
     !Answers.tos;
 
   const handleSignUp = () => {
-    context.processSignup(Answers.name, Answers.email, Answers.password);
+    const errors = validateAndError();
+    if (errors.length == 0) {
+      context.processSignup(
+        Answers.name,
+        Answers.email,
+        Answers.password,
+        Answers.affliation,
+        Answers.roleid
+      );
+    } else {
+      Toast.show({
+        text: errors.join(" and "),
+        buttonText: "Okay",
+        type: "warning",
+        position: "top",
+        duration: 3000
+      });
+    }
   };
 
   const getAffilations = async () => {
-    await fetch(globals.SERVER_URL + "/affiliations", { method: "POST" })
+    await fetch(globals.SERVER_URL + "/affiliations")
       .then(res => res.json())
       .then(res => {
         // if we get a result otherwise return nothing
@@ -56,8 +94,23 @@ export const RegisterScreen = () => {
           setAffilations([]);
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => setAffilations([]));
   };
+
+  const getRoles = async () => {
+    await fetch(globals.SERVER_URL + "/userRoles")
+      .then(res => res.json())
+      .then(res => {
+        // if we get a result otherwise return nothing
+        if (res.hasOwnProperty("result")) {
+          setUserRoles(res.result);
+        } else {
+          setUserRoles([]);
+        }
+      })
+      .catch(err => setUserRoles([]));
+  };
+
   return (
     <SafeAreaView style={styles.signUpView}>
       <ScrollView>
@@ -99,6 +152,28 @@ export const RegisterScreen = () => {
               note
               mode="dropdown"
               iosIcon={<Icon name="arrow-down" />}
+              placeholder="Select Role"
+              placeholderStyle={styles.labels}
+              placeholderIconColor="#000"
+              onValueChange={value => setAnswers({ ...Answers, roleid: value })}
+              selectedValue={Answers.roleid}
+            >
+              {UserRoles.map(role => {
+                return (
+                  <Picker.Item
+                    label={role.name}
+                    value={role.roleid}
+                    key={role.roleid}
+                  />
+                );
+              })}
+            </Picker>
+          </Item>
+          <Item picker style={styles.pickers}>
+            <Picker
+              note
+              mode="dropdown"
+              iosIcon={<Icon name="arrow-down" />}
               placeholder="Select Affliation"
               placeholderStyle={styles.labels}
               placeholderIconColor="#000"
@@ -107,11 +182,13 @@ export const RegisterScreen = () => {
               }
               selectedValue={Answers.affliation}
             >
+              <Picker.Item label={"None"} value={-1} />
               {Affilations.map(affliate => {
                 return (
                   <Picker.Item
                     label={affliate.name}
                     value={affliate.affiliationid}
+                    key={affliate.affiliationid}
                   />
                 );
               })}
