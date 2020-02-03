@@ -24,8 +24,7 @@ import {
   Body,
   Thumbnail,
   Button,
-  Toast,
-  View
+  DatePicker
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
@@ -36,6 +35,7 @@ import { AppLoading } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import _ from "underscore";
+import Moment from "moment";
 
 getQuestionsData = async (ID, AuthToken) => {
   const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
@@ -108,6 +108,7 @@ export const PointQuestions = props => {
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
+  const [CreationDate, setCreationDate] = useState(Date.now());
   const [ShowModal, setShowModal] = useState(false);
   const [HasPermission, setHasPermission] = useState(true);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
@@ -115,12 +116,17 @@ export const PointQuestions = props => {
   const context = useContext(ProjectContext);
   const location = props.navigation.getParam("location", null);
   const locationID = props.navigation.getParam("locationid", null);
+  const DatepickerRef = useRef(null);
 
   const handleQuestion = ID => {
     // first we must pass to current question to the navigator
     setCurrentQuestion(ID);
     // then we toggle the modal
     setShowModal(true);
+  };
+
+  const saveDate = date => {
+    setCreationDate(date);
   };
 
   const saveAnswers = (answer, ismandatory) => {
@@ -133,6 +139,7 @@ export const PointQuestions = props => {
       answer == ""
     ) {
       // was image question or text question and they gave no answer, so it wasn't finished
+      // todo we should check to see if the user delete the data from an already finished question
     } else {
       // marked finished
       finishQuestion(CurrentQuestion, ismandatory);
@@ -166,7 +173,15 @@ export const PointQuestions = props => {
   const addToQueue = () => {
     if (locationID == null) {
       // send over the location and all the answers
-      context.addToOfflineQueue({ location: location, answers: Answers });
+      context.addToOfflineQueue({
+        location: location,
+        answers: Answers,
+        // converts the date to a standard epoch time
+        createddate:
+          typeof CreationDate == "number"
+            ? CreationDate
+            : new Date(CreationDate).getTime()
+      });
     } else {
       // if there are any difference in answers we must send it to the server
       SavedAnswers.filter(savedAnswer => {
@@ -257,7 +272,7 @@ export const PointQuestions = props => {
             answerObj.questionid
           ]);
 
-          // todo add manditory question rehaul for updating answers
+          // todo add manditory question rehaul for updating answers (if there was a need to properly handle manditory questions)
 
           // save the old values to compare to later
           const SavedAnswerObj = {
@@ -320,6 +335,28 @@ export const PointQuestions = props => {
           />
           <ProgressBar progress={width} />
           <ScrollView style={styles.questionList}>
+            {// during creation, we can allow for them to pick this date
+            locationID == null && (
+              <ListItem>
+                <Left>
+                  <Text style={styles.questionDesc}>Select Creation Date:</Text>
+                </Left>
+                <Body>
+                  <DatePicker
+                    defaultDate={Date.now()}
+                    locale={"en"}
+                    ref={DatepickerRef}
+                    textStyle={{ color: "blue" }}
+                    animationType={"fade"}
+                    formatChosenDate={date => {
+                      return Moment(date).format("LL");
+                    }}
+                    onDateChange={saveDate}
+                  />
+                </Body>
+                <Right />
+              </ListItem>
+            )}
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
               Image.prefetch(question.image);

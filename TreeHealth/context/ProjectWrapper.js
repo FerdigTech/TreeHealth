@@ -174,6 +174,7 @@ const OfflineReducer = (state, action) => {
           questionid: action.payload.questionid,
           answeredby: action.payload.userid,
           answer: action.payload.answer,
+          createddate: action.payload.createddate,
           locationid: action.payload.locationID
         })
       }).then(res => {
@@ -455,11 +456,19 @@ export const ProjectWrapper = ({ children }) => {
     answer,
     questionid = null,
     locationID = null,
-    userid
+    userid,
+    createddate
   ) => {
     return await dispatcher({
       type: "sendAnswers",
-      payload: { answer, questionid, locationID, userid, AuthToken }
+      payload: {
+        answer,
+        questionid,
+        locationID,
+        userid,
+        createddate,
+        AuthToken
+      }
     });
   };
   // TODO: Write a task to check this at intervals
@@ -537,7 +546,8 @@ export const ProjectWrapper = ({ children }) => {
                           answer,
                           questionid,
                           locationID,
-                          (userid = UserID)
+                          (userid = UserID),
+                          StateCopy.items[0].createddate
                         )
                       )
                     ).then(() => {
@@ -556,7 +566,8 @@ export const ProjectWrapper = ({ children }) => {
                     answer,
                     questionid,
                     OfflineStateQ.items[0].LocationID,
-                    (userid = UserID)
+                    (userid = UserID),
+                    OfflineStateQ.items[0].createddate
                   )
                 )
               ).then(() => {
