@@ -56,6 +56,15 @@ getQuestionsData = async (ID, AuthToken) => {
         method: "POST"
       }
     ).then(response => response.json());
+
+    questionsData =
+      questionsData !== "undefined"
+        ? questionsData.hasOwnProperty("result")
+          ? questionsData.result
+          : []
+        : [];
+    // sort the questions based on their display order
+    questionsData.sort((a, b) => a.displayorder - b.displayorder);
     await AsyncStorage.setItem(
       "questions-PID-" + projectID,
       JSON.stringify(questionsData)
@@ -98,6 +107,7 @@ export const PointQuestions = props => {
   const [SavedAnswers, setSavedAnswers] = useState([]);
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
+  const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
   const [ShowModal, setShowModal] = useState(false);
   const [HasPermission, setHasPermission] = useState(true);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
@@ -113,7 +123,7 @@ export const PointQuestions = props => {
     setShowModal(true);
   };
 
-  const saveAnswers = answer => {
+  const saveAnswers = (answer, ismandatory) => {
     let newAnswerObj = Answers;
     newAnswerObj[CurrentQuestion] = answer;
     setAnswers(newAnswerObj);
@@ -125,30 +135,30 @@ export const PointQuestions = props => {
       // was image question or text question and they gave no answer, so it wasn't finished
     } else {
       // marked finished
-      finishQuestion(CurrentQuestion);
+      finishQuestion(CurrentQuestion, ismandatory);
     }
 
     // closed modal
     setShowModal(false);
   };
 
-  const handleCamera = async cb => {
+  const handleCamera = async (cb, ismandatory) => {
     const result = await ImagePicker.launchCameraAsync({
       base64: true
     });
     if (!result.cancelled) {
-      saveAnswers(result.base64);
+      saveAnswers(result.base64, ismandatory);
       cb.apply(result.base64);
     }
     cb.apply("");
   };
 
-  const handlePicker = async cb => {
+  const handlePicker = async (cb, ismandatory) => {
     const result = await ImagePicker.launchImageLibraryAsync({
       base64: true
     });
     if (!result.cancelled) {
-      saveAnswers(result.base64);
+      saveAnswers(result.base64, ismandatory);
       cb.apply(result.base64);
     }
     cb.apply("");
@@ -182,13 +192,25 @@ export const PointQuestions = props => {
       projectName: context.ProjectName
     });
   };
-  const finishQuestion = ID => {
-    if (!CompleteQuestions.includes(ID)) {
-      setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
-      // seems like CompleteQuestions hasn't been finished being set yet, so we add one
-      setProgress(
-        Math.round((CompleteQuestions.length + 1) / Questions.length * 100)
-      );
+  const finishQuestion = (ID, ismandatory) => {
+    // if we finish a question again (or edit it) the status should be the same
+    if (!CompleteQuestions.includes(ID) && !CompleteManQuestions.includes(ID)) {
+      // if mandatory then we need to mark it finished
+      if (ismandatory) {
+        setCompleteManQuestions(CompleteManQuestions => [
+          ...CompleteManQuestions,
+          ID
+        ]);
+        setProgress(
+          Math.round(
+            (CompleteManQuestions.length + 1) /
+              Questions.filter(questions => questions.ismandatory).length *
+              100
+          )
+        );
+      } else {
+        setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
+      }
     }
   };
 
@@ -216,13 +238,7 @@ export const PointQuestions = props => {
     // we pull in all questions for this project
     if (Questions.length <= 0) {
       processQuestData(context.ProjectID, context.AuthToken).then(results => {
-        setQuestions(
-          results !== "undefined"
-            ? results.hasOwnProperty("result")
-              ? results.result
-              : []
-            : []
-        );
+        setQuestions(results);
       });
     }
 
@@ -240,6 +256,8 @@ export const PointQuestions = props => {
             ...CompleteQuestions,
             answerObj.questionid
           ]);
+
+          // todo add manditory question rehaul for updating answers
 
           // save the old values to compare to later
           const SavedAnswerObj = {
@@ -325,11 +343,11 @@ export const PointQuestions = props => {
                     style={[
                       styles.rightStyling,
                       {
-                        borderColor: CompleteQuestions.includes(
-                          question.questionid
-                        )
-                          ? "green"
-                          : "red"
+                        borderColor:
+                          CompleteQuestions.includes(question.questionid) ||
+                          CompleteManQuestions.includes(question.questionid)
+                            ? "green"
+                            : "red"
                       }
                     ]}
                   />

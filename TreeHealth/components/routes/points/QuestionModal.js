@@ -29,7 +29,7 @@ const ImageAnswer = props => {
       )}
       <Button
         style={styles.ImageAnsBtn}
-        onPress={() => props.handleCamera(() => props.handleSave)}
+        onPress={() => props.handleCamera(() => props.handleSave, props.ismandatory)}
         iconLeft
         round
       >
@@ -38,7 +38,7 @@ const ImageAnswer = props => {
       </Button>
       <Button
         style={styles.ImageAnsBtn}
-        onPress={() => props.handlePicker(() => props.handleSave)}
+        onPress={() => props.handlePicker(() => props.handleSave, props.ismandatory)}
         iconLeft
         round
       >
@@ -140,7 +140,7 @@ const DropDown = props => {
 export const QuestionModal = props => {
   const [Answer, setAnswer] = useState("");
   const [ImagleViewable, setImagleViewable] = useState(false);
-  const { question, options, questiontype, image, questionid } =
+  const { question, options, questiontype, image, questionid, ismandatory } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
       : {
@@ -148,7 +148,8 @@ export const QuestionModal = props => {
           options: "",
           questiontype: "",
           image: "",
-          questionid: -1
+          questionid: -1,
+          ismandatory: false
         };
   useEffect(
     () => {
@@ -165,7 +166,7 @@ export const QuestionModal = props => {
 
   const beforeClose = () => {
     // save the answer
-    props.handleSave(Answer);
+    props.handleSave(Answer, ismandatory);
     // reset the value on head
     setAnswer("");
   };
@@ -246,6 +247,7 @@ export const QuestionModal = props => {
                 <ImageAnswer
                   handlePicker={props.handlePicker}
                   handleCamera={props.handleCamera}
+                  ismandatory={ismandatory}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
