@@ -118,6 +118,7 @@ const usePoints = (userID, AuthToken) => {
 const OfflineReducer = (state, action) => {
   switch (action.type) {
     case "add":
+      Toast.hide();
       Toast.show({
         text: "Your record has been added to the queue.",
         buttonText: "Okay",
@@ -128,6 +129,7 @@ const OfflineReducer = (state, action) => {
       waitAndUpdateStorage({ items: [...state.items, action.payload] });
       return { items: [...state.items, action.payload] };
     case "pop":
+      Toast.hide();
       Toast.show({
         text: "Your record(s) has been uploaded to the server.",
         buttonText: "Okay",
@@ -135,11 +137,19 @@ const OfflineReducer = (state, action) => {
         position: "top",
         duration: 3000
       });
-      waitAndUpdateStorage({ items: state.items.filter((_, i) => i !== 0) });
-      return { items: state.items.filter((_, i) => i !== 0) };
+      // one item left, so we are finished
+      console.log("popping");
+      waitAndUpdateStorage({
+        items: state.items.filter((_, i) => i !== 0)
+      }).then(() => {
+        return { items: state.items.filter((_, i) => i !== 0) };
+      });
+      return { items: [] };
+
     case "set":
       return action.payload;
     case "updateAnswers":
+      console.log("processing: ", state.items[0].answerID);
       fetch(globals.SERVER_URL + "/answer/update", {
         cache: "no-store",
         headers: {
@@ -162,6 +172,7 @@ const OfflineReducer = (state, action) => {
       });
       return state;
     case "sendAnswers":
+      console.log("processing: ", action.payload.questionid);
       fetch(globals.SERVER_URL + "/answer/create", {
         cache: "no-store",
         headers: {
@@ -311,6 +322,9 @@ const processUserAuth = () => {
   });
 };
 
+// it should be noted the the max size for AsyncStorage is 5MB
+// and it could be cleared in IOS8
+// perhaps a local-database solution might be the fix for this?
 const updateStorage = async value => {
   const oldStorage = await AsyncStorage.getItem("offlineQueue");
   if (oldStorage != null) {
@@ -346,7 +360,8 @@ export const ProjectWrapper = ({ children }) => {
   const PointsObj = usePoints(UserID, AuthToken);
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
-
+  const [Update, TriggerUpdate] = useState(false);
+  const [BeingProcessed, setBeingProcessed] = useState([]);
   const [OfflineStateQ, dispatcher] = useReducer(
     OfflineReducer,
     { items: [] },
@@ -380,6 +395,7 @@ export const ProjectWrapper = ({ children }) => {
     processSignup(name, email, pass, affiliationid, roleid).then(results => {
       if (results.hasOwnProperty("result")) {
         if (results.result) {
+          Toast.hide();
           Toast.show({
             text: "Your account has successfully been created!",
             buttonText: "Okay",
@@ -390,6 +406,7 @@ export const ProjectWrapper = ({ children }) => {
           // TODO: Log the user in here?
         }
       } else {
+        Toast.hide();
         Toast.show({
           text:
             "Something went wrong with the account creation process, try again.",
@@ -417,6 +434,7 @@ export const ProjectWrapper = ({ children }) => {
         setAuthToken(results.access_token);
         NavigationService.navigate("Loading");
       } else {
+        Toast.hide();
         Toast.show({
           text: "Wrong username or password!",
           buttonText: "Okay",
@@ -480,6 +498,7 @@ export const ProjectWrapper = ({ children }) => {
 
       // if the JWT has expired
       if (Math.floor(Date.now() / 1000) > exp) {
+        Toast.hide();
         Toast.show({
           text:
             "Your session has expired and you have been logged out as a result.",
@@ -505,12 +524,11 @@ export const ProjectWrapper = ({ children }) => {
             if (!OfflineStateQ.items[0].hasOwnProperty("LocationID")) {
               if (OfflineStateQ.items[0].hasOwnProperty("answerID")) {
                 let StateCopy = Object.assign({}, OfflineStateQ);
-                Promise.all(
-                  processUpdaeAsync(
-                    (answer = StateCopy.items[0].answer),
-                    (userid = UserID),
-                    (answerID = StateCopy.items[0].answerID)
-                  )
+
+                processing = processUpdaeAsync(
+                  (answer = StateCopy.items[0].answer),
+                  (userid = UserID),
+                  (answerID = StateCopy.items[0].answerID)
                 ).then(() => {
                   dispatcher({
                     type: "pop"
@@ -538,39 +556,27 @@ export const ProjectWrapper = ({ children }) => {
                     StateCopy.items[0].LocationID = locationID;
                     // update our global state
                     dispatcher({ type: "set", payload: StateCopy });
-                    // push to the server
-
-                    Promise.all(
-                      StateCopy.items[0].answers.map((answer, questionid) =>
-                        processAsync(
-                          answer,
-                          questionid,
-                          locationID,
-                          (userid = UserID),
-                          StateCopy.items[0].createddate
-                        )
-                      )
-                    ).then(() => {
-                      dispatcher({
-                        type: "pop"
-                      });
-                    });
+                    TriggerUpdate(!Update);
                   }
                 });
               }
             } else {
               // push to the server
-              Promise.all(
-                OfflineStateQ.items[0].answers.map((answer, questionid) =>
-                  processAsync(
+              let requests = [];
+              OfflineStateQ.items[0].answers.forEach((answer, questionid) => {
+                if (answer != null) {
+                  processing = processAsync(
                     answer,
                     questionid,
                     OfflineStateQ.items[0].LocationID,
                     (userid = UserID),
                     OfflineStateQ.items[0].createddate
-                  )
-                )
-              ).then(() => {
+                  );
+                  requests.push(processing);
+                }
+              });
+
+              Promise.all(requests).then(results => {
                 dispatcher({
                   type: "pop"
                 });
@@ -581,7 +587,7 @@ export const ProjectWrapper = ({ children }) => {
       }
     },
     // if change in item queue or net connectivity try to do something
-    [OfflineStateQ.items, netInfo.isConnected]
+    [OfflineStateQ.items, netInfo.isConnected, Update]
   );
 
   return (

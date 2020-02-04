@@ -175,7 +175,7 @@ export const PointQuestions = props => {
       // send over the location and all the answers
       context.addToOfflineQueue({
         location: location,
-        answers: Answers,
+        answers: Answers.filter(answer => answer != null),
         // converts the date to a standard epoch time
         createddate:
           typeof CreationDate == "number"
