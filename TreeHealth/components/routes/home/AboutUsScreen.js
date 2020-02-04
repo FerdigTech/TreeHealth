@@ -1,10 +1,36 @@
 import React from "react";
 
-import { Text, ScrollView, SafeAreaView, StyleSheet, View } from "react-native";
-import { Container, Content, Card, CardItem, Body } from "native-base";
+import {
+  ScrollView,
+  SafeAreaView,
+  StyleSheet,
+  View,
+  AsyncStorage,
+  Text
+} from "react-native";
+import {
+  Container,
+  Content,
+  Card,
+  CardItem,
+  Body,
+  Button,
+  Toast
+} from "native-base";
 import Constants from "expo-constants";
 
 export const AboutUsScreen = () => {
+  const handleClearCache = async () => {
+    await AsyncStorage.clear();
+    Toast.show({
+      text:
+        "Your cache has been cleared, it may take a restart of the app to work.",
+      buttonText: "Okay",
+      type: "success",
+      position: "top",
+      duration: 3000
+    });
+  };
   return (
     <SafeAreaView style={styles.SafeView}>
       <ScrollView>
@@ -58,6 +84,14 @@ export const AboutUsScreen = () => {
                 </Body>
               </View>
             </Card>
+            <Button
+              block
+              danger
+              onPress={() => handleClearCache()}
+              style={styles.CacheBtn}
+            >
+              <Text style={styles.CacheBtnTxt}>Clear Cache</Text>
+            </Button>
           </Content>
         </Container>
       </ScrollView>
@@ -68,7 +102,6 @@ export const AboutUsScreen = () => {
 const styles = StyleSheet.create({
   SafeView: {
     backgroundColor: "#fff",
-    flex: 1,
     padding: 10
   },
   HeaderTxt: {
@@ -76,5 +109,11 @@ const styles = StyleSheet.create({
   },
   CardBody: {
     padding: 10
+  },
+  CacheBtnTxt: {
+    color: "white"
+  },
+  CacheBtn: {
+    marginTop: 5
   }
 });

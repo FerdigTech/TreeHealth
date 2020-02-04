@@ -370,6 +370,7 @@ export const ProjectWrapper = ({ children }) => {
     }
   );
 
+  // this can cause issues if items are being saved when finished the queue
   const offlineQueueLoad = loadStoredQueue().then(res => {
     // if more things are in the backstorage than current queue than we need to update
     if (res != null && OfflineStateQ.items.length < res.items.length) {
