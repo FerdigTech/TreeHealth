@@ -5,6 +5,7 @@ import { createStackNavigator } from "react-navigation-stack";
 import { LoadingScreen } from "./../routes/auth/LoadingScreen";
 import { SignInScreen } from "./../routes/auth/SignInScreen";
 import { RegisterScreen } from "./../routes/auth/RegisterScreen";
+import { ForgotPwScreen } from "./../routes/auth/ForgotPwScreen";
 import { HomeScreen } from "./../routes/home/HomeScreen";
 import { AboutUsScreen } from "./../routes/home/AboutUsScreen";
 import { MapDisplay } from "./../routes/map/MapDisplay";
@@ -86,6 +87,9 @@ const AuthStack = createStackNavigator(
     },
     Register: {
       screen: RegisterScreen
+    },
+    Forget: {
+      screen: ForgotPwScreen
     }
   },
   {

@@ -118,8 +118,8 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Name</Label>
             <Input
-              onEndEditing={e =>
-                setAnswers({ ...Answers, name: e.nativeEvent.text })
+              onChangeText={text =>
+                setAnswers({ ...Answers, name: text })
               }
               autoCompleteType={"name"}
               style={styles.inputs}
@@ -128,8 +128,8 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Email</Label>
             <Input
-              onEndEditing={e =>
-                setAnswers({ ...Answers, email: e.nativeEvent.text })
+              onChangeText={e =>
+                setAnswers({ ...Answers, email: text })
               }
               autoCompleteType={"email"}
               keyboardType={"email-address"}
@@ -139,8 +139,8 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Password</Label>
             <Input
-              onEndEditing={e =>
-                setAnswers({ ...Answers, password: e.nativeEvent.text })
+              onChangeText={e =>
+                setAnswers({ ...Answers, password: text })
               }
               style={styles.inputs}
               autoCompleteType={"password"}

@@ -33,6 +33,8 @@ export const SignInScreen = () => {
         <Item floatingLabel>
           <Label>Email</Label>
           <Input
+            autoCompleteType={"email"}
+            keyboardType={"email-address"}
             onChangeText={text => setAnswers({ ...Answers, email: text })}
           />
         </Item>
@@ -44,7 +46,13 @@ export const SignInScreen = () => {
           />
         </Item>
         <Container style={styles.signInBtns}>
-          <Button block transparent>
+          <Button
+            onPress={() =>
+              NavigationService.navigate("Forget", { email: Answers.email })
+            }
+            block
+            transparent
+          >
             <Text> Forgot Password? </Text>
           </Button>
           <Button
