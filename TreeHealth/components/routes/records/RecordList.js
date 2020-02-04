@@ -35,10 +35,8 @@ export const RecordList = props => {
   const tree = new RBush();
 
   toggleDropVis = () => {
-    const DropDownVisible = props.navigation.getParam("DropDownVisible");
-
     props.navigation.setParams({
-      DropDownVisible: !DropDownVisible
+      DropDownVisible: true
     });
   };
 

@@ -91,12 +91,11 @@ export const MapDisplay = props => {
   }, []);
 
   toggleDropVis = () => {
-    const DropDownVisible = props.navigation.getParam("DropDownVisible");
-
     props.navigation.setParams({
-      DropDownVisible: !DropDownVisible
+      DropDownVisible: true
     });
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <Container>
