@@ -19,7 +19,6 @@ export const ForgotPwScreen = props => {
         email: Email
       })
     })
-      .then(res => res.json())
       .then(res => {
         if (res.ok) {
           Toast.show({
