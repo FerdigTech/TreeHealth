@@ -1,5 +1,11 @@
+import { AsyncStorage } from "react-native";
 import { Toast } from "native-base";
+import * as SecureStore from "expo-secure-store";
 import globals from "./../globals";
+
+/*
+*   User Route:
+*/
 
 // used to reset a users password
 export const handlePassReset = async Email => {
@@ -28,6 +34,73 @@ export const handlePassReset = async Email => {
     .catch(err => {});
 };
 
+// create a new account
+const generateUser = async (
+  name,
+  email,
+  password,
+  affiliationid = -1,
+  roleid
+) => {
+  const RequestResult = await fetch(
+    globals.SERVER_URL.toString() + "/userAccount/create",
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        affiliationid,
+        roleid
+      })
+    }
+  ).then(res => res.json());
+  return RequestResult;
+};
+
+export const processSignup = (name, email, pass, affiliationid, roleid) => {
+  return new Promise(resolve => {
+    resolve(generateUser(name, email, pass, affiliationid, roleid));
+  });
+};
+
+// log the user in and store the information securely
+const generateUserToken = async (email, password) => {
+  const UserData = await fetch(
+    globals.SERVER_URL.toString() + "/userAccount/validate",
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json"
+      },
+      method: "POST",
+      body: JSON.stringify({
+        email,
+        password
+      })
+    }
+  ).then(res => res.json());
+  await SecureStore.setItemAsync("userToken", UserData.userid.toString());
+  await SecureStore.setItemAsync("userAuth", UserData.access_token.toString());
+  return UserData;
+};
+
+export const processLogin = (email, password) => {
+  return new Promise(resolve => {
+    resolve(generateUserToken(email, password));
+  });
+};
+
+/*
+*   Affiliation Route:
+*/
+
 // get a list of all the affiliations
 export const getAffilations = async cb => {
   const aff = await fetch(globals.SERVER_URL + "/affiliations")
@@ -46,6 +119,10 @@ export const getAffilations = async cb => {
   cb(aff);
 };
 
+/*
+*   Role Route:
+*/
+
 // get a list of all the roles
 export const getRoles = async cb => {
   const roles = await fetch(globals.SERVER_URL + "/userRoles")
@@ -62,4 +139,257 @@ export const getRoles = async cb => {
       return [];
     });
   cb(roles);
+};
+
+/*
+*   Location Route:
+*/
+
+// for updating an existing record's location value
+export const updateLocation = async (
+  longitude,
+  latitude,
+  locationid,
+  userid,
+  JWT
+) => {
+  await fetch(globals.SERVER_URL.toString() + "/location/update", {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${JWT}`
+    },
+    method: "POST",
+    body: JSON.stringify({
+      longitude,
+      latitude,
+      locationid,
+      userid
+    })
+  })
+    .then(res => {
+      return res.ok;
+    })
+    .catch(err => {
+      return false;
+    });
+};
+
+// try to get the  point data from cache, if not get from the site.
+const getPointData = async (
+  ID,
+  userID,
+  forceUpdate = false,
+  AuthToken = ""
+) => {
+  const projectID = ID == -1 || typeof ID == "undefined" ? "" : ID.toString();
+  let pointsData = await AsyncStorage.getItem("Points");
+  if (pointsData !== null && !forceUpdate) {
+    // get all the storied points and filter the ones with the correct ID
+    pointsData = JSON.parse(pointsData);
+    pointsData.result = pointsData.result.filter(
+      points => points.projectid == ID
+    );
+  } else {
+    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
+      cache: "no-store",
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${AuthToken}`
+      },
+      body: JSON.stringify({
+        userid: userID != null ? userID : -1
+      })
+    }).then(response => response.json());
+    pointsData = await fetch(
+      globals.SERVER_URL + "/locationByProject/" + projectID,
+      {
+        cache: "no-store",
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${AuthToken}`
+        },
+        body: JSON.stringify({
+          userid: userID != null ? userID : -1
+        })
+      }
+    ).then(response => response.json());
+    await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
+  }
+  return pointsData;
+};
+
+export const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {
+  return new Promise(resolve => {
+    resolve(getPointData(ID, userID, forceUpdate, AuthToken));
+  });
+};
+
+// create a new record location
+const generateLocationID = async (
+  longitude,
+  latitude,
+  projectid,
+  userid,
+  AuthToken = ""
+) => {
+  const locationID = await fetch(
+    globals.SERVER_URL.toString() + "/location/create",
+    {
+      cache: "no-store",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${AuthToken}`
+      },
+      method: "POST",
+      body: JSON.stringify({
+        longitude: longitude.toString(),
+        latitude: latitude.toString(),
+        projectid: projectid,
+        createdby: userid
+      })
+    }
+  )
+    .then(res => res.json())
+    .then(response => {
+      return response.locationid;
+    })
+    .catch(err => {
+      return -1;
+    });
+  return locationID;
+};
+
+export const processLocationID = (
+  longitude,
+  latitude,
+  projectid,
+  userid,
+  AuthToken
+) => {
+  return new Promise(resolve => {
+    resolve(
+      generateLocationID(longitude, latitude, projectid, userid, AuthToken)
+    );
+  });
+};
+
+/*
+*   Question Route:
+*/
+
+// get the list of questions from storage or from server and store it
+const getQuestionsData = async (ID, AuthToken) => {
+  const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
+  let questionsStored = await AsyncStorage.getItem(
+    "questions-PID-" + projectID
+  );
+  let questionsData = [];
+  if (questionsStored !== null) {
+    questionsData = JSON.parse(questionsStored);
+  } else {
+    questionsData = await fetch(
+      globals.SERVER_URL + "/questions/" + projectID,
+      {
+        cache: "no-store",
+        headers: {
+          Authorization: `Bearer ${AuthToken}`
+        },
+        method: "POST"
+      }
+    ).then(response => response.json());
+
+    questionsData =
+      questionsData !== "undefined"
+        ? questionsData.hasOwnProperty("result")
+          ? questionsData.result
+          : []
+        : [];
+    // sort the questions based on their display order
+    questionsData.sort((a, b) => a.displayorder - b.displayorder);
+    await AsyncStorage.setItem(
+      "questions-PID-" + projectID,
+      JSON.stringify(questionsData)
+    );
+  }
+
+  return questionsData;
+};
+
+export const processQuestData = (ID, AuthToken) => {
+  return new Promise(resolve => {
+    resolve(getQuestionsData(ID, AuthToken));
+  });
+};
+
+/*
+*   Answer Route:
+*/
+
+// get the answers from a locationID to edit old data
+const getAnswerData = async (ID, AuthToken) => {
+  const locationID = ID == -1 || ID == "undefined" ? "" : ID.toString();
+  const questionsData = await fetch(
+    globals.SERVER_URL + "/answerByLocationID/" + locationID,
+    {
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${AuthToken}`
+      },
+      method: "POST"
+    }
+  ).then(response => response.json());
+  return questionsData;
+};
+
+export const processAnswerData = (ID, AuthToken) => {
+  return new Promise(resolve => {
+    resolve(getAnswerData(ID, AuthToken));
+  });
+};
+
+/*
+*   Project Route:
+*/
+
+// save project list to local stoage
+const setProjectData = async data => {
+  return await AsyncStorage.setItem("Projects", JSON.stringify(data));
+};
+
+// try to get the Project data from cache, if not get from the site.
+const getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
+  let projectData = await AsyncStorage.getItem("Projects");
+  if (projectData !== null && !forceUpdate) {
+    projectData = JSON.parse(projectData);
+  } else {
+    projectData = await fetch(globals.SERVER_URL + "/projects/", {
+      cache: "no-store",
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${AuthToken}`
+      },
+      body: JSON.stringify({
+        userid: UserID != null ? UserID : -1
+      })
+    }).then(response => response.json());
+    // TODO: if offline/fails, we should try return cache and that it failed to get updated data
+    // Since AsyncStorage is immunitable, the projects object should be deleted before being set
+    if (projectData !== null) {
+      await AsyncStorage.removeItem("Projects").then(() => {
+        setProjectData(projectData);
+      });
+    } else {
+      setProjectData(projectData);
+    }
+  }
+  return projectData;
+};
+
+export const processProjData = (forceUpdate = false, UserID, AuthToken) => {
+  return new Promise(resolve => {
+    resolve(getProjectData(forceUpdate, UserID, AuthToken));
+  });
 };

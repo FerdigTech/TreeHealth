@@ -36,70 +36,10 @@ import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
 import _ from "underscore";
 import Moment from "moment";
-
-getQuestionsData = async (ID, AuthToken) => {
-  const projectID = ID == -1 || ID == "undefined" ? "" : ID.toString();
-  let questionsStored = await AsyncStorage.getItem(
-    "questions-PID-" + projectID
-  );
-  let questionsData = [];
-  if (questionsStored !== null) {
-    questionsData = JSON.parse(questionsStored);
-  } else {
-    questionsData = await fetch(
-      globals.SERVER_URL + "/questions/" + projectID,
-      {
-        cache: "no-store",
-        headers: {
-          Authorization: `Bearer ${AuthToken}`
-        },
-        method: "POST"
-      }
-    ).then(response => response.json());
-
-    questionsData =
-      questionsData !== "undefined"
-        ? questionsData.hasOwnProperty("result")
-          ? questionsData.result
-          : []
-        : [];
-    // sort the questions based on their display order
-    questionsData.sort((a, b) => a.displayorder - b.displayorder);
-    await AsyncStorage.setItem(
-      "questions-PID-" + projectID,
-      JSON.stringify(questionsData)
-    );
-  }
-
-  return questionsData;
-};
-
-const processQuestData = (ID, AuthToken) => {
-  return new Promise(resolve => {
-    resolve(getQuestionsData(ID, AuthToken));
-  });
-};
-
-getAnswerData = async (ID, AuthToken) => {
-  const locationID = ID == -1 || ID == "undefined" ? "" : ID.toString();
-  const questionsData = await fetch(
-    globals.SERVER_URL + "/answerByLocationID/" + locationID,
-    {
-      cache: "no-store",
-      headers: {
-        Authorization: `Bearer ${AuthToken}`
-      },
-      method: "POST"
-    }
-  ).then(response => response.json());
-  return questionsData;
-};
-
-const processAnswerData = (ID, AuthToken) => {
-  return new Promise(resolve => {
-    resolve(getAnswerData(ID, AuthToken));
-  });
-};
+import {
+  processAnswerData,
+  processQuestData
+} from "./../../../services/FetchService";
 
 export const PointQuestions = props => {
   const [Questions, setQuestions] = useState([]);

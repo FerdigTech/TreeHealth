@@ -7,46 +7,15 @@ import NavigationService from "../services/NavigationService";
 import { Toast, Root } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import { decode } from "base-64";
+import {
+  processProjData,
+  processPntData,
+  processSignup,
+  processLogin,
+  processLocationID
+} from "./../services/FetchService";
 
 const ProjectProvider = ProjectContext.Provider;
-
-const setProjectData = async data => {
-  return await AsyncStorage.setItem("Projects", JSON.stringify(data));
-};
-// try to get the Project data from cache, if not get from the site.
-getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
-  let projectData = await AsyncStorage.getItem("Projects");
-  if (projectData !== null && !forceUpdate) {
-    projectData = JSON.parse(projectData);
-  } else {
-    projectData = await fetch(globals.SERVER_URL + "/projects/", {
-      cache: "no-store",
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${AuthToken}`
-      },
-      body: JSON.stringify({
-        userid: UserID != null ? UserID : -1
-      })
-    }).then(response => response.json());
-    // TODO: if offline/fails, we should try return cache and that it failed to get updated data
-    // Since AsyncStorage is immunitable, the projects object should be deleted before being set
-    if (projectData !== null) {
-      await AsyncStorage.removeItem("Projects").then(() => {
-        setProjectData(projectData);
-      });
-    } else {
-      setProjectData(projectData);
-    }
-  }
-  return projectData;
-};
-
-const processProjData = (forceUpdate = false, UserID, AuthToken) => {
-  return new Promise(resolve => {
-    resolve(getProjectData(forceUpdate, UserID, AuthToken));
-  });
-};
 
 // use hook to get the project data
 const useProjects = (UserID, AuthToken) => {
@@ -57,51 +26,6 @@ const useProjects = (UserID, AuthToken) => {
     });
   }, []);
   return { Projects, setProjects };
-};
-
-// try to get the  point data from cache, if not get from the site.
-getPointData = async (ID, userID, forceUpdate = false, AuthToken = "") => {
-  const projectID = ID == -1 || typeof ID == "undefined" ? "" : ID.toString();
-  let pointsData = await AsyncStorage.getItem("Points");
-  if (pointsData !== null && !forceUpdate) {
-    // get all the storied points and filter the ones with the correct ID
-    pointsData = JSON.parse(pointsData);
-    pointsData.result = pointsData.result.filter(
-      points => points.projectid == ID
-    );
-  } else {
-    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
-      cache: "no-store",
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${AuthToken}`
-      },
-      body: JSON.stringify({
-        userid: userID != null ? userID : -1
-      })
-    }).then(response => response.json());
-    pointsData = await fetch(
-      globals.SERVER_URL + "/locationByProject/" + projectID,
-      {
-        cache: "no-store",
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${AuthToken}`
-        },
-        body: JSON.stringify({
-          userid: userID != null ? userID : -1
-        })
-      }
-    ).then(response => response.json());
-    await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
-  }
-  return pointsData;
-};
-
-const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {
-  return new Promise(resolve => {
-    resolve(getPointData(ID, userID, forceUpdate, AuthToken));
-  });
 };
 
 // use hook to get the data
@@ -200,115 +124,6 @@ const OfflineReducer = (state, action) => {
     default:
       throw new Error();
   }
-};
-const generateUser = async (
-  name,
-  email,
-  password,
-  affiliationid = -1,
-  roleid
-) => {
-  const RequestResult = await fetch(
-    globals.SERVER_URL.toString() + "/userAccount/create",
-    {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify({
-        name,
-        email,
-        password,
-        affiliationid,
-        roleid
-      })
-    }
-  ).then(res => res.json());
-  return RequestResult;
-};
-
-const processSignup = (name, email, pass, affiliationid, roleid) => {
-  return new Promise(resolve => {
-    resolve(generateUser(name, email, pass, affiliationid, roleid));
-  });
-};
-
-const generateUserToken = async (email, password) => {
-  const UserData = await fetch(
-    globals.SERVER_URL.toString() + "/userAccount/validate",
-    {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify({
-        email,
-        password
-      })
-    }
-  ).then(res => res.json());
-  await SecureStore.setItemAsync("userToken", UserData.userid.toString());
-  await SecureStore.setItemAsync("userAuth", UserData.access_token.toString());
-  return UserData;
-};
-
-const processLogin = (email, password) => {
-  return new Promise(resolve => {
-    resolve(generateUserToken(email, password));
-  });
-};
-
-const generateLocationID = async (
-  longitude,
-  latitude,
-  projectid,
-  userid,
-  AuthToken = ""
-) => {
-  const locationID = await fetch(
-    globals.SERVER_URL.toString() + "/location/create",
-    {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${AuthToken}`
-      },
-      method: "POST",
-      body: JSON.stringify({
-        longitude: longitude.toString(),
-        latitude: latitude.toString(),
-        projectid: projectid,
-        createdby: userid
-      })
-    }
-  )
-    .then(res => res.json())
-    .then(response => {
-      return response.locationid;
-    })
-    .catch(err => {
-      return -1;
-    });
-  return locationID;
-};
-
-const processLocationID = (
-  longitude,
-  latitude,
-  projectid,
-  userid,
-  AuthToken
-) => {
-  return new Promise(resolve => {
-    resolve(
-      generateLocationID(longitude, latitude, projectid, userid, AuthToken)
-    );
-  });
 };
 
 const getUserInfo = async () => {

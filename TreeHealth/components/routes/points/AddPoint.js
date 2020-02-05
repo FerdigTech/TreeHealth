@@ -13,7 +13,7 @@ import * as Permissions from "expo-permissions";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
-import globals from "../../../globals";
+import { updateLocation } from "./../../../services/FetchService";
 
 export const AddPoint = props => {
   const [location, setLocation] = useState(null);
@@ -77,7 +77,7 @@ export const AddPoint = props => {
     setLocation(newState);
   };
 
-  _handleSubmit = async () => {
+  _handleSubmit = () => {
     // this isn't a guest user
     if (context.UserID != null) {
       // if we are editing..
@@ -89,30 +89,13 @@ export const AddPoint = props => {
           latitude != location.coords.latitude
         ) {
           // push this information to the server
-          const sucessUpdate = await fetch(
-            globals.SERVER_URL.toString() + "/location/update",
-            {
-              cache: "no-store",
-              headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-                'Authorization' : `Bearer ${context.AuthToken}`
-              },
-              method: "POST",
-              body: JSON.stringify({
-                longitude: location.coords.longitude.toString(),
-                latitude: location.coords.latitude.toString(),
-                locationid: locationID,
-                userid: context.UserID
-              })
-            }
-          )
-            .then(res => {
-              return res.ok;
-            })
-            .catch(err => {
-              return false;
-            });
+          const sucessUpdate = updateLocation(
+            location.coords.longitude.toString(),
+            location.coords.latitude.toString(),
+            locationID,
+            context.UserID,
+            context.AuthToken
+          );
 
           if (sucessUpdate) {
             Toast.show({
