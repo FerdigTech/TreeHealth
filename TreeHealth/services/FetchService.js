@@ -59,7 +59,9 @@ const generateUser = async (
         roleid
       })
     }
-  ).then(res => res.json());
+  )
+    .then(res => res.json())
+    .catch(err => {});
   return RequestResult;
 };
 
@@ -85,9 +87,21 @@ const generateUserToken = async (email, password) => {
         password
       })
     }
-  ).then(res => res.json());
-  await SecureStore.setItemAsync("userToken", UserData.userid.toString());
-  await SecureStore.setItemAsync("userAuth", UserData.access_token.toString());
+  )
+    .then(res => res.json())
+    .catch(err => {});
+
+  if (
+    UserData.hasOwnProperty("userid") &&
+    UserData.hasOwnProperty("access_token")
+  ) {
+    await SecureStore.setItemAsync("userToken", UserData.userid.toString());
+    await SecureStore.setItemAsync(
+      "userAuth",
+      UserData.access_token.toString()
+    );
+  }
+
   return UserData;
 };
 
@@ -201,7 +215,9 @@ const getPointData = async (
       body: JSON.stringify({
         userid: userID != null ? userID : -1
       })
-    }).then(response => response.json());
+    })
+      .then(response => response.json())
+      .catch(err => {});
     pointsData = await fetch(
       globals.SERVER_URL + "/locationByProject/" + projectID,
       {
@@ -214,7 +230,9 @@ const getPointData = async (
           userid: userID != null ? userID : -1
         })
       }
-    ).then(response => response.json());
+    )
+      .then(response => response.json())
+      .catch(err => {});
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
   }
   return pointsData;
@@ -299,7 +317,9 @@ const getQuestionsData = async (ID, AuthToken) => {
         },
         method: "POST"
       }
-    ).then(response => response.json());
+    )
+      .then(response => response.json())
+      .catch(err => {});
 
     questionsData =
       questionsData !== "undefined"
@@ -340,7 +360,9 @@ const getAnswerData = async (ID, AuthToken) => {
       },
       method: "POST"
     }
-  ).then(response => response.json());
+  )
+    .then(response => response.json())
+    .catch(err => {});
   return questionsData;
 };
 
@@ -348,6 +370,65 @@ export const processAnswerData = (ID, AuthToken) => {
   return new Promise(resolve => {
     resolve(getAnswerData(ID, AuthToken));
   });
+};
+
+// TODO: remove and implent this from ProjectWrapper.js
+// update an already existing answer to a specific answerID
+export const updateAnswer = async (state, AuthToken) => {
+  await fetch(globals.SERVER_URL + "/answer/update", {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${AuthToken}`
+    },
+    method: "POST",
+    body: JSON.stringify({
+      answerid: state.items[0].answerID,
+      answer: state.items[0].answer
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        // if the update happens, then we will update the queue
+        const oldStateItems = state.items;
+        delete oldStateItems[0];
+        return { items: [...oldStateItems] };
+      }
+    })
+    .catch(err => {});
+
+  return state;
+};
+
+// TODO: remove and implent this from ProjectWrapper.js
+// create a new answer in relation to a questionID and locationID
+export const createAnswer = async (state, payload) => {
+  await fetch(globals.SERVER_URL + "/answer/create", {
+    cache: "no-store",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${payload.AuthToken}`
+    },
+    method: "POST",
+    body: JSON.stringify({
+      questionid: payload.questionid,
+      answeredby: payload.userid,
+      answer: payload.answer,
+      createddate: payload.createddate,
+      locationid: payload.locationID
+    })
+  })
+    .then(res => {
+      if (res.ok) {
+        const oldStateItems = state.items;
+        delete oldStateItems[0].answers[payload.questionid];
+        return { items: [...oldStateItems] };
+      }
+    })
+    .catch(err => {});
+  return state;
 };
 
 /*
@@ -374,7 +455,9 @@ const getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
       body: JSON.stringify({
         userid: UserID != null ? UserID : -1
       })
-    }).then(response => response.json());
+    })
+      .then(response => response.json())
+      .catch(err => {});
     // TODO: if offline/fails, we should try return cache and that it failed to get updated data
     // Since AsyncStorage is immunitable, the projects object should be deleted before being set
     if (projectData !== null) {
