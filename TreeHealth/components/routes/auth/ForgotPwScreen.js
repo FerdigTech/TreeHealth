@@ -1,37 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { SafeAreaView, StyleSheet } from "react-native";
-import { Button, Text, Form, Item, Input, Label, Toast } from "native-base";
+import { Button, Text, Form, Item, Input, Label } from "native-base";
 import { LogoTitle } from "../../reusable/LogoTitle";
-import globals from "../../../globals";
+import { handlePassReset } from "./../../../services/FetchService";
 
 export const ForgotPwScreen = props => {
   const [Email, setEmail] = useState("");
 
-  const handlePassReset = async () => {
-    await fetch(globals.SERVER_URL + "/userAccount/resetPassword", {
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json"
-      },
-      method: "POST",
-      body: JSON.stringify({
-        email: Email
-      })
-    })
-      .then(res => {
-        if (res.ok) {
-          Toast.show({
-            text: "A password reset has been to the associated email.",
-            buttonText: "Okay",
-            type: "success",
-            position: "top",
-            duration: 3000
-          });
-        }
-      })
-      .catch(err => {});
-  };
   const PassedEmail = props.navigation.getParam("email", "");
 
   useEffect(() => {
@@ -56,7 +31,7 @@ export const ForgotPwScreen = props => {
         style={styles.ResetBtn}
         rounded
         block
-        onPress={() => handlePassReset()}
+        onPress={() => handlePassReset(Email)}
         disabled={!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(Email)}
       >
         <Text> Reset Password </Text>

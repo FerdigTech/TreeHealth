@@ -15,7 +15,7 @@ import {
 } from "native-base";
 import { LogoTitle } from "../../reusable/LogoTitle";
 import { ProjectContext } from "../../../context/ProjectProvider";
-import globals from "../../../globals";
+import { getAffilations, getRoles } from "./../../../services/FetchService";
 
 export const RegisterScreen = () => {
   const [Answers, setAnswers] = useState({});
@@ -24,8 +24,8 @@ export const RegisterScreen = () => {
   const context = useContext(ProjectContext);
 
   useEffect(() => {
-    getAffilations();
-    getRoles();
+    getAffilations(aff => setAffilations(aff));
+    getRoles(roles => setUserRoles(roles));
     setAnswers({
       name: "",
       email: "",
@@ -83,34 +83,6 @@ export const RegisterScreen = () => {
     }
   };
 
-  const getAffilations = async () => {
-    await fetch(globals.SERVER_URL + "/affiliations")
-      .then(res => res.json())
-      .then(res => {
-        // if we get a result otherwise return nothing
-        if (res.hasOwnProperty("result")) {
-          setAffilations(res.result);
-        } else {
-          setAffilations([]);
-        }
-      })
-      .catch(err => setAffilations([]));
-  };
-
-  const getRoles = async () => {
-    await fetch(globals.SERVER_URL + "/userRoles")
-      .then(res => res.json())
-      .then(res => {
-        // if we get a result otherwise return nothing
-        if (res.hasOwnProperty("result")) {
-          setUserRoles(res.result);
-        } else {
-          setUserRoles([]);
-        }
-      })
-      .catch(err => setUserRoles([]));
-  };
-
   return (
     <SafeAreaView style={styles.signUpView}>
       <ScrollView>
@@ -118,9 +90,7 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Name</Label>
             <Input
-              onChangeText={text =>
-                setAnswers({ ...Answers, name: text })
-              }
+              onChangeText={text => setAnswers({ ...Answers, name: text })}
               autoCompleteType={"name"}
               style={styles.inputs}
             />
@@ -128,9 +98,7 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Email</Label>
             <Input
-              onChangeText={e =>
-                setAnswers({ ...Answers, email: text })
-              }
+              onChangeText={e => setAnswers({ ...Answers, email: text })}
               autoCompleteType={"email"}
               keyboardType={"email-address"}
               style={styles.inputs}
@@ -139,9 +107,7 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Password</Label>
             <Input
-              onChangeText={e =>
-                setAnswers({ ...Answers, password: text })
-              }
+              onChangeText={e => setAnswers({ ...Answers, password: text })}
               style={styles.inputs}
               autoCompleteType={"password"}
               secureTextEntry={true}
