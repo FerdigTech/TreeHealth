@@ -98,7 +98,7 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Email</Label>
             <Input
-              onChangeText={e => setAnswers({ ...Answers, email: text })}
+              onChangeText={text => setAnswers({ ...Answers, email: text })}
               autoCompleteType={"email"}
               keyboardType={"email-address"}
               style={styles.inputs}
@@ -107,7 +107,7 @@ export const RegisterScreen = () => {
           <Item floatingLabel>
             <Label style={styles.labels}>Password</Label>
             <Input
-              onChangeText={e => setAnswers({ ...Answers, password: text })}
+              onChangeText={text => setAnswers({ ...Answers, password: text })}
               style={styles.inputs}
               autoCompleteType={"password"}
               secureTextEntry={true}
