@@ -16,7 +16,9 @@ import { ProjectContext } from "../../../context/ProjectProvider";
 import { updateLocation } from "./../../../services/FetchService";
 
 export const AddPoint = props => {
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState({
+    coords: { latitude: null, longitude: null }
+  });
   const [errorMessage, setError] = useState(null);
   const netInfo = useNetInfo();
   const context = useContext(ProjectContext);
@@ -59,6 +61,7 @@ export const AddPoint = props => {
     let newState = Object.assign({}, location);
     const input = text.toString();
     if (input) {
+      console.log(input);
       newState.coords.latitude = input;
     } else {
       newState.coords.latitude = "";
@@ -147,7 +150,7 @@ export const AddPoint = props => {
   return (
     <SafeAreaView style={styles.AddPtView}>
       <ScrollView>
-        {location == null &&
+        {location.coords.longitude == null &&
           netInfo.isConnected &&
           locationID == null && (
             <View style={styles.loadingView}>
@@ -189,7 +192,7 @@ export const AddPoint = props => {
               keyboardType={"decimal-pad"}
               style={styles.itemStyle}
               value={
-                location != null ? location.coords.latitude.toString() : " "
+                location.coords.latitude != null ? location.coords.latitude.toString() : " "
               }
               placeholder="Latitude"
               onChangeText={text => _updateLatitude({ text })}
@@ -201,7 +204,7 @@ export const AddPoint = props => {
               keyboardType={"decimal-pad"}
               style={styles.itemStyle}
               value={
-                location != null ? location.coords.longitude.toString() : " "
+                location.coords.longitude != null ? location.coords.longitude.toString() : " "
               }
               placeholder="Longitude"
               onChangeText={text => _updateLongitude({ text })}
