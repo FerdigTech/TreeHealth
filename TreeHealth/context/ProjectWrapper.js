@@ -17,6 +17,9 @@ import {
 
 const ProjectProvider = ProjectContext.Provider;
 
+// used to see if data is being loaded into stoage (critical area)
+let MutexLocked = false;
+
 // use hook to get the project data
 const useProjects = (UserID, AuthToken) => {
   const [Projects, setProjects] = useState([]);
@@ -65,10 +68,8 @@ const OfflineReducer = (state, action) => {
       console.log("popping");
       waitAndUpdateStorage({
         items: state.items.filter((_, i) => i !== 0)
-      }).then(() => {
-        return { items: state.items.filter((_, i) => i !== 0) };
       });
-      return { items: [] };
+      return { items: state.items.filter((_, i) => i !== 0) };
 
     case "set":
       return action.payload;
@@ -141,11 +142,15 @@ const processUserAuth = () => {
 // and it could be cleared in IOS8
 // perhaps a local-database solution might be the fix for this?
 const updateStorage = async value => {
+  // in critical area and updating memory
+  MutexLocked = true;
   const oldStorage = await AsyncStorage.getItem("offlineQueue");
   if (oldStorage != null) {
     await AsyncStorage.removeItem("offlineQueue");
   }
   await AsyncStorage.setItem("offlineQueue", JSON.stringify(value));
+  // memory storage updated and is out of critical area
+  MutexLocked = false;
 };
 const waitAndUpdateStorage = value => {
   return new Promise(resolve => {
@@ -188,7 +193,12 @@ export const ProjectWrapper = ({ children }) => {
   // this can cause issues if items are being saved when finished the queue
   const offlineQueueLoad = loadStoredQueue().then(res => {
     // if more things are in the backstorage than current queue than we need to update
-    if (res != null && OfflineStateQ.items.length < res.items.length) {
+    if (
+      res != null &&
+      OfflineStateQ.items.length < res.items.length &&
+      MutexLocked == false
+    ) {
+      console.log("we are loading new info to queue");
       dispatcher({
         type: "set",
         payload: res
