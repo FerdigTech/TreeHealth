@@ -72,6 +72,7 @@ const OfflineReducer = (state, action) => {
       return { items: state.items.filter((_, i) => i !== 0) };
 
     case "set":
+      waitAndUpdateStorage(action.payload);
       return action.payload;
     case "updateAnswers":
       console.log("processing: ", state.items[0].answerID);
@@ -181,7 +182,6 @@ export const ProjectWrapper = ({ children }) => {
   const Points = PointsObj.Points;
   const setPoints = PointsObj.setPoints;
   const [Update, TriggerUpdate] = useState(false);
-  const [BeingProcessed, setBeingProcessed] = useState([]);
   const [OfflineStateQ, dispatcher] = useReducer(
     OfflineReducer,
     { items: [] },
