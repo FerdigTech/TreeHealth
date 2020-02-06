@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { SafeAreaView, StyleSheet } from "react-native";
+import React, { useState, useEffect, useContext, Fragment } from "react";
+import { SafeAreaView, StyleSheet, ActivityIndicator } from "react-native";
 import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
 import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
@@ -9,6 +9,7 @@ import * as SecureStore from "expo-secure-store";
 
 export const SignInScreen = () => {
   const [Answers, setAnswers] = useState({});
+  const [Processing, setProcessing] = useState(false);
   const context = useContext(ProjectContext);
 
   useEffect(() => {
@@ -24,65 +25,77 @@ export const SignInScreen = () => {
   };
 
   _handleLogin = () => {
-    context.processLogin(Answers.email, Answers.password);
+    setProcessing(true);
+    context.processLogin(Answers.email, Answers.password, () => setProcessing);
   };
 
   return (
     <SafeAreaView style={styles.signInView}>
-      <Form style={styles.signInForm}>
-        <Item floatingLabel>
-          <Label>Email</Label>
-          <Input
-            autoCompleteType={"email"}
-            keyboardType={"email-address"}
-            onChangeText={text => setAnswers({ ...Answers, email: text })}
-          />
-        </Item>
-        <Item floatingLabel last>
-          <Label>Password</Label>
-          <Input
-            secureTextEntry={true}
-            onChangeText={text => setAnswers({ ...Answers, password: text })}
-          />
-        </Item>
-        <Container style={styles.signInBtns}>
-          <Button
-            onPress={() =>
-              NavigationService.navigate("Forget", { email: Answers.email })
-            }
-            block
-            transparent
-          >
-            <Text> Forgot Password? </Text>
-          </Button>
-          <Button
-            onPress={() => _handleLogin()}
-            style={{ backgroundColor: globals.COLOR.GREEN }}
-          >
-            <Text> Login </Text>
-          </Button>
+      {Processing ? (
+        <Container style={styles.loadingView}>
+          <ActivityIndicator />
         </Container>
-      </Form>
-      <Container style={styles.helpBtnsCtn}>
-        <Button
-          onPress={() => NavigationService.navigate("Register")}
-          style={styles.helpBtns}
-          rounded
-          block
-          light
-        >
-          <Text> Create an Account </Text>
-        </Button>
-        <Button
-          style={styles.helpBtns}
-          rounded
-          block
-          light
-          onPress={_signInTrial}
-        >
-          <Text> Try Us Out! </Text>
-        </Button>
-      </Container>
+      ) : (
+        <React.Fragment>
+          <Form style={styles.signInForm}>
+            <Item floatingLabel>
+              <Label>Email</Label>
+              <Input
+                autoCompleteType={"email"}
+                keyboardType={"email-address"}
+                onChangeText={text => setAnswers({ ...Answers, email: text })}
+              />
+            </Item>
+            <Item floatingLabel last>
+              <Label>Password</Label>
+              <Input
+                secureTextEntry={true}
+                onChangeText={text =>
+                  setAnswers({ ...Answers, password: text })
+                }
+              />
+            </Item>
+            <Container style={styles.signInBtns}>
+              <Button
+                onPress={() =>
+                  NavigationService.navigate("Forget", { email: Answers.email })
+                }
+                block
+                transparent
+              >
+                <Text> Forgot Password? </Text>
+              </Button>
+              <Button
+                onPress={() => _handleLogin()}
+                style={{ backgroundColor: globals.COLOR.GREEN }}
+              >
+                <Text> Login </Text>
+              </Button>
+            </Container>
+          </Form>
+
+          <Container style={styles.helpBtnsCtn}>
+            <Button
+              onPress={() => NavigationService.navigate("Register")}
+              style={styles.helpBtns}
+              rounded
+              block
+              light
+            >
+              <Text> Create an Account </Text>
+            </Button>
+            <Button
+              style={styles.helpBtns}
+              rounded
+              block
+              light
+              onPress={_signInTrial}
+            >
+              <Text> Try Us Out! </Text>
+            </Button>
+          </Container>
+        </React.Fragment>
+      )}
     </SafeAreaView>
   );
 };
@@ -115,5 +128,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     padding: 30
+  },
+  loadingView: {
+    flex: 1,
+    justifyContent: "center"
   }
 });

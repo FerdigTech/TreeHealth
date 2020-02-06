@@ -245,7 +245,7 @@ export const ProjectWrapper = ({ children }) => {
     });
   };
 
-  const HandleLogin = (email, pass) => {
+  const HandleLogin = (email, pass, cb) => {
     processLogin(email, pass).then(results => {
       if (results.hasOwnProperty("userid")) {
         // when we login update project visibility
@@ -279,6 +279,7 @@ export const ProjectWrapper = ({ children }) => {
           });
         }
       }
+      cb.apply(false);
     });
   };
 
@@ -469,7 +470,7 @@ export const ProjectWrapper = ({ children }) => {
         },
         processSignup: (name, email, pass, affiliationid, roleid) =>
           HandleSignup(name, email, pass, affiliationid, roleid),
-        processLogin: (email, pass) => HandleLogin(email, pass),
+        processLogin: (email, pass, cb) => HandleLogin(email, pass, cb),
         processLogout: () => HandleLogout(),
         UserID,
         AuthToken
