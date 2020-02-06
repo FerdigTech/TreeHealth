@@ -191,6 +191,7 @@ export const MapDisplay = props => {
                     // this pends if the user can edit the point
                     draggable={true}
                     // TODO: once a user drags a point, it should bring them to the edit screen
+                    // seems like there is no way to uniquely identify a point
                     onDragEnd={() => {}}
                   />
                 );
