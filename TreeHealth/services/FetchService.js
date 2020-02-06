@@ -89,7 +89,9 @@ const generateUserToken = async (email, password) => {
     }
   )
     .then(res => res.json())
-    .catch(err => {});
+    .catch(err => {
+      return { status: "offline" };
+    });
 
   if (
     UserData.hasOwnProperty("userid") &&

@@ -251,13 +251,23 @@ export const ProjectWrapper = ({ children }) => {
         NavigationService.navigate("Loading");
       } else {
         Toast.hide();
-        Toast.show({
-          text: "Wrong username or password!",
-          buttonText: "Okay",
-          type: "danger",
-          position: "top",
-          duration: 3000
-        });
+        if (results.hasOwnProperty("status")) {
+          Toast.show({
+            text: "You can only login while online.",
+            buttonText: "Okay",
+            type: "danger",
+            position: "top",
+            duration: 3000
+          });
+        } else {
+          Toast.show({
+            text: "Wrong username or password!",
+            buttonText: "Okay",
+            type: "danger",
+            position: "top",
+            duration: 3000
+          });
+        }
       }
     });
   };
