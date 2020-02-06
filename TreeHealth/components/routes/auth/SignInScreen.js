@@ -26,7 +26,9 @@ export const SignInScreen = () => {
 
   _handleLogin = () => {
     setProcessing(true);
-    context.processLogin(Answers.email, Answers.password, () => setProcessing);
+    context.processLogin(Answers.email, Answers.password, status =>
+      setProcessing(status)
+    );
   };
 
   return (

@@ -258,9 +258,11 @@ export const ProjectWrapper = ({ children }) => {
         });
         setUserID(results.userid);
         setAuthToken(results.access_token);
+        cb(false);
         NavigationService.navigate("Loading");
       } else {
         Toast.hide();
+        cb(false);
         if (results.hasOwnProperty("status")) {
           Toast.show({
             text: "You can only login while online.",
@@ -279,7 +281,6 @@ export const ProjectWrapper = ({ children }) => {
           });
         }
       }
-      cb.apply(false);
     });
   };
 
