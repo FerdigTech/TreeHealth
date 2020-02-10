@@ -25,3 +25,12 @@ Building can be done many ways:
     expo build:android
     ```
 - If you wish to build standalone your best bet is to use [Turtle CLI](https://docs.expo.io/versions/latest/distribution/turtle-cli/)
+```
+export EXPO_ANDROID_KEYSTORE_PASSWORD="REPLACE_WITH_KEY_STORE_PASS" \
+export EXPO_ANDROID_KEY_PASSWORD="REPLACE_WITH_KEY_PASS" \
+turtle build:android -u "REPLACE_WITH_EXPO_USER" -p "REPLACE_WITH_EXPO_PASS" \
+  --keystore-path ./TreeHealth.jks \
+  --keystore-alias "REPLACE_WITH_KEY_STORE_ALIAS" \
+  --type apk
+  
+```
