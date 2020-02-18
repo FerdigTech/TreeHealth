@@ -112,7 +112,8 @@ const OfflineReducer = (state, action) => {
           answeredby: action.payload.userid,
           answer: action.payload.answer,
           createddate: action.payload.createddate,
-          locationid: action.payload.locationID
+          locationid: action.payload.locationID,
+          ispublic: action.payload.ispublic
         })
       }).then(res => {
         if (res.ok) {

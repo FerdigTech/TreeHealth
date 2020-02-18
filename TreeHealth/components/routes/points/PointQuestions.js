@@ -24,7 +24,8 @@ import {
   Body,
   Thumbnail,
   Button,
-  DatePicker
+  DatePicker,
+  CheckBox
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
 import globals from "../../../globals";
@@ -49,6 +50,7 @@ export const PointQuestions = props => {
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
   const [CreationDate, setCreationDate] = useState(Date.now());
+  const [PrivatePoint, setPrivatePoint] = useState(false);
   const [ShowModal, setShowModal] = useState(false);
   const [HasPermission, setHasPermission] = useState(true);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
@@ -120,7 +122,8 @@ export const PointQuestions = props => {
         createddate:
           typeof CreationDate == "number"
             ? CreationDate
-            : new Date(CreationDate).getTime()
+            : new Date(CreationDate).getTime(),
+        ispublic: !PrivatePoint
       });
     } else {
       // if there are any difference in answers we must send it to the server
@@ -277,25 +280,40 @@ export const PointQuestions = props => {
           <ScrollView style={styles.questionList}>
             {// during creation, we can allow for them to pick this date
             locationID == null && (
-              <ListItem>
-                <Left>
-                  <Text style={styles.questionDesc}>Select Creation Date:</Text>
-                </Left>
-                <Body>
-                  <DatePicker
-                    defaultDate={Date.now()}
-                    locale={"en"}
-                    ref={DatepickerRef}
-                    textStyle={{ color: "blue" }}
-                    animationType={"fade"}
-                    formatChosenDate={date => {
-                      return Moment(date).format("LL");
-                    }}
-                    onDateChange={saveDate}
-                  />
-                </Body>
-                <Right />
-              </ListItem>
+              <React.Fragment>
+                <ListItem>
+                  <Left>
+                    <Text style={styles.questionDesc}>
+                      Select Creation Date:
+                    </Text>
+                  </Left>
+                  <Body>
+                    <DatePicker
+                      defaultDate={Date.now()}
+                      locale={"en"}
+                      ref={DatepickerRef}
+                      textStyle={{ color: "blue" }}
+                      animationType={"fade"}
+                      formatChosenDate={date => {
+                        return Moment(date).format("LL");
+                      }}
+                      onDateChange={saveDate}
+                    />
+                  </Body>
+                </ListItem>
+                <ListItem>
+                  <Left>
+                    <Text style={styles.questionDesc}>Private Record?:</Text>
+                  </Left>
+                  <Body>
+                    <CheckBox
+                      onPress={() => setPrivatePoint(!PrivatePoint)}
+                      checked={PrivatePoint}
+                      color="black"
+                    />
+                  </Body>
+                </ListItem>
+              </React.Fragment>
             )}
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
