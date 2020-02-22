@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import MapView, { Marker, Callout } from "react-native-maps";
+import MapView, { Marker, Callout, PROVIDER_GOOGLE } from "react-native-maps";
 import {
   StyleSheet,
   View,
@@ -104,6 +104,7 @@ export const MapDisplay = props => {
             ref={ref => {
               mapRef = ref;
             }}
+            provider={PROVIDER_GOOGLE}
             style={styles.mapStyle}
             initialRegion={zoomNEOhio.region}
             showsUserLocation={true}
