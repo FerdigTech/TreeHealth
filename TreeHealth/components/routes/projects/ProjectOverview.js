@@ -58,7 +58,6 @@ export const ProjectOverview = () => {
 
 const styles = StyleSheet.create({
   scrollView: {
-    flex: 1,
     backgroundColor: "#ccc"
   }
 });
