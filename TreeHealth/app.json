@@ -28,7 +28,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.KentState.TreeHealth",
       "config": {
-        "googleMapsApiKey":"AIzaSyCfsvulkcZSsdXJmkgRfHnlP63GoeVsmL4"
+        "googleMapsApiKey": "AIzaSyCfsvulkcZSsdXJmkgRfHnlP63GoeVsmL4"
       }
     },
     "android": {
