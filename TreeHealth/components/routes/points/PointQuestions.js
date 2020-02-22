@@ -49,7 +49,7 @@ export const PointQuestions = props => {
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
-  const [CreationDate, setCreationDate] = useState(Date.now());
+  const [CreationDate, setCreationDate] = useState(new Date());
   const [PrivatePoint, setPrivatePoint] = useState(false);
   const [ShowModal, setShowModal] = useState(false);
   const [HasPermission, setHasPermission] = useState(true);
@@ -289,7 +289,7 @@ export const PointQuestions = props => {
                   </Left>
                   <Body>
                     <DatePicker
-                      defaultDate={Date.now()}
+                      defaultDate={new Date()}
                       locale={"en"}
                       ref={DatepickerRef}
                       textStyle={{ color: "blue" }}

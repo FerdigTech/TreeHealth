@@ -140,8 +140,8 @@ export const FilterModal = props => {
                   Operator == "range"
                     ? EndDateFilter != "" && EndDateFilter != null
                       ? EndDateFilter
-                      : Date.now()
-                    : Date.now()
+                      : new Date()
+                    : new Date()
                 }
                 formatChosenDate={date => {
                   return Moment(date).format("ll");
@@ -164,11 +164,11 @@ export const FilterModal = props => {
                   minimumDate={
                     dateFilter != "" && dateFilter != null
                       ? dateFilter
-                      : Date.now()
+                      : new Date()
                   }
                   // to make sure they can't select a date before startDate
                   disabled={dateFilter == "" || dateFilter == null}
-                  maximumDate={Date.now()}
+                  maximumDate={new Date()}
                   formatChosenDate={date => {
                     return Moment(date).format("ll");
                   }}
