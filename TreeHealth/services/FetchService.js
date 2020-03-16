@@ -215,13 +215,9 @@ const getPointData = async (
   } else {
     AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
       cache: "no-store",
-      method: "POST",
       headers: {
         Authorization: `Bearer ${AuthToken}`
-      },
-      body: JSON.stringify({
-        userid: userID != null ? userID : -1
-      })
+      }
     })
       .then(response => response.json())
       .catch(err => {});
@@ -229,13 +225,9 @@ const getPointData = async (
       globals.SERVER_URL + "/locationByProject/" + projectID,
       {
         cache: "no-store",
-        method: "POST",
         headers: {
           Authorization: `Bearer ${AuthToken}`
         },
-        body: JSON.stringify({
-          userid: userID != null ? userID : -1
-        })
       }
     )
       .then(response => response.json())

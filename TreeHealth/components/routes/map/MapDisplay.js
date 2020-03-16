@@ -119,10 +119,10 @@ export const MapDisplay = props => {
                 tree.load(
                   context.Points.map(point => {
                     return {
-                      minY: point.latitude,
-                      minX: point.longitude,
-                      maxY: point.latitude,
-                      maxX: point.longitude
+                      minY: parseFloat(point.latitude),
+                      minX: parseFloat(point.longitude),
+                      maxY: parseFloat(point.latitude),
+                      maxX: parseFloat(point.longitude)
                     };
                   })
                 );
@@ -130,11 +130,11 @@ export const MapDisplay = props => {
             </ProjectCosumer>
             {Points.filter(
               point =>
-                !FilterAffilation || !point.hasOwnProperty("affiliationid")
+                !FilterAffilation || !point.affiliationid
             )
               .filter(
                 point =>
-                  !OnlyAffilation || point.hasOwnProperty("affiliationid")
+                  !OnlyAffilation || point.affiliationid
               )
               .filter(
                 point =>
@@ -172,14 +172,10 @@ export const MapDisplay = props => {
                 return (
                   <Marker
                     coordinate={{
-                      longitude: point.longitude,
-                      latitude: point.latitude
+                      longitude: parseFloat(point.longitude),
+                      latitude: parseFloat(point.latitude)
                     }}
-                    title={
-                      Moment.unix(point.createddate).format("LL") +
-                      " - " +
-                      point.county
-                    }
+                    title={ point.title }
                     // seems like when rerendering, react uses the key to update
                     // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
                     // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684
@@ -187,7 +183,7 @@ export const MapDisplay = props => {
                       index.toString() + Date.now().toString()
                     )}
                     pinColor={
-                      point.hasOwnProperty("affiliationid") ? "blue" : "red"
+                      point.affiliationid ? "blue" : "red"
                     }
                     // this pends if the user can edit the point
                     draggable={true}
