@@ -143,7 +143,7 @@ export const getAffilations = async cb => {
 
 // get a list of all the roles
 export const getRoles = async cb => {
-  const roles = await fetch(globals.SERVER_URL + "/userRoles")
+  const roles = await fetch(globals.SERVER_URL + "/roles")
     .then(res => res.json())
     .then(res => {
       // if we get a result otherwise return nothing
