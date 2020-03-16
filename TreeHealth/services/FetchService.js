@@ -453,15 +453,11 @@ const getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
   if (projectData !== null && !forceUpdate) {
     projectData = JSON.parse(projectData);
   } else {
-    projectData = await fetch(globals.SERVER_URL + "/projects/", {
+    projectData = await fetch(globals.SERVER_URL + "/projects", {
       cache: "no-store",
-      method: "POST",
       headers: {
         Authorization: `Bearer ${AuthToken}`
       },
-      body: JSON.stringify({
-        userid: UserID != null ? UserID : -1
-      })
     })
       .then(response => response.json())
       .catch(err => {});
