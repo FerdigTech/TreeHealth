@@ -38,16 +38,14 @@ export const RecordItem = props => {
         <ListItem style={styles.listItemStyle}>
           <Body style={styles.leftHandInfo}>
             <Text style={styles.itemDate}>
-              {Moment.unix(props.pointData.createddate).format("LL") +
-                " - " +
-                props.pointData.county}
+              { props.pointData.title }
             </Text>
             <Text style={styles.itemDraft}>
               {props.isDraft ? "Draft" : " "}
             </Text>
             <Text style={styles.itemUpdated} note>
               last updated{" "}
-              {Moment.unix(props.pointData.updateddate).format("LL")}
+              {Moment(props.pointData.updateddate).format("LL")}
             </Text>
           </Body>
           <Right>

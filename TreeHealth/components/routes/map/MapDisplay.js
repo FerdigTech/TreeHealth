@@ -139,21 +139,21 @@ export const MapDisplay = props => {
               .filter(
                 point =>
                   Operator != "before" ||
-                  Moment(Moment.unix(point.createddate)).isSameOrBefore(
+                  Moment(point.createddate).isSameOrBefore(
                     Moment(dateFilter)
                   )
               )
               .filter(
                 point =>
                   Operator != "after" ||
-                  Moment(Moment.unix(point.createddate)).isSameOrAfter(
+                  Moment(point.createddate).isSameOrAfter(
                     Moment(dateFilter)
                   )
               )
               .filter(
                 point =>
                   Operator != "dayof" ||
-                  Moment(Moment.unix(point.createddate)).isSame(
+                  Moment(point.createddate).isSame(
                     Moment(dateFilter),
                     "day"
                   )
@@ -161,10 +161,10 @@ export const MapDisplay = props => {
               .filter(
                 point =>
                   Operator != "range" ||
-                  (Moment(Moment.unix(point.createddate)).isSameOrAfter(
+                  (Moment(point.createddate).isSameOrAfter(
                     Moment(dateFilter)
                   ) &&
-                    Moment(Moment.unix(point.createddate)).isSameOrBefore(
+                    Moment(point.createddate).isSameOrBefore(
                       Moment(EndDateFilter)
                     ))
               )

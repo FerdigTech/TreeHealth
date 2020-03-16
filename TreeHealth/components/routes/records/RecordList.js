@@ -58,43 +58,45 @@ export const RecordList = props => {
             </View>
           )}
           {Points.filter(
-            point => !FilterAffilation || !point.hasOwnProperty("affiliationid")
-          )
-            .filter(
-              point => !OnlyAffilation || point.hasOwnProperty("affiliationid")
-            )
-            .filter(
               point =>
-                Operator != "before" ||
-                Moment(Moment.unix(point.createddate)).isSameOrBefore(
-                  Moment(dateFilter)
-                )
+                !FilterAffilation || !point.affiliationid
             )
-            .filter(
-              point =>
-                Operator != "after" ||
-                Moment(Moment.unix(point.createddate)).isSameOrAfter(
-                  Moment(dateFilter)
-                )
-            )
-            .filter(
-              point =>
-                Operator != "dayof" ||
-                Moment(Moment.unix(point.createddate)).isSame(
-                  Moment(dateFilter),
-                  "day"
-                )
-            )
-            .filter(
-              point =>
-                Operator != "range" ||
-                (Moment(Moment.unix(point.createddate)).isSameOrAfter(
-                  Moment(dateFilter)
-                ) &&
-                  Moment(Moment.unix(point.createddate)).isSameOrBefore(
-                    Moment(EndDateFilter)
-                  ))
-            )
+              .filter(
+                point =>
+                  !OnlyAffilation || point.affiliationid
+              )
+              .filter(
+                point =>
+                  Operator != "before" ||
+                  Moment(point.createddate).isSameOrBefore(
+                    Moment(dateFilter)
+                  )
+              )
+              .filter(
+                point =>
+                  Operator != "after" ||
+                  Moment(point.createddate).isSameOrAfter(
+                    Moment(dateFilter)
+                  )
+              )
+              .filter(
+                point =>
+                  Operator != "dayof" ||
+                  Moment(point.createddate).isSame(
+                    Moment(dateFilter),
+                    "day"
+                  )
+              )
+              .filter(
+                point =>
+                  Operator != "range" ||
+                  (Moment(point.createddate).isSameOrAfter(
+                    Moment(dateFilter)
+                  ) &&
+                    Moment(point.createddate).isSameOrBefore(
+                      Moment(EndDateFilter)
+                    ))
+              )
             .filter(point => {
               tree.load(VisibleMarkers);
               return tree.collides({
