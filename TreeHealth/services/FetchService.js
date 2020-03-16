@@ -88,9 +88,11 @@ const generateUserToken = async (email, password) => {
       })
     }
   )
-    .then(res => res.json())
+    // if 200 then it authed okay, if 500, it's an auth failure
+    .then(res => {return res.ok ? res.json() : {} } )
+    .then(res => { return res.hasOwnProperty("result") ? res.result[0] : {} } )
     .catch(err => {
-      return { status: "offline" };
+      return { status: "offline"};
     });
 
   if (
