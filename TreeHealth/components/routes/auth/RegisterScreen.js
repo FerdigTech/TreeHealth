@@ -31,7 +31,7 @@ export const RegisterScreen = () => {
       email: "",
       password: "",
       affliation: -1,
-      roleid: -1,
+      roleid: null,
       thirteen: false,
       data: false,
       tos: false
@@ -148,7 +148,7 @@ export const RegisterScreen = () => {
               }
               selectedValue={Answers.affliation}
             >
-              <Picker.Item label={"None"} value={-1} />
+              <Picker.Item label={"None"} value={null} />
               {Affilations.map(affliate => {
                 return (
                   <Picker.Item

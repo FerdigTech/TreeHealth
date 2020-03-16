@@ -56,6 +56,9 @@ const generateUser = async (
         email,
         password,
         affiliationid,
+        // TODO: these probably should be checked automatically
+        isadminapprovalneeded: false,
+        isapprovedbyadmin: false,
         roleid
       })
     }
