@@ -140,13 +140,13 @@ const DropDown = props => {
 export const QuestionModal = props => {
   const [Answer, setAnswer] = useState("");
   const [ImagleViewable, setImagleViewable] = useState(false);
-  const { question, options, questiontype, image, questionid, ismandatory } =
+  const { question, optionsarray, name, image, questionid, ismandatory } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
       : {
           question: "",
-          options: "",
-          questiontype: "",
+          optionsarray: "",
+          name: "",
           image: "",
           questionid: -1,
           ismandatory: false
@@ -193,7 +193,7 @@ export const QuestionModal = props => {
             {question != "" && (
               <Text type={styles.QuestionTxt}>{question}</Text>
             )}
-            {questiontype != "Image" && (
+            {name != "Image" && (
               <React.Fragment>
                 <Button
                   block
@@ -221,28 +221,28 @@ export const QuestionModal = props => {
               </React.Fragment>
             )}
 
-            {(questiontype == "multiple-choice" && (
+            {(name == "Multiple choice" && (
               <MultipleChoice
-                options={options}
+                options={optionsarray}
                 savedValue={Answer}
                 handleSave={setAnswer}
               />
             )) ||
-              (questiontype == "Text" && (
+              (name == "Description" && (
                 <TextInput
-                  options={options}
+                  options={optionsarray}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
               )) ||
-              (questiontype == "Dropdown" && (
+              (name == "Single choice" && (
                 <DropDown
-                  options={options}
+                  options={optionsarray}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
               )) ||
-              (questiontype == "Image" && (
+              (name == "Image" && (
                 <ImageAnswer
                   handlePicker={props.handlePicker}
                   handleCamera={props.handleCamera}

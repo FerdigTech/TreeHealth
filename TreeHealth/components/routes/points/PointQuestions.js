@@ -47,6 +47,7 @@ export const PointQuestions = props => {
   const [Answers, setAnswers] = useState([]);
   const [SavedAnswers, setSavedAnswers] = useState([]);
   const [progress, setProgress] = useState(0);
+  const manditoryQuestCount = Questions.filter(questions => questions.ismandatory).length;
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
   const [CreationDate, setCreationDate] = useState(new Date());
@@ -76,8 +77,8 @@ export const PointQuestions = props => {
     newAnswerObj[CurrentQuestion] = answer;
     setAnswers(newAnswerObj);
     if (
-      (CurrentPointData[0].questiontype == "Text" ||
-        CurrentPointData[0].questiontype == "Image") &&
+      (CurrentPointData[0].name == "Description" ||
+        CurrentPointData[0].name == "Image") &&
       answer == ""
     ) {
       // was image question or text question and they gave no answer, so it wasn't finished
@@ -162,11 +163,11 @@ export const PointQuestions = props => {
         setProgress(
           Math.round(
             (CompleteManQuestions.length + 1) /
-              Questions.filter(questions => questions.ismandatory).length *
-              100
-          )
+            manditoryQuestCount
+            ) * 100
         );
       } else {
+        if (manditoryQuestCount === 0 && progress !== 100) setProgress(100);
         setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
       }
     }
@@ -317,7 +318,8 @@ export const PointQuestions = props => {
             )}
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
-              Image.prefetch(question.image);
+              if (question.hasOwnProperty("image"))
+                Image.prefetch(question.image);
               return (
                 <ListItem
                   thumbnail
@@ -327,11 +329,13 @@ export const PointQuestions = props => {
                   }}
                 >
                   <Left>
-                    <Thumbnail square source={{ uri: question.image }} />
+                    <Thumbnail square source={ 
+                      (question.hasOwnProperty("image") ?  {uri: question.image} : require("../../../assets/treehouse-default.png")) 
+                    } />
                   </Left>
                   <Body>
                     <Text numberOfLines={1} style={styles.questionDesc}>
-                      {question.description}
+                      {question.name} question
                     </Text>
                   </Body>
                   <Right
