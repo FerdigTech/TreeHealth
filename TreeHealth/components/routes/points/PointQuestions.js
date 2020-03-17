@@ -73,7 +73,10 @@ export const PointQuestions = props => {
 
   const saveAnswers = (answer, ismandatory) => {
     let newAnswerObj = Answers;
-    newAnswerObj[CurrentQuestion] = answer;
+    const indexOfQuestion = Answers.findIndex(answer => answer.questionid ===  CurrentQuestion);
+    newAnswerObj[indexOfQuestion].answer = answer;
+
+    
     setAnswers(newAnswerObj);
     if (
       (CurrentPointData[0].name == "Description" ||
@@ -117,7 +120,7 @@ export const PointQuestions = props => {
       // send over the location and all the answers
       context.addToOfflineQueue({
         location: location,
-        answers: Answers.filter(answer => answer != null),
+        answers:  Answers.filter(answer => answer.answer != null),
         // converts the date to a standard epoch time
         createddate:
           typeof CreationDate == "number"
@@ -198,6 +201,19 @@ export const PointQuestions = props => {
         setQuestions(results);
         // if there are no manditory questions no need to force any questions
         if (results.filter(questions => questions.ismandatory).length === 0 && progress !== 100) setProgress(100);
+        // prepare answer object
+        results.map(questions => {
+          // for each answer, we should have some information about it
+          setAnswers(Answers => [
+            ...Answers,
+            {
+              questionid: questions.questionid,
+              answer: "",
+              createdby: questions.createdby,
+            }
+          ])
+
+        })
       });
     }
 

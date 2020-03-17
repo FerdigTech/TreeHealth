@@ -154,11 +154,12 @@ export const QuestionModal = props => {
   useEffect(
     () => {
       // on load, we should set the answer back to what we got previously
+      const indexOfQuestion =  props.currentAnswers.findIndex(answer => answer.questionid === questionid);
       if (
         props.ShowModal &&
-        typeof props.currentAnswers[questionid] !== "undefined"
+        indexOfQuestion !== -1
       ) {
-        setAnswer(props.currentAnswers[questionid]);
+        setAnswer(props.currentAnswers[indexOfQuestion].answer);
       }
     },
     [props.ShowModal]
