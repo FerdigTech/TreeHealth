@@ -97,33 +97,7 @@ const OfflineReducer = (state, action) => {
         }
       });
       return state;
-    case "sendAnswers":
-      console.log("processing: ", action.payload.questionid);
-      fetch(globals.SERVER_URL + "/answer/create", {
-        cache: "no-store",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${action.payload.AuthToken}`
-        },
-        method: "POST",
-        body: JSON.stringify({
-          questionid: action.payload.questionid,
-          answeredby: action.payload.userid,
-          answer: action.payload.answer,
-          createddate: action.payload.createddate,
-          locationid: action.payload.locationID,
-          ispublic: action.payload.ispublic
-        })
-      }).then(res => {
-        if (res.ok) {
-          const oldStateItems = state.items;
-          delete oldStateItems[0].answers[action.payload.questionid];
-          return { items: [...oldStateItems] };
-        }
-      });
 
-      return state;
     default:
       throw new Error();
   }
@@ -211,7 +185,7 @@ export const ProjectWrapper = ({ children }) => {
 
   const userInfo = processUserAuth().then(res => {
     if (res.asyncUserID != UserID && res.asyncToken != AuthToken) {
-      setUserID(res.asyncUserID != null ? parseInt(res.asyncUserID) : null);
+      setUserID(res.asyncUserID != null ? res.asyncUserID : null);
       setAuthToken(res.asyncToken != null ? res.asyncToken : null);
     }
   });
@@ -309,25 +283,6 @@ export const ProjectWrapper = ({ children }) => {
     });
   };
 
-  const processAsync = async (
-    answer,
-    questionid = null,
-    locationID = null,
-    userid,
-    createddate
-  ) => {
-    return await dispatcher({
-      type: "sendAnswers",
-      payload: {
-        answer,
-        questionid,
-        locationID,
-        userid,
-        createddate,
-        AuthToken
-      }
-    });
-  };
   // TODO: Write a task to check this at intervals
   useEffect(() => {
     // if the user is logged in
@@ -360,7 +315,6 @@ export const ProjectWrapper = ({ children }) => {
           // something is in the queue
           if (OfflineStateQ.items.length > 0) {
             // if the location ID hasn't been set
-            if (!OfflineStateQ.items[0].hasOwnProperty("LocationID")) {
               if (OfflineStateQ.items[0].hasOwnProperty("answerID")) {
                 let StateCopy = Object.assign({}, OfflineStateQ);
 
@@ -380,46 +334,29 @@ export const ProjectWrapper = ({ children }) => {
                   latitude
                 } = OfflineStateQ.items[0].location.coords;
 
-                // once we get the ID for the location
-                processLocationID(
-                  longitude,
-                  latitude,
-                  (projectid = ProjectID),
-                  (userid = UserID),
-                  AuthToken
-                ).then(locationID => {
-                  if (locationID != -1) {
-                    // on sucesss copy state
-                    let StateCopy = Object.assign({}, OfflineStateQ);
-                    // create property LocationID and set it
-                    StateCopy.items[0].LocationID = locationID;
-                    // update our global state
-                    dispatcher({ type: "set", payload: StateCopy });
-                    TriggerUpdate(!Update);
-                  }
-                });
-              }
-            } else {
               // push to the server
-              let requests = [];
-              OfflineStateQ.items[0].answers.forEach((answer, questionid) => {
-                if (answer != null) {
-                  processing = processAsync(
-                    answer,
-                    questionid,
-                    OfflineStateQ.items[0].LocationID,
-                    (userid = UserID),
-                    OfflineStateQ.items[0].createddate
-                  );
-                  requests.push(processing);
-                }
+              processLocationID(
+                longitude,
+                latitude,
+                (projectid = ProjectID),
+                (userid = UserID),
+                title="",
+                url="",
+                description="",
+                ispublic=OfflineStateQ.items[0].ispublic,
+                answers=OfflineStateQ.items[0].answers,
+                AuthToken,
+                createddate=OfflineStateQ.items[0].createddate,
+              ).then(res => {
+                if (res.ok)
+                  dispatcher({type: "pop"});
+                else
+                  throw("failed to post data - non 200 error");
+              }).catch(err => {
+                // seems like the upload failed.
+                console.log("[Error]:", err);
               });
 
-              Promise.all(requests).then(results => {
-                dispatcher({
-                  type: "pop"
-                });
-              });
             }
           }
         }

@@ -249,9 +249,15 @@ const generateLocationID = async (
   latitude,
   projectid,
   userid,
-  AuthToken = ""
+  title,
+  url,
+  description,
+  ispublic,
+  answers,
+  AuthToken = "",
+  createddate
 ) => {
-  const locationID = await fetch(
+  return await fetch(
     globals.SERVER_URL.toString() + "/location/create",
     {
       cache: "no-store",
@@ -265,18 +271,20 @@ const generateLocationID = async (
         longitude: longitude.toString(),
         latitude: latitude.toString(),
         projectid: projectid,
-        createdby: userid
+        createdby: userid,
+        // why are these here
+        title,
+        url,
+        description,
+        // 
+        ispublic: ispublic.toString(),
+        questionsAnswered: answers,
+        createddate: createddate.toString()
       })
     }
   )
-    .then(res => res.json())
-    .then(response => {
-      return response.locationid;
-    })
-    .catch(err => {
-      return -1;
-    });
-  return locationID;
+    .then(res => {console.log(res); return res })
+    .catch(err => {});
 };
 
 export const processLocationID = (
@@ -284,11 +292,29 @@ export const processLocationID = (
   latitude,
   projectid,
   userid,
-  AuthToken
+  title,
+  url,
+  description,
+  ispublic,
+  answers,
+  AuthToken,
+  createddate
 ) => {
   return new Promise(resolve => {
     resolve(
-      generateLocationID(longitude, latitude, projectid, userid, AuthToken)
+      generateLocationID(
+        longitude,
+        latitude,
+        projectid,
+        userid,
+        title,
+        url,
+        description,
+        ispublic,
+        answers,
+        AuthToken,
+        createddate
+      )
     );
   });
 };
