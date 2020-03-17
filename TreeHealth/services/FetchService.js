@@ -283,7 +283,6 @@ const generateLocationID = async (
       })
     }
   )
-    .then(res => {console.log(res); return res })
     .catch(err => {});
 };
 
