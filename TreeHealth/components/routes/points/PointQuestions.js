@@ -47,7 +47,6 @@ export const PointQuestions = props => {
   const [Answers, setAnswers] = useState([]);
   const [SavedAnswers, setSavedAnswers] = useState([]);
   const [progress, setProgress] = useState(0);
-  const manditoryQuestCount = Questions.filter(questions => questions.ismandatory).length;
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
   const [CreationDate, setCreationDate] = useState(new Date());
@@ -163,11 +162,10 @@ export const PointQuestions = props => {
         setProgress(
           Math.round(
             (CompleteManQuestions.length + 1) /
-            manditoryQuestCount
+            Questions.filter(questions => questions.ismandatory).length
             ) * 100
         );
       } else {
-        if (manditoryQuestCount === 0 && progress !== 100) setProgress(100);
         setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
       }
     }
@@ -198,6 +196,8 @@ export const PointQuestions = props => {
     if (Questions.length <= 0) {
       processQuestData(context.ProjectID, context.AuthToken).then(results => {
         setQuestions(results);
+        // if there are no manditory questions no need to force any questions
+        if (results.filter(questions => questions.ismandatory).length === 0 && progress !== 100) setProgress(100);
       });
     }
 
