@@ -8,6 +8,7 @@ import {
   Platform
 } from "react-native";
 import { copilot, walkthroughable, CopilotStep } from "react-native-copilot";
+import Moment from "moment";
 import NavigationService from "../../../services/NavigationService";
 import { RecordItem } from "../records/RecordItem";
 import { Container, Content, Footer, FooterTab, Icon, Fab } from "native-base";
@@ -47,9 +48,8 @@ const FifthStep = () => {
                   key={0}
                   indexVal={0}
                   pointData={{
-                    county: "Cuyahoga",
-                    createddate: 1576456361,
-                    updateddate: 1576456361
+                    title: Moment.unix(1576456361).format("LL") + " - " + "Cuyahoga",
+                    updateddate: Moment.unix(1576456361).format("LL")
                   }}
                   isDraft={false}
                 />
@@ -59,9 +59,8 @@ const FifthStep = () => {
               key={1}
               indexVal={1}
               pointData={{
-                county: "Portage",
-                createddate: 1577925161,
-                updateddate: 1578702761
+                title: Moment.unix(1577925161).format("LL") + " - " + "Portage",
+                updateddate: Moment.unix(1578702761).format("LL")
               }}
               isDraft={false}
             />
