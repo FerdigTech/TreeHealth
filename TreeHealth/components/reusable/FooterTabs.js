@@ -6,7 +6,9 @@ import { Footer, FooterTab, Button, Icon } from "native-base";
 export class FooterTabs extends React.Component {
   render() {
     return (
-      <Footer>
+      <Footer style={{
+          paddingBottom: 0 // fix for IOS
+        }}> 
         <FooterTab style={styles.footerStyle}>
           <Button onPress={this.props.switchView}>
             <Icon type="Feather" style={styles.footerIcnStyle} name={this.props.listIcon} />

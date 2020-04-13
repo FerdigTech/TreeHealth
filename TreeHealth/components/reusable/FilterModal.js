@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
-import { View, ScrollView, StyleSheet, Text } from "react-native";
+import { View, ScrollView, StyleSheet, Text, SafeAreaView } from "react-native";
 import {
   DatePicker,
   List,
@@ -113,139 +113,141 @@ export const FilterModal = props => {
         scrollHorizontal={true}
         style={{ margin: 0 }}
       >
-        <ScrollView style={styles.dropLst}>
-          <Button danger block onPress={() => this.toggleDropVis()}>
-            <Text style={{ color: "white" }}>Close</Text>
-          </Button>
-          <List>
-            <ListItem itemDivider>
-              <Text style={styles.divingTxt}>Filter By Date:</Text>
-            </ListItem>
-            <ListItem>
-              <Text>
-                {Operator == "range" ? "Start Date: " : "Date Selected: "}
-              </Text>
-              <DatePicker
-                dateFilter={dateFilter}
-                ref={DatePickerRef}
-                locale={"en"}
-                modalTransparent={false}
-                animationType={"fade"}
-                androidMode={"default"}
-                placeHolderText="Select a date"
-                placeHolderTextStyle={{ color: "#d3d3d3" }}
-                onDateChange={setDateFilter}
-                // to make sure they can't select a day past the endDate
-                maximumDate={
-                  Operator == "range"
-                    ? EndDateFilter != "" && EndDateFilter != null
-                      ? EndDateFilter
-                      : new Date()
-                    : new Date()
-                }
-                formatChosenDate={date => {
-                  return Moment(date).format("ll");
-                }}
-              />
-            </ListItem>
-            {Operator == "range" && (
+        <SafeAreaView>
+          <ScrollView style={styles.dropLst}>
+            <Button danger block onPress={() => this.toggleDropVis()}>
+              <Text style={{ color: "white" }}>Close</Text>
+            </Button>
+            <List>
+              <ListItem itemDivider>
+                <Text style={styles.divingTxt}>Filter By Date:</Text>
+              </ListItem>
               <ListItem>
-                <Text>End Date: </Text>
+                <Text>
+                  {Operator == "range" ? "Start Date: " : "Date Selected: "}
+                </Text>
                 <DatePicker
-                  EndDateFilter={EndDateFilter}
-                  ref={EndDatePickerRef}
+                  dateFilter={dateFilter}
+                  ref={DatePickerRef}
                   locale={"en"}
                   modalTransparent={false}
                   animationType={"fade"}
                   androidMode={"default"}
                   placeHolderText="Select a date"
                   placeHolderTextStyle={{ color: "#d3d3d3" }}
-                  onDateChange={setEndDateFilter}
-                  minimumDate={
-                    dateFilter != "" && dateFilter != null
-                      ? dateFilter
+                  onDateChange={setDateFilter}
+                  // to make sure they can't select a day past the endDate
+                  maximumDate={
+                    Operator == "range"
+                      ? EndDateFilter != "" && EndDateFilter != null
+                        ? EndDateFilter
+                        : new Date()
                       : new Date()
                   }
-                  // to make sure they can't select a date before startDate
-                  disabled={dateFilter == "" || dateFilter == null}
-                  maximumDate={new Date()}
                   formatChosenDate={date => {
                     return Moment(date).format("ll");
                   }}
                 />
               </ListItem>
-            )}
-            <ListItem>
-              <Text>Date Operator: </Text>
-              <Item picker>
-                <Picker
-                  mode="dropdown"
-                  iosIcon={<Icon name="arrow-down" />}
-                  style={{ width: undefined }}
-                  placeholder="Select your Operator"
-                  placeholderStyle={{ color: "#d3d3d3" }}
-                  placeholderIconColor="#000"
-                  selectedValue={Operator}
-                  onValueChange={value => setOperator(value)}
-                >
-                  <Picker.Item label="None" value="none" />
-                  <Picker.Item label="Before" value="before" />
-                  <Picker.Item label="After" value="after" />
-                  <Picker.Item label="Range" value="range" />
-                  <Picker.Item label="The day of" value="dayof" />
-                </Picker>
-              </Item>
-            </ListItem>
-            <ListItem itemDivider>
-              <Text style={styles.divingTxt}>Filter By Affilation:</Text>
-            </ListItem>
-            <ListItem>
-              <Text>Remove Affilation</Text>
-              <CheckBox
-                onPress={() => ToggleFilterAffilation()}
-                checked={FilterAffilation}
-                color="black"
-                style={styles.checkBoxes}
-              />
-            </ListItem>
-            <ListItem>
-              <Text>Only Show Affilation</Text>
-              <CheckBox
-                onPress={() => ToggleOnlyAffilation()}
-                checked={OnlyAffilation}
-                color="black"
-                style={styles.checkBoxes}
-              />
-            </ListItem>
-            <ListItem>
-              <Left />
-              <Right>
-                <Button
-                  block
-                  primary
-                  onPress={() => {
-                    setOperator(null);
-                    setDateFilter("");
-                    setEndDateFilter("");
-                    //if (EndDatePickerRef.current != null) {
-                    //  EndDatePickerRef.current.state.chosenDate = null;
-                    // }
-                    //DatePickerRef.current.state.chosenDate = null;
-                    props.navigation.setParams({
-                      OnlyAffilation: false
-                    });
-                    props.navigation.setParams({
-                      FilterAffilation: false
-                    });
-                  }}
-                  title={"Reset"}
-                >
-                  <Text style={{ color: "white" }}>Reset</Text>
-                </Button>
-              </Right>
-            </ListItem>
-          </List>
-        </ScrollView>
+              {Operator == "range" && (
+                <ListItem>
+                  <Text>End Date: </Text>
+                  <DatePicker
+                    EndDateFilter={EndDateFilter}
+                    ref={EndDatePickerRef}
+                    locale={"en"}
+                    modalTransparent={false}
+                    animationType={"fade"}
+                    androidMode={"default"}
+                    placeHolderText="Select a date"
+                    placeHolderTextStyle={{ color: "#d3d3d3" }}
+                    onDateChange={setEndDateFilter}
+                    minimumDate={
+                      dateFilter != "" && dateFilter != null
+                        ? dateFilter
+                        : new Date()
+                    }
+                    // to make sure they can't select a date before startDate
+                    disabled={dateFilter == "" || dateFilter == null}
+                    maximumDate={new Date()}
+                    formatChosenDate={date => {
+                      return Moment(date).format("ll");
+                    }}
+                  />
+                </ListItem>
+              )}
+              <ListItem>
+                <Text>Date Operator: </Text>
+                <Item picker>
+                  <Picker
+                    mode="dropdown"
+                    iosIcon={<Icon name="arrow-down" />}
+                    style={{ width: undefined }}
+                    placeholder="Select your Operator"
+                    placeholderStyle={{ color: "#d3d3d3" }}
+                    placeholderIconColor="#000"
+                    selectedValue={Operator}
+                    onValueChange={value => setOperator(value)}
+                  >
+                    <Picker.Item label="None" value="none" />
+                    <Picker.Item label="Before" value="before" />
+                    <Picker.Item label="After" value="after" />
+                    <Picker.Item label="Range" value="range" />
+                    <Picker.Item label="The day of" value="dayof" />
+                  </Picker>
+                </Item>
+              </ListItem>
+              <ListItem itemDivider>
+                <Text style={styles.divingTxt}>Filter By Affilation:</Text>
+              </ListItem>
+              <ListItem>
+                <Text>Remove Affilation</Text>
+                <CheckBox
+                  onPress={() => ToggleFilterAffilation()}
+                  checked={FilterAffilation}
+                  color="black"
+                  style={styles.checkBoxes}
+                />
+              </ListItem>
+              <ListItem>
+                <Text>Only Show Affilation</Text>
+                <CheckBox
+                  onPress={() => ToggleOnlyAffilation()}
+                  checked={OnlyAffilation}
+                  color="black"
+                  style={styles.checkBoxes}
+                />
+              </ListItem>
+              <ListItem>
+                <Left />
+                <Right>
+                  <Button
+                    block
+                    primary
+                    onPress={() => {
+                      setOperator(null);
+                      setDateFilter("");
+                      setEndDateFilter("");
+                      //if (EndDatePickerRef.current != null) {
+                      //  EndDatePickerRef.current.state.chosenDate = null;
+                      // }
+                      //DatePickerRef.current.state.chosenDate = null;
+                      props.navigation.setParams({
+                        OnlyAffilation: false
+                      });
+                      props.navigation.setParams({
+                        FilterAffilation: false
+                      });
+                    }}
+                    title={"Reset"}
+                  >
+                    <Text style={{ color: "white" }}>Reset</Text>
+                  </Button>
+                </Right>
+              </ListItem>
+            </List>
+          </ScrollView>
+        </SafeAreaView>
       </Modal>
     </View>
   );

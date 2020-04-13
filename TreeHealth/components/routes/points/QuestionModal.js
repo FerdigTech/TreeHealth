@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, ScrollView, Image } from "react-native";
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Image,
+  SafeAreaView
+} from "react-native";
 import { Button, Text, Icon, Form, Item, Picker, Textarea } from "native-base";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
@@ -29,7 +35,9 @@ const ImageAnswer = props => {
       )}
       <Button
         style={styles.ImageAnsBtn}
-        onPress={() => props.handleCamera(() => props.handleSave, props.ismandatory)}
+        onPress={() =>
+          props.handleCamera(() => props.handleSave, props.ismandatory)
+        }
         iconLeft
         round
       >
@@ -38,7 +46,9 @@ const ImageAnswer = props => {
       </Button>
       <Button
         style={styles.ImageAnsBtn}
-        onPress={() => props.handlePicker(() => props.handleSave, props.ismandatory)}
+        onPress={() =>
+          props.handlePicker(() => props.handleSave, props.ismandatory)
+        }
         iconLeft
         round
       >
@@ -154,11 +164,10 @@ export const QuestionModal = props => {
   useEffect(
     () => {
       // on load, we should set the answer back to what we got previously
-      const indexOfQuestion =  props.currentAnswers.findIndex(answer => answer.questionid === questionid);
-      if (
-        props.ShowModal &&
-        indexOfQuestion !== -1
-      ) {
+      const indexOfQuestion = props.currentAnswers.findIndex(
+        answer => answer.questionid === questionid
+      );
+      if (props.ShowModal && indexOfQuestion !== -1) {
         setAnswer(props.currentAnswers[indexOfQuestion].answer);
       }
     },
@@ -179,80 +188,86 @@ export const QuestionModal = props => {
         style={styles.mainModal}
       >
         <ScrollView style={styles.ModalView}>
-          <Button
-            danger
-            block
-            onPress={() => beforeClose()}
-            style={styles.CloseBtn}
-          >
-            <Text style={styles.CloseBtnTxt}>Submit Progress</Text>
-          </Button>
-          <ScrollView style={styles.ModalContent}>
-            <Button info style={styles.QuestionIcon}>
-              <Icon style={styles.QuestionIconTxt} name="information" />
+          <SafeAreaView>
+            <Button
+              danger
+              block
+              onPress={() => beforeClose()}
+              style={styles.CloseBtn}
+            >
+              <Text style={styles.CloseBtnTxt}>Submit Progress</Text>
             </Button>
-            {question != "" && (
-              <Text type={styles.QuestionTxt}>{question}</Text>
-            )}
-            {name != "Image" && (
-              <React.Fragment>
-                <Button
-                  block
-                  rounded
-                  style={styles.imageBtn}
-                  onPress={() => setImagleViewable(!ImagleViewable)}
-                >
-                  <Text style={{ color: "white" }}>
-                    {ImagleViewable ? "Hide" : "View"} Image
-                  </Text>
-                </Button>
-                <Modal
-                  style={styles.imgModal}
-                  visible={ImagleViewable}
-                  transparent={false}
-                  onRequestClose={() => setImagleViewable(false)}
-                >
-                  <ImageViewer
-                    enableSwipeDown={true}
-                    swipeDownThreshold={200}
-                    onSwipeDown={() => setImagleViewable(false)}
-                    imageUrls={[{ url: image }]}
-                  />
-                </Modal>
-              </React.Fragment>
-            )}
+            <ScrollView style={styles.ModalContent}>
+              <Button info style={styles.QuestionIcon}>
+                <Icon
+                  style={styles.QuestionIconTxt}
+                  ios="ios-information"
+                  android="information"
+                />
+              </Button>
+              {question != "" && (
+                <Text type={styles.QuestionTxt}>{question}</Text>
+              )}
+              {name != "Image" && (
+                <React.Fragment>
+                  <Button
+                    block
+                    rounded
+                    style={styles.imageBtn}
+                    onPress={() => setImagleViewable(!ImagleViewable)}
+                  >
+                    <Text style={{ color: "white" }}>
+                      {ImagleViewable ? "Hide" : "View"} Image
+                    </Text>
+                  </Button>
+                  <Modal
+                    style={styles.imgModal}
+                    visible={ImagleViewable}
+                    transparent={false}
+                    onRequestClose={() => setImagleViewable(false)}
+                  >
+                    <ImageViewer
+                      enableSwipeDown={true}
+                      swipeDownThreshold={200}
+                      onSwipeDown={() => setImagleViewable(false)}
+                      imageUrls={[{ url: image }]}
+                    />
+                  </Modal>
+                </React.Fragment>
+              )}
 
-            {(name == "Multiple choice" && (
-              <MultipleChoice
-                options={optionsarray}
-                savedValue={Answer}
-                handleSave={setAnswer}
-              />
-            )) ||
-              (name == "Fill in" && (
-                <TextInput
+              {(name == "Multiple choice" && (
+                <MultipleChoice
                   options={optionsarray}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
               )) ||
-              (name == "Single choice" && (
-                <DropDown
-                  options={optionsarray}
-                  savedValue={Answer}
-                  handleSave={setAnswer}
-                />
-              )) ||
-              (name == "Image" && (
-                <ImageAnswer
-                  handlePicker={props.handlePicker}
-                  handleCamera={props.handleCamera}
-                  ismandatory={ismandatory}
-                  savedValue={Answer}
-                  handleSave={setAnswer}
-                />
-              ))}
-          </ScrollView>
+                (name == "Fill in" && (
+                  <TextInput
+                    options={optionsarray}
+                    savedValue={Answer}
+                    handleSave={setAnswer}
+                  />
+                )) ||
+                (name == "Single choice" && (
+                  <DropDown
+                    options={optionsarray}
+                    savedValue={Answer}
+                    handleSave={setAnswer}
+                  />
+                )) ||
+                (name == "Image" && (
+                  <ImageAnswer
+                    handlePicker={props.handlePicker}
+                    handleCamera={props.handleCamera}
+                    ismandatory={ismandatory}
+                    savedValue={Answer}
+                    handleSave={setAnswer}
+                  />
+                ))}
+            </ScrollView>
+          </SafeAreaView>
         </ScrollView>
       </Modal>
     </View>
