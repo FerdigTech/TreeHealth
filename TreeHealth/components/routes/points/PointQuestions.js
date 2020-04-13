@@ -334,8 +334,8 @@ export const PointQuestions = props => {
             )}
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
-              if (question.hasOwnProperty("image"))
-                Image.prefetch(question.image);
+              if (question.imageurl != "0")
+                Image.prefetch(question.imageurl);
               return (
                 <ListItem
                   thumbnail
@@ -346,7 +346,7 @@ export const PointQuestions = props => {
                 >
                   <Left>
                     <Thumbnail square source={ 
-                      (question.hasOwnProperty("image") ?  {uri: question.image} : require("../../../assets/treehouse-default.png")) 
+                      (question.imageurl != "0" ?  {uri: question.imageurl} : require("../../../assets/treehouse-default.png")) 
                     } />
                   </Left>
                   <Body>

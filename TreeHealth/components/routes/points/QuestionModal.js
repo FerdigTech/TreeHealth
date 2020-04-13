@@ -150,14 +150,14 @@ const DropDown = props => {
 export const QuestionModal = props => {
   const [Answer, setAnswer] = useState("");
   const [ImagleViewable, setImagleViewable] = useState(false);
-  const { question, optionsarray, name, image, questionid, ismandatory } =
+  const { question, optionsarray, name, imageurl, questionid, ismandatory } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
       : {
           question: "",
           optionsarray: "",
           name: "",
-          image: "",
+          imageurl: "",
           questionid: -1,
           ismandatory: false
         };
@@ -230,7 +230,7 @@ export const QuestionModal = props => {
                       enableSwipeDown={true}
                       swipeDownThreshold={200}
                       onSwipeDown={() => setImagleViewable(false)}
-                      imageUrls={[{ url: image }]}
+                      imageUrls={[{ url: imageurl }]}
                     />
                   </Modal>
                 </React.Fragment>
