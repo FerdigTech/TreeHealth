@@ -229,7 +229,7 @@ export const QuestionModal = props => {
                 handleSave={setAnswer}
               />
             )) ||
-              (name == "Description" && (
+              (name == "Fill in" && (
                 <TextInput
                   options={optionsarray}
                   savedValue={Answer}
