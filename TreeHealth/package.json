@@ -14,7 +14,7 @@
     "expo-image-picker": "~7.0.0",
     "expo-secure-store": "~7.0.0",
     "moment": "^2.24.0",
-    "native-base": "^2.13.8",
+    "native-base": "2.13.8",
     "prop-types": "^15.7.2",
     "rbush": "^3.0.1",
     "react": "16.8.3",
