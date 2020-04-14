@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
   },
   projectTitle: {
     color: "white",
-    fontWeight: "bold"
+    fontWeight: "bold",
+    paddingLeft: 25,
+    paddingRight: 25
   }
 });
