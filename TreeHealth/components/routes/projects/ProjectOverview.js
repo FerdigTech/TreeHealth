@@ -35,7 +35,7 @@ export const ProjectOverview = () => {
                 />
               }
             >
-              {context.Projects.map((project, index) => {
+              {context.Projects.filter(project => project.isactive).map((project, index) => {
                 return (
                   <ProjectCard
                     projectName={project.name}
