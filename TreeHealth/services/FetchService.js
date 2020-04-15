@@ -124,7 +124,7 @@ export const processLogin = (email, password) => {
 
 // get a list of all the affiliations
 export const getAffilations = async cb => {
-  const aff = await fetch(globals.SERVER_URL + "/affiliations")
+  const aff = await fetch(globals.SERVER_URL + "/affiliations/active")
     .then(res => res.json())
     .then(res => {
       // if we get a result otherwise return nothing
@@ -469,7 +469,7 @@ const getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
   if (projectData !== null && !forceUpdate) {
     projectData = JSON.parse(projectData);
   } else {
-    projectData = await fetch(globals.SERVER_URL + "/projects", {
+    projectData = await fetch(globals.SERVER_URL + "/projects/active", {
       cache: "no-store",
       headers: {
         Authorization: `Bearer ${AuthToken}`
