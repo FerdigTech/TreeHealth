@@ -78,8 +78,8 @@ export const MapDisplay = props => {
       const lastPoint = filteredPts.pop();
       // extract them in proper form
       const coordinate = {
-        longitude: lastPoint.longitude,
-        latitude: lastPoint.latitude
+        longitude: parseFloat(lastPoint.longitude),
+        latitude: parseFloat(lastPoint.latitude)
       };
 
       mapRef.fitToCoordinates([coordinate], { animated: true });
