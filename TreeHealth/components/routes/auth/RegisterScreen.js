@@ -25,7 +25,7 @@ export const RegisterScreen = () => {
 
   useEffect(() => {
     getAffilations(aff => setAffilations(aff));
-    getRoles(roles => setUserRoles(roles));
+    getRoles(roles => setUserRoles(roles.filter(role => role.name.toLowerCase() !== "admin")));
     setAnswers({
       name: "",
       email: "",
@@ -165,7 +165,7 @@ export const RegisterScreen = () => {
               }
               selectedValue={Answers.affliation}
             >
-              <Picker.Item label={"None"} value={null} />
+              <Picker.Item label={"No affliation"} value={null} />
               {Affilations.map(affliate => {
                 return (
                   <Picker.Item
