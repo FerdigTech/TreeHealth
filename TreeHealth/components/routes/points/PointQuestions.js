@@ -79,7 +79,7 @@ export const PointQuestions = props => {
     
     setAnswers(newAnswerObj);
     if (
-      (CurrentPointData[0].name == "Description" ||
+      (CurrentPointData[0].name == "Fill in" ||
         CurrentPointData[0].name == "Image") &&
       answer == ""
     ) {
@@ -162,11 +162,13 @@ export const PointQuestions = props => {
           ...CompleteManQuestions,
           ID
         ]);
+
+        console.log("values", (CompleteManQuestions.length + 1) / Questions.filter(questions => questions.ismandatory).length);
         setProgress(
           Math.round(
-            (CompleteManQuestions.length + 1) /
-            Questions.filter(questions => questions.ismandatory).length
-            ) * 100
+            ((CompleteManQuestions.length + 1) /
+            Questions.filter(questions => questions.ismandatory).length) * 100
+            )
         );
       } else {
         setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
@@ -351,7 +353,8 @@ export const PointQuestions = props => {
                   </Left>
                   <Body>
                     <Text numberOfLines={1} style={styles.questionDesc}>
-                      {question.name} question
+                      {question.name} question 
+                      {question.ismandatory && (<Text style={styles.required}> *</Text>)}
                     </Text>
                   </Body>
                   <Right
@@ -392,6 +395,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff"
+  },
+  required: {
+    color: "red",
+    fontWeight: "bold"
   },
   questionList: {
     paddingTop: 1
