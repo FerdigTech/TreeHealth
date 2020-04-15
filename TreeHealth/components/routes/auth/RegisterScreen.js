@@ -30,6 +30,7 @@ export const RegisterScreen = () => {
       name: "",
       email: "",
       password: "",
+      confirmPass: "",
       affliation: -1,
       roleid: null,
       thirteen: false,
@@ -58,10 +59,17 @@ export const RegisterScreen = () => {
     Answers.name == "" ||
     Answers.email == "" ||
     Answers.password == "" ||
+    Answers.confirmPass !== Answers.password ||
     Answers.roleid < 0 ||
     !Answers.thirteen ||
     !Answers.tos;
 
+  const PasswordValid = () => {
+    const passTheSame = Answers.confirmPass === Answers.password;
+    const passFieldEmpty = Answers.confirmPass === "" || Answers.password === "";
+    return passFieldEmpty || passTheSame;
+  };
+  
   const handleSignUp = () => {
     const errors = validateAndError();
     if (errors.length == 0) {
@@ -104,10 +112,19 @@ export const RegisterScreen = () => {
               style={styles.inputs}
             />
           </Item>
-          <Item floatingLabel>
+          <Item floatingLabel error={!PasswordValid()}>
             <Label style={styles.labels}>Password</Label>
             <Input
               onChangeText={text => setAnswers({ ...Answers, password: text })}
+              style={styles.inputs}
+              autoCompleteType={"password"}
+              secureTextEntry={true}
+            />
+          </Item>
+          <Item floatingLabel error={!PasswordValid()}>
+            <Label style={styles.labels}>Confirm Password</Label>
+            <Input
+              onChangeText={text => setAnswers({ ...Answers, confirmPass: text })}
               style={styles.inputs}
               autoCompleteType={"password"}
               secureTextEntry={true}
