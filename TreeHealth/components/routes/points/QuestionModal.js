@@ -6,10 +6,10 @@ import {
   Image,
   SafeAreaView
 } from "react-native";
-import { Button, Text, Icon, Form, Item, Picker, Textarea } from "native-base";
+import { Button, Text, Icon, Form, Item, Picker, Textarea, CheckBox, ListItem, Left, Body } from "native-base";
 import { Modal } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
-import SelectMultiple from "react-native-select-multiple";
+import _ from "underscore";
 
 const ImageAnswer = props => {
   let imagePath = "";
@@ -59,32 +59,40 @@ const ImageAnswer = props => {
   );
 };
 
+// if b its in array a, remove it.
+// if not add it
+const symetric_difference = (a,b) => {
+  return _.indexOf(a,b)==-1?_.union(a,[b]):_.without(a,b);
+}
+
 const MultipleChoice = props => {
   useEffect(() => {
     if (props.savedValue == "") {
       props.handleSave([]);
     }
   }, []);
-  const { options } = props;
+  const { options, handleSave, savedValue } = props;
 
   return (
-    <Form>
-      <Item>
-        <SelectMultiple
-          items={options}
-          // strip out label that is returned by the component
-          onSelectionsChange={value =>
-            props.handleSave(value.map(({ value }) => value))
-          }
-          selectedItems={
-            Array.isArray(props.savedValue)
-              ? // rebuild the answer to be properly be an object
-                props.savedValue.map(value => ({ label: value, value: value }))
-              : []
-          }
-        />
-      </Item>
-    </Form>
+    <React.Fragment>
+        {options.map((option, index)  => {
+          return (
+            <ListItem key={index} icon>
+              <Left>
+              <CheckBox
+                onPress={() => handleSave( symetric_difference(props.savedValue, index) )}
+                checked={Array.isArray(savedValue) ? _.indexOf(savedValue, index) !== -1 : false}
+                color="black"
+                style={{borderRadius: 0}}
+              />
+            </Left>
+            <Body>
+              <Text>{ option }</Text>
+            </Body>
+          </ListItem>
+          );
+        })}
+    </React.Fragment>
   );
 };
 

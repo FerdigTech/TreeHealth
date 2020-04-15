@@ -163,7 +163,6 @@ export const PointQuestions = props => {
           ID
         ]);
 
-        console.log("values", (CompleteManQuestions.length + 1) / Questions.filter(questions => questions.ismandatory).length);
         setProgress(
           Math.round(
             ((CompleteManQuestions.length + 1) /
