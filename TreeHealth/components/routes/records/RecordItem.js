@@ -78,6 +78,8 @@ const styles = StyleSheet.create({
     height: 24,
     width: 24,
     borderRadius: 24,
+    paddingTop: 0,
+    paddingBottom: 0,
     justifyContent: "center"
   },
   listIcon: {
