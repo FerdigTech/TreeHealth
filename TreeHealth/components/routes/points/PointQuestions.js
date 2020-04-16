@@ -98,11 +98,11 @@ export const PointQuestions = props => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     if (status === 'granted') {
       const result = await ImagePicker.launchCameraAsync({
-        base64: true
+        base64: false
       });
       if (!result.cancelled) {
-        saveAnswers(result.base64, ismandatory);
-        cb.apply(result.base64);
+        saveAnswers(result.uri, ismandatory);
+        cb.apply(result.uri);
       }
     }
     cb.apply("");
@@ -115,11 +115,11 @@ export const PointQuestions = props => {
     if (status === 'granted') {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        base64: true
+        base64: false
       });
       if (!result.cancelled) {
-        saveAnswers(result.base64, ismandatory);
-        cb.apply(result.base64);
+        saveAnswers(result.uri, ismandatory);
+        cb.apply(result.uri);
       }
     }
     cb.apply("");

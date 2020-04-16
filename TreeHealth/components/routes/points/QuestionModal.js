@@ -19,7 +19,7 @@ const ImageAnswer = props => {
       Image.prefetch(props.savedValue);
       imagePath = props.savedValue;
     } else {
-      imagePath = "data:image/png;base64," + props.savedValue;
+      imagePath = props.savedValue;
     }
   }
   return (

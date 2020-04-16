@@ -2,6 +2,8 @@ import { AsyncStorage } from "react-native";
 import { Toast } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import globals from "./../globals";
+import _ from "underscore";
+
 
 /*
 *   User Route:
@@ -243,16 +245,6 @@ export const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {
   });
 };
 
-
-// Convert the string to bytes
-const stringToBytes = (data) => {
-  const bytes = new Uint8Array(data.length / 2);
-  for (var i = 0; i < data.length; i += 2) {
-      bytes[i / 2] = parseInt(data.substring(i, i + 2), 16);
-  }
-  return bytes;
-}
-
 // finds the difference of two array of answer/answerID pairs
 const diffAnswerObj = (arr, arr2) => {
   return _.filter(arr, (item, index) => {
@@ -274,19 +266,27 @@ const generateLocationID = async (
   AuthToken = "",
   createddate
 ) => {
-
-  var formData = new FormData();
+  let formData = new FormData();
   formData.append('longitude', longitude.toString());
   formData.append('latitude', latitude.toString());
   formData.append('projectid', projectid);
   formData.append('createdby', userid);
-  formData.append('longitude', longitude.toString());
-  formData.append(title, url, description);
+  formData.append('title', title);
+  formData.append('url', url);
+  formData.append('description', description);
   formData.append('ispublic', ispublic.toString());
   formData.append('createddate', createddate.toString());
 
-  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
-  const imageQuestions = answers.filter(answer => !base64regex.test(answer));
+  function validURL(str) {
+    var pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+      '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+    return !!pattern.test(str);
+  }
+  const imageQuestions = answers.filter(answer => !validURL(answer));
   const otherAnswers = diffAnswerObj(answers, imageQuestions);
 
   formData.append('questionsAnswered', JSON.stringify(otherAnswers));
@@ -295,16 +295,15 @@ const generateLocationID = async (
   // for each image we need to make a blob and answerid
   imageQuestions.map((questionObj, index) => {
     formData.append('answerID' + index, questionObj.questionid);
-    formData.append('answer' + index, new Blob([stringToBytes(questionObj.answer)], {type: 'image/bmp'}) );
+    formData.append('answer' + index,  {uri: questionObj.answer, name: 'image.jpg', type: 'image/jpeg'});
   });
 
-  
   return await fetch(
     globals.SERVER_URL.toString() + "/location/mobile/create",
     {
-      cache: "no-store",
       headers: {
-        Authorization: `Bearer ${AuthToken}`
+        Authorization: `Bearer ${AuthToken}`,
+        'Content-Type': 'multipart/form-data'
       },
       method: "POST",
       body: formData
