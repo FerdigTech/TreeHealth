@@ -243,6 +243,23 @@ export const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {
   });
 };
 
+
+// Convert the string to bytes
+const stringToBytes = (data) => {
+  const bytes = new Uint8Array(data.length / 2);
+  for (var i = 0; i < data.length; i += 2) {
+      bytes[i / 2] = parseInt(data.substring(i, i + 2), 16);
+  }
+  return bytes;
+}
+
+// finds the difference of two array of answer/answerID pairs
+const diffAnswerObj = (arr, arr2) => {
+  return _.filter(arr, (item, index) => {
+    return (_.findIndex(arr2, itemObj => { return itemObj.questionid === item.questionid }) === -1)
+  });
+}
+
 // create a new record location
 const generateLocationID = async (
   longitude,
@@ -257,30 +274,40 @@ const generateLocationID = async (
   AuthToken = "",
   createddate
 ) => {
+
+  var formData = new FormData();
+  formData.append('longitude', longitude.toString());
+  formData.append('latitude', latitude.toString());
+  formData.append('projectid', projectid);
+  formData.append('createdby', userid);
+  formData.append('longitude', longitude.toString());
+  formData.append(title, url, description);
+  formData.append('ispublic', ispublic.toString());
+  formData.append('createddate', createddate.toString());
+
+  const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+  const imageQuestions = answers.filter(answer => !base64regex.test(answer));
+  const otherAnswers = diffAnswerObj(answers, imageQuestions);
+
+  formData.append('questionsAnswered', JSON.stringify(otherAnswers));
+  formData.append('imgCount', imageQuestions.length);
+
+  // for each image we need to make a blob and answerid
+  imageQuestions.map((questionObj, index) => {
+    formData.append('answerID' + index, questionObj.questionid);
+    formData.append('answer' + index, new Blob([stringToBytes(questionObj.answer)], {type: 'image/bmp'}) );
+  });
+
+  
   return await fetch(
-    globals.SERVER_URL.toString() + "/location/create",
+    globals.SERVER_URL.toString() + "/location/mobile/create",
     {
       cache: "no-store",
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
         Authorization: `Bearer ${AuthToken}`
       },
       method: "POST",
-      body: JSON.stringify({
-        longitude: longitude.toString(),
-        latitude: latitude.toString(),
-        projectid: projectid,
-        createdby: userid,
-        // why are these here
-        title,
-        url,
-        description,
-        // 
-        ispublic: ispublic.toString(),
-        questionsAnswered: answers,
-        createddate: createddate.toString()
-      })
+      body: formData
     }
   )
     .catch(err => {});
