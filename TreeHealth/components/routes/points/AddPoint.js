@@ -61,7 +61,6 @@ export const AddPoint = props => {
     let newState = Object.assign({}, location);
     const input = text.toString();
     if (input) {
-      console.log(input);
       newState.coords.latitude = input;
     } else {
       newState.coords.latitude = "";

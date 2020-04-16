@@ -34,7 +34,7 @@ import { ProjectContext } from "../../../context/ProjectProvider";
 import { ProgressBar } from "../../reusable/ProgessBar";
 import { AppLoading } from "expo";
 import * as ImagePicker from "expo-image-picker";
-import * as Permissions from "expo-permissions";
+import * as Permissions from 'expo-permissions';
 import _ from "underscore";
 import Moment from "moment";
 import {
@@ -52,7 +52,6 @@ export const PointQuestions = props => {
   const [CreationDate, setCreationDate] = useState(new Date());
   const [PrivatePoint, setPrivatePoint] = useState(false);
   const [ShowModal, setShowModal] = useState(false);
-  const [HasPermission, setHasPermission] = useState(true);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
   let animation = useRef(new Animated.Value(0));
   const context = useContext(ProjectContext);
@@ -94,27 +93,38 @@ export const PointQuestions = props => {
     setShowModal(false);
   };
 
+
   const handleCamera = async (cb, ismandatory) => {
-    const result = await ImagePicker.launchCameraAsync({
-      base64: true
-    });
-    if (!result.cancelled) {
-      saveAnswers(result.base64, ismandatory);
-      cb.apply(result.base64);
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    if (status === 'granted') {
+      const result = await ImagePicker.launchCameraAsync({
+        base64: true
+      });
+      if (!result.cancelled) {
+        saveAnswers(result.base64, ismandatory);
+        cb.apply(result.base64);
+      }
     }
     cb.apply("");
   };
 
   const handlePicker = async (cb, ismandatory) => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      base64: true
-    });
-    if (!result.cancelled) {
-      saveAnswers(result.base64, ismandatory);
-      cb.apply(result.base64);
+    const { status } = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
+    if (status === 'granted') {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        base64: true
+      });
+      if (!result.cancelled) {
+        saveAnswers(result.base64, ismandatory);
+        cb.apply(result.base64);
+      }
     }
     cb.apply("");
   };
+  
   const addToQueue = () => {
     if (locationID == null) {
       // send over the location and all the answers
@@ -183,19 +193,6 @@ export const PointQuestions = props => {
 
   // when the component is mounted
   useEffect(() => {
-    // get perms for camera
-    if (!HasPermission) {
-      (async () => {
-        const cameraPerm = await Permissions.askAsync(Permissions.CAMERA);
-        const cameraRollPerm = await Permissions.askAsync(
-          Permissions.CAMERA_ROLL
-        );
-        setHasPermission(
-          cameraPerm.status === "granted" && cameraRollPerm.status === "granted"
-        );
-      })();
-    }
-
     // we pull in all questions for this project
     if (Questions.length <= 0) {
       processQuestData(context.ProjectID, context.AuthToken).then(results => {
@@ -272,10 +269,6 @@ export const PointQuestions = props => {
     Questions.length <= 0
   ) {
     return <AppLoading />;
-  }
-
-  if (HasPermission === false) {
-    return <Text>Please give access to use the camera and camera roll.</Text>;
   }
 
   const CurrentPointData = Questions.filter(
