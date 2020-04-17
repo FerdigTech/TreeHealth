@@ -175,7 +175,7 @@ export const MapDisplay = props => {
                       longitude: parseFloat(point.longitude),
                       latitude: parseFloat(point.latitude)
                     }}
-                    title={ point.title }
+                    title={ (point.title ? point.title : "no title") + " - " + point.county }
                     // seems like when rerendering, react uses the key to update
                     // which can cause some colors to appear wrong, this can be fixed by passing a customID for each location
                     // see more at https://github.com/react-native-community/react-native-maps/issues/1611#issuecomment-334619684

@@ -38,7 +38,7 @@ export const RecordItem = props => {
         <ListItem style={styles.listItemStyle}>
           <Body style={styles.leftHandInfo}>
             <Text style={styles.itemDate}>
-              { props.pointData.title }
+              { (props.pointData.title ? props.pointData.title : "no title") + " - " + props.pointData.county}
             </Text>
             <Text style={styles.itemDraft}>
               {props.isDraft ? "Draft" : " "}
