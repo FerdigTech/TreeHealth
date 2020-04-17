@@ -333,7 +333,7 @@ export const PointQuestions = props => {
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
               if (question.imageurl != "0")
-                Image.prefetch(question.imageurl);
+                Image.prefetch(question.imageurl).catch(err => {});
               return (
                 <ListItem
                   thumbnail
