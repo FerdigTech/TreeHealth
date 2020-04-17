@@ -397,8 +397,7 @@ const getAnswerData = async (ID, AuthToken) => {
       cache: "no-store",
       headers: {
         Authorization: `Bearer ${AuthToken}`
-      },
-      method: "POST"
+      }
     }
   )
     .then(response => response.json())
