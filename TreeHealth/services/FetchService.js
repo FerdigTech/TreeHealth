@@ -350,7 +350,7 @@ const getQuestionsData = async (ID, AuthToken) => {
     questionsData = JSON.parse(questionsStored);
   } else {
     questionsData = await fetch(
-      globals.SERVER_URL + "/projectQuestion/questionsByProjectId/" + projectID,
+      globals.SERVER_URL + "/projectQuestion/questionsByProjectId/" + projectID + "/active",
       {
         cache: "no-store",
         headers: {
@@ -392,7 +392,7 @@ export const processQuestData = (ID, AuthToken) => {
 const getAnswerData = async (ID, AuthToken) => {
   const locationID = ID == -1 || ID == "undefined" ? "" : ID.toString();
   const questionsData = await fetch(
-    globals.SERVER_URL + "/answerByLocationID/" + locationID,
+    globals.SERVER_URL + "/answer/byLocationId/" + locationID,
     {
       cache: "no-store",
       headers: {
