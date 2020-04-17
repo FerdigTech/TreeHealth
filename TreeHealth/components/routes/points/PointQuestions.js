@@ -96,6 +96,9 @@ export const PointQuestions = props => {
 
   const handleCamera = async (cb, ismandatory) => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    const CamRoll = await Permissions.askAsync(
+      Permissions.CAMERA_ROLL
+    );
     if (status === 'granted') {
       const result = await ImagePicker.launchCameraAsync({
         base64: false
