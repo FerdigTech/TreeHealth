@@ -338,7 +338,7 @@ export const ProjectWrapper = ({ children }) => {
               processLocationID(
                 longitude,
                 latitude,
-                (projectid = ProjectID),
+                projectid=OfflineStateQ.items[0].projectid,
                 (userid = UserID),
                 title="",
                 url="",

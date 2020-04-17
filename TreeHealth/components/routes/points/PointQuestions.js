@@ -139,6 +139,7 @@ export const PointQuestions = props => {
           typeof CreationDate == "number"
             ? CreationDate
             : new Date(CreationDate).getTime(),
+        projectid: context.ProjectID,
         ispublic: !PrivatePoint
       });
     } else {
