@@ -9,7 +9,7 @@
       "android",
       "web"
     ],
-    "version": "1.0.3",
+    "version": "1.0.4",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "primaryColor": "#00b374",
@@ -33,7 +33,7 @@
     },
     "android": {
       "package": "com.KentState.TreeHealth",
-      "versionCode": 3,
+      "versionCode": 4,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyCTJKUZtc2ttbq6T9u3MVqFKgA3VR1duyM"
