@@ -81,7 +81,7 @@ export const AddPoint = props => {
 
   _handleSubmit = () => {
     // this isn't a guest user
-    if (context.UserID != null) {
+    if (context.AuthToken != "trial" && context.AuthToken != null) {
       // if we are editing..
       if (locationID != null) {
         // Then the current coordinates do not match that off the old coordinates

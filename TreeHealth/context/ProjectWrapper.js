@@ -286,7 +286,7 @@ export const ProjectWrapper = ({ children }) => {
   // TODO: Write a task to check this at intervals
   useEffect(() => {
     // if the user is logged in
-    if (AuthToken != null) {
+    if (AuthToken != null && AuthToken != "trial") {
       // get the expiration date
       const { exp } = JSON.parse(decode(AuthToken.split(".")[1]));
 
