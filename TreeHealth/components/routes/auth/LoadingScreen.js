@@ -8,7 +8,7 @@ export const LoadingScreen = () => {
   const context = useContext(ProjectContext);
   // Fetch the token from storage then navigate to our appropriate place
   _bootstrapAsync = async () => {
-    const userToken = await SecureStore.getItemAsync("userToken");
+    const userToken = await SecureStore.getItemAsync("userAuth");
     // if token exist goes to Homepage, otherwise login
     NavigationService.navigate(userToken != null ? "Home" : "Auth");
   };

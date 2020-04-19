@@ -270,7 +270,7 @@ export const ProjectWrapper = ({ children }) => {
     processPntData(-1, UserID, true, AuthToken).then(results => {
       setPoints(results);
     });
-    await SecureStore.deleteItemAsync("userToken");
+    //await SecureStore.deleteItemAsync("userToken");
     await SecureStore.deleteItemAsync("userAuth");
   };
 

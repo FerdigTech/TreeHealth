@@ -20,7 +20,7 @@ export const SignInScreen = () => {
   }, []);
 
   _signInTrial = async () => {
-    await SecureStore.setItemAsync("userToken", "trial");
+    await SecureStore.setItemAsync("userAuth", "trial");
     NavigationService.navigate("Loading");
   };
 
