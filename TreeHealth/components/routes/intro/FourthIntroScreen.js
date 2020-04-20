@@ -89,7 +89,7 @@ const FourthStep = () => {
               />
             </ListItem>
             <CopilotStep
-              text="You can answer a question by clicking on it. A question will indicate whether it has an answer by the border color."
+              text="You can answer a question by clicking on it. A question will indicate whether it has been answered by the border color."
               order={6}
               name="question item"
             >

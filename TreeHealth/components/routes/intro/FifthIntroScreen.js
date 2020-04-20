@@ -39,7 +39,7 @@ const FifthStep = () => {
         <Content>
           <ScrollView style={{ flex: 1 }}>
             <CopilotStep
-              text="Manage and edit existing records by wiping left on it."
+              text="Manage and edit existing records by swiping left on it."
               order={8}
               name="manage"
             >
@@ -48,8 +48,8 @@ const FifthStep = () => {
                   key={0}
                   indexVal={0}
                   pointData={{
-                    title: Moment.unix(1576456361).format("LL") + " - " + "Cuyahoga",
-                    updateddate: Moment.unix(1576456361).format("LL")
+                    title: Moment(Moment.unix(1576456361)).format("LL") + " - " + "Cuyahoga",
+                    updateddate: Moment(Moment.unix(1576456361)).format("LL")
                   }}
                   isDraft={false}
                 />
@@ -59,8 +59,8 @@ const FifthStep = () => {
               key={1}
               indexVal={1}
               pointData={{
-                title: Moment.unix(1577925161).format("LL") + " - " + "Portage",
-                updateddate: Moment.unix(1578702761).format("LL")
+                title: Moment(Moment.unix(1577925161)).format("LL") + " - " + "Portage",
+                updateddate: Moment(Moment.unix(1578702761)).format("LL")
               }}
               isDraft={false}
             />
@@ -76,7 +76,7 @@ const FifthStep = () => {
           <Icon type="Feather" name="filter" />
         </Fab>
         <CopilotStep
-          text="When offline, your records will be queued to till you obtain a connection."
+          text="When offline, your records will be queued until you obtain a connection."
           order={9}
           name="offline"
         >

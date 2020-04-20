@@ -105,7 +105,7 @@ const ThirdStep = props => {
           </FooterTab>
           <FooterTab style={styles.footerStyle}>
             <CopilotStep
-              text="Apply filter(s) to record(s) to limit how many are displayed."
+              text="Apply filters to records to limit how many are displayed."
               order={4}
               name="filter"
             >
