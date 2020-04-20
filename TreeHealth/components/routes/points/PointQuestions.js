@@ -163,7 +163,13 @@ export const PointQuestions = props => {
           answer: Answers[diffIndex].answer
         };
       });
-      context.addToOfflineQueue(newAnswers);
+      context.addToOfflineQueue({
+        location: location,
+        locationID: locationID,
+        answers:  newAnswers.filter(answer => answer.answer != null),
+        projectid: context.ProjectID
+      });
+
     }
     NavigationService.navigate("Map", {
       projectName: context.ProjectName

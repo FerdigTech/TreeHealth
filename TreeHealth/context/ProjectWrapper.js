@@ -12,7 +12,8 @@ import {
   processPntData,
   processSignup,
   processLogin,
-  processLocationID
+  processLocationID,
+  processLocationUpdate
 } from "./../services/FetchService";
 
 const ProjectProvider = ProjectContext.Provider;
@@ -74,29 +75,6 @@ const OfflineReducer = (state, action) => {
     case "set":
       waitAndUpdateStorage(action.payload);
       return action.payload;
-    case "updateAnswers":
-      console.log("processing: ", state.items[0].answerID);
-      fetch(globals.SERVER_URL + "/answer/update", {
-        cache: "no-store",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${action.payload.AuthToken}`
-        },
-        method: "POST",
-        body: JSON.stringify({
-          answerid: state.items[0].answerID,
-          answer: state.items[0].answer
-        })
-      }).then(res => {
-        if (res.ok) {
-          // if the update happens, then we will update the queue
-          const oldStateItems = state.items;
-          delete oldStateItems[0];
-          return { items: [...oldStateItems] };
-        }
-      });
-      return state;
 
     default:
       throw new Error();
@@ -276,13 +254,6 @@ export const ProjectWrapper = ({ children }) => {
 
   const netInfo = useNetInfo();
 
-  const processUpdaeAsync = async (answer, userid, answerID) => {
-    return await dispatcher({
-      type: "updateAnswers",
-      payload: { answer, userid, answerID, AuthToken }
-    });
-  };
-
   // TODO: Write a task to check this at intervals
   useLayoutEffect(() => {
     // if the user is logged in
@@ -314,14 +285,20 @@ export const ProjectWrapper = ({ children }) => {
         if (typeof OfflineStateQ.items !== "undefined") {
           // something is in the queue
           if (OfflineStateQ.items.length > 0) {
+            // get the coordinates and convert it to a coordinateID
+            const { longitude, latitude } = OfflineStateQ.items[0].location.coords;
             // if the location ID hasn't been set
-              if (OfflineStateQ.items[0].hasOwnProperty("answerID")) {
+              if (OfflineStateQ.items[0].hasOwnProperty("locationID")) {
                 let StateCopy = Object.assign({}, OfflineStateQ);
 
-                processing = processUpdaeAsync(
-                  (answer = StateCopy.items[0].answer),
+                processing = processLocationUpdate(
+                  (answers = StateCopy.items[0].answers),
+                  longitude,
+                  latitude,
+                  (projectid = StateCopy.items[0].projectid),
+                  (locationid = StateCopy.items[0].locationID),
                   (userid = UserID),
-                  (answerID = StateCopy.items[0].answerID)
+                  AuthToken
                 ).then(() => {
                   dispatcher({
                     type: "pop"
@@ -332,11 +309,6 @@ export const ProjectWrapper = ({ children }) => {
                   });
                 });
               } else {
-                // get the coordinates and convert it to a coordinateID
-                const {
-                  longitude,
-                  latitude
-                } = OfflineStateQ.items[0].location.coords;
 
               // push to the server
               processLocationID(

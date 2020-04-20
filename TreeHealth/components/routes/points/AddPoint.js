@@ -109,7 +109,8 @@ export const AddPoint = props => {
               duration: 3000
             });
             NavigationService.navigate("PointQuestions", {
-              locationid: locationID
+              locationid: locationID,
+              location: location
             });
           } else {
             // let the user know to retry
@@ -125,7 +126,8 @@ export const AddPoint = props => {
         } else {
           // no data has changed and continue
           NavigationService.navigate("PointQuestions", {
-            locationid: locationID
+            locationid: locationID,
+            location: location
           });
         }
       } else {

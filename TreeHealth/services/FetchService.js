@@ -338,6 +338,49 @@ export const processLocationID = (
   });
 };
 
+export const processLocationUpdate = async (answers, longitude, latitude, projectid, locationid, userid, AuthToken) => {
+  return new Promise(resolve => { resolve(
+    updateLocationID(answers, longitude, latitude, projectid, locationid, userid, AuthToken)
+  )});
+};
+
+const updateLocationID = async(answers, longitude, latitude, projectid, locationid, userid, AuthToken) => {
+  let formData = new FormData();
+  formData.append('longitude', longitude.toString());
+  formData.append('latitude', latitude.toString());
+  formData.append('projectid', projectid);
+  formData.append('locationid', locationid);
+  formData.append('createdby', userid);
+
+  const imageQuestions = answers.filter(answer => {
+    return !Array.isArray(answer.answer) && answer.answer.startsWith("file://", 0)
+  });
+
+  const otherAnswers = diffAnswerObj(answers, imageQuestions);
+
+  formData.append('questionsAnswered', JSON.stringify(otherAnswers));
+  formData.append('imgCount', imageQuestions.length);
+
+  // for each image we need to make a blob and answerid
+  imageQuestions.map((questionObj, index) => {
+    formData.append('answerID' + index, questionObj.answerID);
+    formData.append('answer' + index,  {uri: questionObj.answer, name: 'image.jpg', type: 'image/jpeg'});
+  });
+
+  return await fetch(
+    globals.SERVER_URL.toString() + "/location/mobile/update",
+    {
+      headers: {
+        Authorization: `Bearer ${AuthToken}`,
+        'Content-Type': 'multipart/form-data'
+      },
+      method: "POST",
+      body: formData
+    }
+  )
+    .catch(err => {});
+}
+
 /*
 *   Question Route:
 */
