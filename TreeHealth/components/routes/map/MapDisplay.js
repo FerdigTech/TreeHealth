@@ -7,7 +7,7 @@ import {
   Dimensions,
   TextInput
 } from "react-native";
-import { Container, Content, Text } from "native-base";
+import { Container, Content, Text, Icon, Button } from "native-base";
 import { FooterTabs } from "../../reusable/FooterTabs";
 import { TitleDrop } from "../../reusable/TitleDrop";
 import { FilterModal } from "../../reusable/FilterModal";
@@ -26,6 +26,8 @@ export const MapDisplay = props => {
   );
   const [location, setLocation] = useState(null);
   const [errorMessage, setError] = useState(null);
+  const mapType = props.navigation.getParam("mapType", "standard")
+  
   let mapRef = null;
   const tree = new RBush();
 
@@ -110,6 +112,7 @@ export const MapDisplay = props => {
             initialRegion={zoomNEOhio.region}
             showsUserLocation={true}
             showsTraffic={false}
+            mapType={mapType}
             loadingEnabled={true}
             cacheEnabled={true}
             onRegionChangeComplete={_onRegionChangeComplete}
@@ -236,12 +239,29 @@ export const MapDisplay = props => {
   );
 };
 
-MapDisplay.navigationOptions = ({ navigation }) => ({
+MapDisplay.navigationOptions = ({ navigation, navigationOptions }) => ({
   headerTitle: () => (
     <TitleDrop
       navigation={navigation}
       projectName={navigation.getParam("projectName", "All")}
     />
+  ),
+  headerRight: () => (
+      <Button 
+        onPress={() => navigation.setParams({
+          mapType: navigation.getParam("mapType", "standard") != "standard" ? "standard" : "satellite"
+        })}
+        style={styles.swtchBtn}
+      >
+        <Icon
+          style={{
+            color: navigationOptions.headerTintColor,
+            paddingLeft: 24,
+            fontSize: 24
+          }} 
+          type="Feather" name={"eye"} 
+        />
+    </Button>
   )
 });
 
@@ -281,5 +301,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
     zIndex: -1
+  },
+  swtchBtn: {
+    backgroundColor: "transparent"
   }
 });
