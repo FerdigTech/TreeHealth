@@ -271,9 +271,11 @@ export const PointQuestions = props => {
         ]);
       });
 
-    });
-    // set progress to 100 just incase
-    setProgress(100);
+    }).then(res => {
+      // set progress to 100 just incase
+      setProgress(100);
+    })
+
   }
 
   const CurrentPointData = Questions.filter(
