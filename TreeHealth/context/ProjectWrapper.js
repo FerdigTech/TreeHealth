@@ -304,7 +304,7 @@ export const ProjectWrapper = ({ children }) => {
                     type: "pop"
                   });
                   // after we add data, we need to update our data source
-                  processPntData(-1, UserID, true, AuthToken).then(results => {
+                  processPntData(ProjectID, UserID, true, AuthToken).then(results => {
                     setPoints(results);
                   });
                 });
@@ -327,7 +327,7 @@ export const ProjectWrapper = ({ children }) => {
                 if (res.ok) {
                   dispatcher({type: "pop"});
                   // after we add data, we need to update our data source
-                  processPntData(-1, UserID, true, AuthToken).then(results => {
+                  processPntData(ProjectID, UserID, true, AuthToken).then(results => {
                     setPoints(results);
                   });
               } else
