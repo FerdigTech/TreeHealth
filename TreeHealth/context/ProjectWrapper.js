@@ -326,6 +326,10 @@ export const ProjectWrapper = ({ children }) => {
                   dispatcher({
                     type: "pop"
                   });
+                  // after we add data, we need to update our data source
+                  processPntData(-1, UserID, true, AuthToken).then(results => {
+                    setPoints(results);
+                  });
                 });
               } else {
                 // get the coordinates and convert it to a coordinateID
@@ -348,9 +352,13 @@ export const ProjectWrapper = ({ children }) => {
                 AuthToken,
                 createddate=OfflineStateQ.items[0].createddate,
               ).then(res => {
-                if (res.ok)
+                if (res.ok) {
                   dispatcher({type: "pop"});
-                else
+                  // after we add data, we need to update our data source
+                  processPntData(-1, UserID, true, AuthToken).then(results => {
+                    setPoints(results);
+                  });
+              } else
                   throw("failed to post data - non 200 error");
               }).catch(err => {
                 // seems like the upload failed.
