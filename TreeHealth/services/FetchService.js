@@ -353,7 +353,7 @@ const getQuestionsData = async (ID, AuthToken) => {
     questionsData = JSON.parse(questionsStored);
   } else {
     questionsData = await fetch(
-      globals.SERVER_URL + "/projectQuestion/questionsByProjectId/" + projectID + "/active",
+      globals.SERVER_URL + "/projectQuestion/questionsByProjectId/" + projectID,
       {
         cache: "no-store",
         headers: {

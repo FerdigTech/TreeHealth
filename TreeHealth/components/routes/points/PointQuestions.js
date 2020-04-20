@@ -144,8 +144,9 @@ export const PointQuestions = props => {
       });
     } else {
       // if there are any difference in answers we must send it to the server
-      SavedAnswers.filter(savedAnswer => {
-        const answerOne = Answers[savedAnswer.questionID];
+      const newAnswers = SavedAnswers.filter(savedAnswer => {
+        const indexOfAns = Answers.findIndex(answer => answer.questionid ===  savedAnswer.questionID);
+        const answerOne = Answers[indexOfAns].answer;
         const answerTwo = savedAnswer.answer;
         const differentOfLarger =
           answerOne.length > answerTwo.length
@@ -155,13 +156,14 @@ export const PointQuestions = props => {
           ? differentOfLarger.length !== 0
           : // old answer is a string so could be carded to int (so no strict typing)
             answerOne != answerTwo;
-      }).map(differentAnswer => {
-        const AnswerToUpdate = {
-          answerID: differentAnswer.answerID,
-          answer: Answers[differentAnswer.questionID]
+      }).map(diffAnswer => {
+        const diffIndex = Answers.findIndex(answer => answer.questionid ===  diffAnswer.questionID);
+        return {
+          answerID: diffAnswer.answerID,
+          answer: Answers[diffIndex].answer
         };
-        context.addToOfflineQueue(AnswerToUpdate);
       });
+      context.addToOfflineQueue(newAnswers);
     }
     NavigationService.navigate("Map", {
       projectName: context.ProjectName
@@ -203,19 +205,6 @@ export const PointQuestions = props => {
         setQuestions(results);
         // if there are no manditory questions no need to force any questions
         if (results.filter(questions => questions.ismandatory).length === 0 && progress !== 100) setProgress(100);
-        // prepare answer object
-        results.map(questions => {
-          // for each answer, we should have some information about it
-          setAnswers(Answers => [
-            ...Answers,
-            {
-              questionid: questions.questionid,
-              answer: "",
-              createdby: questions.createdby,
-            }
-          ])
-
-        })
       });
     }
 
@@ -223,36 +212,53 @@ export const PointQuestions = props => {
     // so we must pull in their previous answers
     if (locationID != null && SavedAnswers.length == 0) {
       processAnswerData(locationID, context.AuthToken).then(results => {
-        let newAnswerObj = [];
 
         results.result.map(answerObj => {
-          // set the answer to its repsect questionID
-          newAnswerObj[answerObj.questionid] = answerObj.answer;
-          // notated the user has already finished the question
-          setCompleteQuestions(CompleteQuestions => [
-            ...CompleteQuestions,
-            answerObj.questionid
+
+          // set the answers for the user to edit
+          setAnswers(Answers => [
+            ...Answers,
+            {
+              questionid: answerObj.questionid,
+              answer: answerObj.answer,
+              createdby: answerObj.answeredby,
+            }
           ]);
 
-          // todo add manditory question rehaul for updating answers (if there was a need to properly handle manditory questions)
 
-          // save the old values to compare to later
-          const SavedAnswerObj = {
-            questionID: answerObj.questionid,
-            answerID: answerObj.answerid,
-            answer: answerObj.answer
-          };
+          // mark all the question complete
+          setCompleteManQuestions(CompleteManQuestions => [
+            ...CompleteManQuestions,
+            answerObj.questionid
+          ]);
+          
+          // save old answers to compare to later
+          setSavedAnswers(Answers => [
+            ...Answers,
+            {
+              questionID: answerObj.questionid,
+              answerID: answerObj.answerid,
+              answer: answerObj.answer
+            }
+          ]);
 
-          let OldSavedAnswersVal = SavedAnswers;
-
-          OldSavedAnswersVal.push(SavedAnswerObj);
-          setSavedAnswers(OldSavedAnswersVal);
         });
-
-        // set all the answers
-        setAnswers(newAnswerObj);
+        
         // answers have been loaded, so the user has perms to submit the data
         setProgress(100);
+      });
+    } else if(locationID == null) { // otherwise if no answers
+      // prepare answer object
+      Questions.map(question => {
+        // for each answer, we should have some information about it
+        setAnswers(Answers => [
+          ...Answers,
+          {
+            questionid: question.questionid,
+            answer: "",
+            createdby: question.createdby,
+          }
+        ]);
       });
     }
   }, []);
@@ -268,12 +274,6 @@ export const PointQuestions = props => {
     [progress]
   );
 
-  if (
-    (SavedAnswers.length <= 0 && locationID != null) ||
-    Questions.length <= 0
-  ) {
-    return <AppLoading />;
-  }
 
   const CurrentPointData = Questions.filter(
     question => question.questionid === CurrentQuestion
