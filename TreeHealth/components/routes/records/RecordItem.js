@@ -19,8 +19,8 @@ export const RecordItem = props => {
       key={props.indexVal}
       style={styles.standalone}
       disableRightSwipe={true}
-      // guest users shouldn't be able to edit points
-      disableLeftSwipe={context.UserID == null}
+      // only allow those who created to edit
+      disableLeftSwipe={context.UserID != props.pointData.createdby }
       rightOpenValue={-75}
     >
       <View style={styles.rowBack}>
