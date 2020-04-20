@@ -277,7 +277,10 @@ const generateLocationID = async (
   formData.append('ispublic', ispublic.toString());
   formData.append('createddate', createddate.toString());
 
-  const imageQuestions = answers.filter(answer => answer.answer.startsWith("file://", 0));
+  const imageQuestions = answers.filter(answer => {
+    return !Array.isArray(answer.answer) && answer.answer.startsWith("file://", 0)
+  });
+
   const otherAnswers = diffAnswerObj(answers, imageQuestions);
 
   formData.append('questionsAnswered', JSON.stringify(otherAnswers));
@@ -437,36 +440,6 @@ export const updateAnswer = async (state, AuthToken) => {
     })
     .catch(err => {});
 
-  return state;
-};
-
-// TODO: remove and implent this from ProjectWrapper.js
-// create a new answer in relation to a questionID and locationID
-export const createAnswer = async (state, payload) => {
-  await fetch(globals.SERVER_URL + "/answer/create", {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${payload.AuthToken}`
-    },
-    method: "POST",
-    body: JSON.stringify({
-      questionid: payload.questionid,
-      answeredby: payload.userid,
-      answer: payload.answer,
-      createddate: payload.createddate,
-      locationid: payload.locationID
-    })
-  })
-    .then(res => {
-      if (res.ok) {
-        const oldStateItems = state.items;
-        delete oldStateItems[0].answers[payload.questionid];
-        return { items: [...oldStateItems] };
-      }
-    })
-    .catch(err => {});
   return state;
 };
 

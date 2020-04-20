@@ -305,7 +305,7 @@ export const ProjectWrapper = ({ children }) => {
         NavigationService.navigate("Loading");
       }
     }
-  });
+  }, []);
   useEffect(
     () => {
       // if online we should try to push all the data in offline queue
