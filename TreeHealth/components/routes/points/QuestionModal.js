@@ -203,7 +203,7 @@ export const QuestionModal = props => {
               onPress={() => beforeClose()}
               style={styles.CloseBtn}
             >
-              <Text style={styles.CloseBtnTxt}>Submit Progress</Text>
+              <Text style={styles.CloseBtnTxt}>Submit response</Text>
             </Button>
             <ScrollView style={styles.ModalContent}>
               <Button info style={styles.QuestionIcon}>
@@ -216,7 +216,7 @@ export const QuestionModal = props => {
               {question != "" && (
                 <Text type={styles.QuestionTxt}>{question}</Text>
               )}
-              {name != "Image" && (
+              {name != "Image" && imageurl != "" &&  imageurl != "0" && (
                 <React.Fragment>
                   <Button
                     block
