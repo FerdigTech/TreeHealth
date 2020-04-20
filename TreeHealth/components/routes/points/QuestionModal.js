@@ -59,20 +59,15 @@ const ImageAnswer = props => {
   );
 };
 
-// if b its in array a, remove it.
+// if b is in array a, remove it.
 // if not add it
 const symetric_difference = (a,b) => {
   return _.indexOf(a,b)==-1?_.union(a,[b]):_.without(a,b);
 }
 
 const MultipleChoice = props => {
-  useEffect(() => {
-    if (props.savedValue == "") {
-      props.handleSave([]);
-    }
-  }, []);
   const { options, handleSave, savedValue } = props;
-
+  
   return (
     <React.Fragment>
         {options.map((option, index)  => {
@@ -80,8 +75,8 @@ const MultipleChoice = props => {
             <ListItem key={index} icon>
               <Left>
               <CheckBox
-                onPress={() => handleSave( symetric_difference(props.savedValue, index) )}
-                checked={Array.isArray(savedValue) ? _.indexOf(savedValue, index) !== -1 : false}
+                onPress={() => handleSave( symetric_difference(savedValue.split(','), option).join(",") )}
+                checked={savedValue != "" ? _.indexOf(savedValue.split(','), option) !== -1 : false}
                 color="black"
                 style={{borderRadius: 0}}
               />
