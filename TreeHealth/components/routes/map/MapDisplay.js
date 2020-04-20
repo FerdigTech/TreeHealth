@@ -13,10 +13,30 @@ import { TitleDrop } from "../../reusable/TitleDrop";
 import { FilterModal } from "../../reusable/FilterModal";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
+import { processAnswerData } from "./../../../services/FetchService";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import Moment from "moment";
 import RBush from "rbush";
+
+const ListofAnswers = ({locationid}) => {
+  const [answers, setAnswers] = useState([])
+
+  useEffect(() => {
+    processAnswerData(locationid, "callout").then(results => {
+      setAnswers(results.result);
+    });
+  }, []);
+  return (
+    <React.Fragment>
+      <Text>Answers:</Text>
+      {answers.map((answerObj, index) => {
+        return (<Text key={index}>{answerObj.answer}</Text>)
+      })}
+    </React.Fragment>
+  );
+
+}
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
@@ -194,7 +214,16 @@ export const MapDisplay = props => {
                     // TODO: once a user drags a point, it should bring them to the edit screen
                     // seems like there is no way to uniquely identify a point
                     onDragEnd={() => {}}
-                  />
+                  >
+                      <Callout>
+                      <View>
+                        <Text>{"Title: "+  (point.title ? point.title : "no title") }</Text>
+                        <Text>{"County: " + point.county}</Text>
+                        <Text>{"Created: " + point.formatedcreateddate}</Text>
+                        <ListofAnswers locationid={point.locationid}/>
+                      </View>
+                    </Callout>
+                  </Marker>
                 );
               })}
           </MapView>
