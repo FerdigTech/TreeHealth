@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useReducer } from "react";
+import React, { useEffect, useState, useReducer, useLayoutEffect } from "react";
 import ProjectContext from "./ProjectProvider";
 import { AsyncStorage } from "react-native";
 import globals from "../globals";
@@ -284,7 +284,7 @@ export const ProjectWrapper = ({ children }) => {
   };
 
   // TODO: Write a task to check this at intervals
-  useEffect(() => {
+  useLayoutEffect(() => {
     // if the user is logged in
     if (AuthToken != null && AuthToken != "trial") {
       // get the expiration date
@@ -305,7 +305,7 @@ export const ProjectWrapper = ({ children }) => {
         NavigationService.navigate("Loading");
       }
     }
-  }, []);
+  });
   useEffect(
     () => {
       // if online we should try to push all the data in offline queue
