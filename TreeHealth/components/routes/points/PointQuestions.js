@@ -205,62 +205,30 @@ export const PointQuestions = props => {
         setQuestions(results);
         // if there are no manditory questions no need to force any questions
         if (results.filter(questions => questions.ismandatory).length === 0 && progress !== 100) setProgress(100);
-      });
-    }
-
-    // if a locationID is present, the user is editing submited data
-    // so we must pull in their previous answers
-    if (locationID != null && SavedAnswers.length == 0) {
-      processAnswerData(locationID, context.AuthToken).then(results => {
-
-        results.result.map(answerObj => {
-
-          // set the answers for the user to edit
+        
+        // prepare answer object
+        results.map(question => {
+          // for each answer, we should have some information about it
           setAnswers(Answers => [
             ...Answers,
             {
-              questionid: answerObj.questionid,
-              answer: answerObj.answer,
-              createdby: answerObj.answeredby,
+              questionid: question.questionid,
+              answer: "",
+              createdby: question.createdby,
             }
-          ]);
-
-
-          // mark all the question complete
-          setCompleteManQuestions(CompleteManQuestions => [
-            ...CompleteManQuestions,
-            answerObj.questionid
           ]);
           
-          // save old answers to compare to later
-          setSavedAnswers(Answers => [
-            ...Answers,
-            {
-              questionID: answerObj.questionid,
-              answerID: answerObj.answerid,
-              answer: answerObj.answer
-            }
-          ]);
-
         });
+
+        // if a locationID is present, the user is editing submited data
+        // so we must pull in their previous answers
+        if (locationID != null && SavedAnswers.length == 0) {
+          loadAnswers(results);
+        }
         
-        // answers have been loaded, so the user has perms to submit the data
-        setProgress(100);
-      });
-    } else if(locationID == null) { // otherwise if no answers
-      // prepare answer object
-      Questions.map(question => {
-        // for each answer, we should have some information about it
-        setAnswers(Answers => [
-          ...Answers,
-          {
-            questionid: question.questionid,
-            answer: "",
-            createdby: question.createdby,
-          }
-        ]);
       });
     }
+
   }, []);
 
   // whenever progress is updated, we must Animate it
@@ -274,6 +242,39 @@ export const PointQuestions = props => {
     [progress]
   );
 
+  
+  const loadAnswers = (QuestionAns) => {
+    processAnswerData(locationID, context.AuthToken).then(results => {
+      results.result.map(answerObj => {
+
+        // set the answers for the user to edit
+        let newAnswerObj = QuestionAns;
+        const indexOfQuestion = QuestionAns.findIndex(answer => answer.questionid ===  answerObj.questionid);
+        newAnswerObj[indexOfQuestion].answer = answerObj.answer;
+
+        setAnswers(newAnswerObj);
+
+        // mark all the question complete
+        setCompleteManQuestions(CompleteManQuestions => [
+          ...CompleteManQuestions,
+          answerObj.questionid
+        ]);
+
+        // save old answers to compare to later
+        setSavedAnswers(SavedAnswers => [
+          ...SavedAnswers,
+          {
+            questionID: answerObj.questionid,
+            answerID: answerObj.answerid,
+            answer: answerObj.answer
+          }
+        ]);
+      });
+
+    });
+    // set progress to 100 just incase
+    setProgress(100);
+  }
 
   const CurrentPointData = Questions.filter(
     question => question.questionid === CurrentQuestion
