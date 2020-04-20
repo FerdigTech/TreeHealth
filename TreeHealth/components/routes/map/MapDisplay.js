@@ -68,9 +68,10 @@ export const MapDisplay = props => {
   };
 
   const searchAndFocus = text => {
-    const filteredPts = Points.filter(point =>
-      point.title.toLowerCase().includes(text.toLowerCase())
-    );
+    const filteredPts = Points.filter(point => {
+      const titleText = point.title + " - " + point.county;
+      return titleText.toLowerCase().includes(text.toLowerCase());
+    });
 
     // if there is a result of point's title containing the text
     if (filteredPts.length > 0) {
