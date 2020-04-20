@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useCallback, useState } from "react";
-import { View, ScrollView, StyleSheet, Text, SafeAreaView } from "react-native";
+import { View, ScrollView, StyleSheet, Text, SafeAreaView, Platform } from "react-native";
 import {
   DatePicker,
   List,
@@ -119,6 +119,8 @@ export const FilterModal = props => {
               <Text style={{ color: "white" }}>Close</Text>
             </Button>
             <List>
+              {Platform.OS !== 'ios' && (
+              <React.Fragment>
               <ListItem itemDivider>
                 <Text style={styles.divingTxt}>Filter By Date:</Text>
               </ListItem>
@@ -197,6 +199,7 @@ export const FilterModal = props => {
                   </Picker>
                 </Item>
               </ListItem>
+              </React.Fragment>)}
               <ListItem itemDivider>
                 <Text style={styles.divingTxt}>Filter By Affilation:</Text>
               </ListItem>
