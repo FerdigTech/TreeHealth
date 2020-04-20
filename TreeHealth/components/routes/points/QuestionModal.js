@@ -122,7 +122,7 @@ const DropDown = props => {
   const { options } = props;
   useEffect(() => {
     if (props.savedValue == 0 || props.savedValue == "") {
-      props.handleSave(0);
+      props.handleSave("");
     }
   }, []);
   return (
@@ -136,9 +136,9 @@ const DropDown = props => {
           placeholderStyle={{ color: "#ccc" }}
           placeholderIconColor="black"
           selectedValue={
-            props.savedValue == "" ? 0 : parseInt(props.savedValue)
+            props.savedValue == "" ? 0 : parseInt(options.findIndex(option => option == props.savedValue))
           }
-          onValueChange={value => props.handleSave(value.toString())}
+          onValueChange={value => props.handleSave(options[value])}
         >
           {options.map((option, index) => {
             return (
