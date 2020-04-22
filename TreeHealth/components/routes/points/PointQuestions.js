@@ -12,8 +12,7 @@ import {
   Text,
   Image,
   Animated,
-  AsyncStorage,
-  TouchableOpacity
+  Platform
 } from "react-native";
 import {
   Container,
@@ -341,8 +340,8 @@ export const PointQuestions = props => {
             )}
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
-              if (question.imageurl != "0")
-                Image.prefetch(question.imageurl).catch(err => {});
+              if (question.imageurl != "0" && Platform.OS !== 'ios')
+                Image.prefetch(question.imageurl).catch(err => {return null});
               return (
                 <ListItem
                   thumbnail
@@ -353,7 +352,7 @@ export const PointQuestions = props => {
                 >
                   <Left>
                     <Thumbnail square source={ 
-                      (question.imageurl != "0" ?  {uri: question.imageurl} : require("../../../assets/treehouse-default.png")) 
+                      (question.imageurl != "0" ?  {uri: question.imageurl, cache: 'force-cache'} : require("../../../assets/treehouse-default.png")) 
                     } />
                   </Left>
                   <Body>
