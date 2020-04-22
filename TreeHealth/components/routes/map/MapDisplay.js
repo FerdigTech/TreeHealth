@@ -30,7 +30,7 @@ const ListofAnswers = ({locationid}) => {
   return (
     <React.Fragment>
       <Text>Answers:</Text>
-      {answers.map((answerObj, index) => {
+      {answers.sort((a, b) => a.displayorder - b.displayorder).map((answerObj, index) => {
         return (<Text key={index}>{answerObj.answer}</Text>)
       })}
     </React.Fragment>
