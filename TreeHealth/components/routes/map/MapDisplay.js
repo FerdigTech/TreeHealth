@@ -280,7 +280,7 @@ MapDisplay.navigationOptions = ({ navigation, navigationOptions }) => ({
         onPress={() => navigation.setParams({
           mapType: navigation.getParam("mapType", "standard") != "standard" ? "standard" : "satellite"
         })}
-        style={styles.swtchBtn}
+        transparent
       >
         <Icon
           style={{
@@ -330,8 +330,5 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
     zIndex: -1
-  },
-  swtchBtn: {
-    backgroundColor: "transparent"
   }
 });
