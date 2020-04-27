@@ -64,7 +64,7 @@ export const AboutUsScreen = () => {
                 <Body>
                   <Text>
                   Are you experiencing an issue with the app? Do you have a suggestion for a citizen science 
-                  project? Reach out to us at appsforparks@gmail.com
+                  project? Reach out to us at treehealthapp@gmail.com 
                   </Text>
                 </Body>
               </View>
