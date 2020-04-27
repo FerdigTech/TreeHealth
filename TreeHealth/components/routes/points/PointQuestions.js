@@ -326,7 +326,7 @@ export const PointQuestions = props => {
                 </ListItem>
                 <ListItem>
                   <Left>
-                    <Text style={styles.questionDesc}>Private Record?:</Text>
+                    <Text style={styles.questionDesc}>Do not make data visible to all users:</Text>
                   </Left>
                   <Body>
                     <CheckBox

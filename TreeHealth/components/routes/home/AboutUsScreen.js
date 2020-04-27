@@ -43,19 +43,15 @@ export const AboutUsScreen = () => {
               <View style={styles.CardBody}>
                 <Body>
                   <Text>
-                    Tree Health Survey is a smartphone app for collaborative
-                    citizen science projects focused on plant diseases. This app
-                    is a spinoff of ParkApps NE Ohio, a collaborative project
-                    between Kent State University, the Cuyahoga Valley National
-                    Park, and the Cleveland Metroparks and is funded by a grant
-                    from the National Science Foundation (#1422764.) Tree Health
-                    Survey users will join a community of citizen scientists,
-                    natural resource managers, park employees, and more to track
-                    Beech Leaf Disease, tree die-off, and more. Each citizen
-                    science project will have its own training section, allowing
-                    users to learn background information and any identification
-                    skills they will need before participating in data
-                    collection.
+                  Tree Health Survey (THS) is a smartphone app developed for field data collection efforts that 
+                  track impacts to forest health caused by non-native pests and pathogens. THS hosts a beech
+                  leaf disease project that allows users to contribute data and track the occurrence of this
+                  emerging forest health crisis. Users will join a collaborative community of citizen scientists,
+                  natural resource managers, foresters, and more from across the country to provide a large-
+                  scale account of this and other emerging forest pests. Each project will have its own training
+                  section, allowing users to learn background information and identification skills they will need
+                  before participating in data collection.{"\n\n"}
+                  Thank you for your contribution.
                   </Text>
                 </Body>
               </View>
@@ -67,9 +63,23 @@ export const AboutUsScreen = () => {
               <View style={styles.CardBody}>
                 <Body>
                   <Text>
-                    Have a suggestion for a citizen science project we can add
-                    to this app? Feel free to contact us at
-                    appsforparks@gmail.com.
+                  Are you experiencing an issue with the app? Do you have a suggestion for a citizen science 
+                  project? Reach out to us at appsforparks@gmail.com
+                  </Text>
+                </Body>
+              </View>
+            </Card>
+            <Card>
+              <CardItem header bordered>
+                <Text style={styles.HeaderTxt}>Funding for this project</Text>
+              </CardItem>
+              <View style={styles.CardBody}>
+                <Body>
+                  <Text>
+                  Tree Health Survey was provided funding by the USDA Forest Service to expand the capabilities 
+                  of the beech leaf disease project. This app was originally created as a spinoff from ParkApps NE 
+                  Ohio, a project between Kent State University, Cuyahoga Valley National Park, and Cleveland 
+                  Metroparks (funding for ParkApps NE Ohio provided by National Science Foundation #1422764).
                   </Text>
                 </Body>
               </View>
