@@ -48,8 +48,9 @@ const FifthStep = () => {
                   key={0}
                   indexVal={0}
                   pointData={{
-                    title: Moment(Moment.unix(1576456361)).format("LL") + " - " + "Cuyahoga",
-                    updateddate: Moment(Moment.unix(1576456361)).format("LL")
+                    title: Moment(Moment.unix(1576456361)).format("LL"),
+                    county: "Cuyahoga",
+                    updateddate: Moment.unix(1576456361).toDate()
                   }}
                   isDraft={false}
                 />
@@ -59,8 +60,9 @@ const FifthStep = () => {
               key={1}
               indexVal={1}
               pointData={{
-                title: Moment(Moment.unix(1577925161)).format("LL") + " - " + "Portage",
-                updateddate: Moment(Moment.unix(1578702761)).format("LL")
+                title: Moment(Moment.unix(1577925161)).format("LL"),
+                county: "Portage",
+                updateddate: Moment.unix(1578702761).toDate()
               }}
               isDraft={false}
             />

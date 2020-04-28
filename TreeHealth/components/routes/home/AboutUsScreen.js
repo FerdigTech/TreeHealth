@@ -9,8 +9,6 @@ import {
   Text
 } from "react-native";
 import {
-  Container,
-  Content,
   Card,
   CardItem,
   Body,
