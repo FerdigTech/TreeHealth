@@ -4,7 +4,8 @@ import {
   View,
   ScrollView,
   Image,
-  SafeAreaView
+  SafeAreaView,
+  TouchableHighlight
 } from "react-native";
 import { Button, Text, Icon, Form, Item, Picker, Textarea, CheckBox, ListItem, Left, Body } from "native-base";
 import { Modal } from "react-native";
@@ -234,6 +235,7 @@ export const QuestionModal = props => {
                       swipeDownThreshold={200}
                       onSwipeDown={() => setImagleViewable(false)}
                       imageUrls={[{ url: imageurl }]}
+                      renderHeader={() => <BackHeader close={() => setImagleViewable(false)}/> }
                     />
                   </Modal>
                 </React.Fragment>
@@ -276,6 +278,16 @@ export const QuestionModal = props => {
     </View>
   );
 };
+
+const BackHeader = ({ close }) => {
+  return (
+    <SafeAreaView>
+      <TouchableHighlight onPress={() => close()}>
+        <Text style={styles.imgModalBack}>Close viewer</Text>
+      </TouchableHighlight>
+    </SafeAreaView>
+  )
+}
 
 const styles = StyleSheet.create({
   ModalView: {
@@ -335,5 +347,11 @@ const styles = StyleSheet.create({
   ImageAnsBtn: {
     marginBottom: 10,
     marginTop: 10
+  },
+  imgModalBack: {
+    color: "white",
+    padding: 10,
+    paddingTop: 0,
+    alignSelf: "flex-end"
   }
 });
