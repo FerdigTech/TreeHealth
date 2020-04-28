@@ -37,10 +37,11 @@ export const AnswerModal = ({ navigation, locationid, closeModal }) => {
             <ListItem>
               <Text style={styles.divingTxt}>Answers:</Text>
             </ListItem>
-            {answers.sort((a, b) => a.displayorder - b.displayorder).map((answerObj, index) => {
+            {answers.filter(answerObj1 => answerObj1.answer != "")
+            .sort((a, b) => a.displayorder - b.displayorder).map((answerObj, index) => {
               return (
                 <React.Fragment key={index}>
-                  {!Array.isArray(answerObj.answer) && answerObj.answer.startsWith("http", 0) ? (
+                  {answerObj.answer.startsWith("http", 0) ? (
                       <Image
                         style={styles.modalImg}
                         source={{uri: answerObj.answer}}

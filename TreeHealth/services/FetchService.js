@@ -278,7 +278,7 @@ const generateLocationID = async (
   formData.append('createddate', createddate.toString());
 
   const imageQuestions = answers.filter(answer => {
-    return !Array.isArray(answer.answer) && answer.answer.startsWith("file://", 0)
+    return answer.answer.startsWith("file:/", 0)
   });
 
   const otherAnswers = diffAnswerObj(answers, imageQuestions);
@@ -353,7 +353,7 @@ const updateLocationID = async(answers, longitude, latitude, projectid, location
   formData.append('createdby', userid);
 
   const imageQuestions = answers.filter(answer => {
-    return !Array.isArray(answer.answer) && answer.answer.startsWith("file://", 0)
+    return answer.answer.startsWith("file:/", 0)
   });
 
   const otherAnswers = diffAnswerObj(answers, imageQuestions);

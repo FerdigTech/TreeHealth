@@ -151,10 +151,7 @@ export const PointQuestions = props => {
           answerOne.length > answerTwo.length
             ? _.difference(answerOne, answerTwo)
             : _.difference(answerTwo, answerOne);
-        return Array.isArray(answerOne)
-          ? differentOfLarger.length !== 0
-          : // old answer is a string so could be carded to int (so no strict typing)
-            answerOne != answerTwo;
+        return answerOne != answerTwo;
       }).map(diffAnswer => {
         const diffIndex = Answers.findIndex(answer => answer.questionid ===  diffAnswer.questionID);
         return {
