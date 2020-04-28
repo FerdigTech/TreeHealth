@@ -34,8 +34,6 @@ export const AboutUsScreen = () => {
   return (
     <SafeAreaView style={styles.SafeView}>
       <ScrollView>
-        <Container>
-          <Content padder>
             <Card>
               <CardItem header bordered>
                 <Text style={styles.HeaderTxt}>About us</Text>
@@ -102,8 +100,6 @@ export const AboutUsScreen = () => {
             >
               <Text style={styles.CacheBtnTxt}>Clear Cache</Text>
             </Button>
-          </Content>
-        </Container>
       </ScrollView>
     </SafeAreaView>
   );
@@ -112,7 +108,7 @@ export const AboutUsScreen = () => {
 const styles = StyleSheet.create({
   SafeView: {
     backgroundColor: "#fff",
-    padding: 10
+    margin: 10
   },
   HeaderTxt: {
     fontWeight: "bold"

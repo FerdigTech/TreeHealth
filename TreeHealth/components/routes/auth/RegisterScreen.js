@@ -204,7 +204,7 @@ export const RegisterScreen = () => {
             />
           </View>
         </Form>
-        <Container style={styles.SignUpBtnCtn}>
+        <View style={styles.SignUpBtnCtn}>
           <Button
             onPress={() => {
               handleSignUp();
@@ -217,7 +217,7 @@ export const RegisterScreen = () => {
           >
             <Text> Create an Account </Text>
           </Button>
-        </Container>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -229,7 +229,8 @@ RegisterScreen.navigationOptions = {
 
 const styles = StyleSheet.create({
   signUpView: {
-    margin: 20
+    margin: 20,
+    flex: 1
   },
   signUpForm: {
     padding: 5,
