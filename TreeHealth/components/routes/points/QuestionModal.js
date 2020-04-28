@@ -231,9 +231,6 @@ export const QuestionModal = props => {
                     onRequestClose={() => setImagleViewable(false)}
                   >
                     <ImageViewer
-                      enableSwipeDown={true}
-                      swipeDownThreshold={200}
-                      onSwipeDown={() => setImagleViewable(false)}
                       imageUrls={[{ url: imageurl }]}
                       renderHeader={() => <BackHeader close={() => setImagleViewable(false)}/> }
                     />

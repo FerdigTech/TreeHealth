@@ -23,10 +23,7 @@ export const AnswerModal = ({ navigation, locationid, closeModal }) => {
   return (
     <View style={{ flex: 1 }}>
       <Modal
-        onSwipeThreshold={750}
-        onSwipeComplete={() => closeModal()}
         onBackButtonPress={() => closeModal()}
-        swipeDirection="down"
         isVisible={locationid !== null}
         scrollHorizontal={true}
         style={{ margin: 0 }}
