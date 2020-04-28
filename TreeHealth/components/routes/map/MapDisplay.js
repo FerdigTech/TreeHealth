@@ -13,34 +13,17 @@ import { TitleDrop } from "../../reusable/TitleDrop";
 import { FilterModal } from "../../reusable/FilterModal";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectCosumer } from "../../../context/ProjectProvider";
-import { processAnswerData } from "./../../../services/FetchService";
+import { AnswerModal } from "../../reusable/AnswerModal";
 import * as Location from "expo-location";
 import * as Permissions from "expo-permissions";
 import Moment from "moment";
 import RBush from "rbush";
 
-const ListofAnswers = ({locationid}) => {
-  const [answers, setAnswers] = useState([])
-
-  useEffect(() => {
-    processAnswerData(locationid, "callout").then(results => {
-      setAnswers(results.result);
-    });
-  }, []);
-  return (
-    <React.Fragment>
-      <Text>Answers:</Text>
-      {answers.sort((a, b) => a.displayorder - b.displayorder).map((answerObj, index) => {
-        return (<Text key={index}>{answerObj.answer}</Text>)
-      })}
-    </React.Fragment>
-  );
-
-}
 
 export const MapDisplay = props => {
   const [showSearch, setShowSearch] = useState(false);
   const [Points, setPoints] = useState([]);
+  const [CurrentPoint, setCurrentPoint] = useState(null);
   const [currentProject] = useState(
     props.navigation.getParam("projectName", "All")
   );
@@ -206,11 +189,10 @@ export const MapDisplay = props => {
                     key={Number.parseInt(
                       index.toString() + Date.now().toString()
                     )}
+                    onPress={() => setCurrentPoint(point.locationid)}
                     pinColor={
                       point.affiliationid ? "blue" : "red"
                     }
-                    // this pends if the user can edit the point
-                    draggable={true}
                     // TODO: once a user drags a point, it should bring them to the edit screen
                     // seems like there is no way to uniquely identify a point
                     onDragEnd={() => {}}
@@ -220,7 +202,6 @@ export const MapDisplay = props => {
                         <Text>{"Title: "+  (point.title ? point.title : "no title") }</Text>
                         <Text>{"County: " + point.county}</Text>
                         <Text>{"Created: " + point.formatedcreateddate}</Text>
-                        <ListofAnswers locationid={point.locationid}/>
                       </View>
                     </Callout>
                   </Marker>
@@ -228,6 +209,11 @@ export const MapDisplay = props => {
               })}
           </MapView>
           <FilterModal navigation={props.navigation} />
+          {CurrentPoint != null && (<AnswerModal 
+            navigation={props.navigation}
+            locationid={CurrentPoint}
+            closeModal={() => setCurrentPoint(null)}
+          />)}
           {showSearch && (
             <Callout>
               <View style={styles.calloutView}>
