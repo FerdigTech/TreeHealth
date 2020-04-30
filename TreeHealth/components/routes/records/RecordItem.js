@@ -45,7 +45,7 @@ export const RecordItem = props => {
             </Text>
             <Text style={styles.itemUpdated} note>
               last updated{" "}
-              {Moment(props.pointData.updateddate).format("LL")}
+              {Moment(props.pointData.createddate).format("LL")}
             </Text>
           </Body>
           <Right>
