@@ -132,10 +132,11 @@ const DropDown = props => {
           placeholderStyle={{ color: "#ccc" }}
           placeholderIconColor="black"
           selectedValue={
-            props.savedValue == "" ? 0 : parseInt(options.findIndex(option => option == props.savedValue))
+            props.savedValue == "" ? null : parseInt(options.findIndex(option => option == props.savedValue))
           }
           onValueChange={value => props.handleSave(options[value])}
         >
+          <Picker.Item label={'Select your answer'} value={null} />
           {options.map((option, index) => {
             return (
               <Picker.Item
