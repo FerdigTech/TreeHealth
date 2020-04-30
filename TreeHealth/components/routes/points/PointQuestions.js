@@ -76,13 +76,9 @@ export const PointQuestions = props => {
 
     
     setAnswers(newAnswerObj);
-    if (
-      (CurrentPointData[0].name == "Fill in" ||
-        CurrentPointData[0].name == "Image") &&
-      answer == ""
-    ) {
-      // was image question or text question and they gave no answer, so it wasn't finished
-      // todo we should check to see if the user delete the data from an already finished question
+    if (answer == "" || answer == null) {
+      // they gave no answer, so it wasn't finished
+      unfinishQuestion(CurrentQuestion, ismandatory);
     } else {
       // marked finished
       finishQuestion(CurrentQuestion, ismandatory);
@@ -189,6 +185,23 @@ export const PointQuestions = props => {
         );
       } else {
         setCompleteQuestions(CompleteQuestions => [...CompleteQuestions, ID]);
+      }
+    }
+  };
+
+  // if the use removes an answer, we must set remove it from completed
+  const unfinishQuestion = (ID, ismandatory) => {
+    if (CompleteQuestions.includes(ID) || CompleteManQuestions.includes(ID)) {
+      if (ismandatory) {
+        setCompleteManQuestions(CompleteManQuestions.filter(value => value != ID));
+        setProgress(
+          Math.round(
+            ((CompleteManQuestions.length - 1) /
+            Questions.filter(questions => questions.ismandatory).length) * 100
+            )
+        );
+      } else {
+        setCompleteQuestions(CompleteQuestions.filter(value => value != ID));
       }
     }
   };
