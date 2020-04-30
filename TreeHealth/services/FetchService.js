@@ -11,7 +11,7 @@ import _ from "underscore";
 
 // used to reset a users password
 export const handlePassReset = async Email => {
-  await fetch(globals.SERVER_URL + "/userAccount/resetPassword", {
+  await fetch(globals.SERVER_URL + "/mail/resetPass", {
     cache: "no-store",
     headers: {
       Accept: "application/json",
