@@ -211,11 +211,11 @@ const getPointData = async (
   if (pointsData !== null && !forceUpdate) {
     // get all the storied points and filter the ones with the correct ID
     pointsData = JSON.parse(pointsData);
-    pointsData.result = pointsData.result.filter(
+    pointsData = pointsData.filter(
       points => points.projectid == ID
     );
   } else {
-    AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
+    let AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
       cache: "no-store",
       headers: {
         Authorization: `Bearer ${AuthToken}`
@@ -223,6 +223,7 @@ const getPointData = async (
     })
       .then(response => response.json())
       .catch(err => {});
+
     pointsData = await fetch(
       globals.SERVER_URL + "/locationByProject/" + projectID,
       {
@@ -234,9 +235,28 @@ const getPointData = async (
     )
       .then(response => response.json())
       .catch(err => {});
+
+      // format the data
+      AllPoints = typeof AllPoints !== "undefined"
+      ? AllPoints.hasOwnProperty("result")
+        ? AllPoints.result
+        // get all the points that are public or owned by that person
+        .filter( points => points.ispublic || points.createdby == userID)
+        : []
+      : [];
+
+      pointsData = typeof pointsData !== "undefined"
+      ? pointsData.hasOwnProperty("result")
+        ? pointsData.result
+        // get all the points that are public or owned by that person
+        .filter( points => points.ispublic || points.createdby == userID)
+        : []
+      : [];
+
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
   }
-  return pointsData;
+
+  return pointsData
 };
 
 export const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {

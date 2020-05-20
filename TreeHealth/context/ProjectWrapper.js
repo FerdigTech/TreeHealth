@@ -201,16 +201,16 @@ export const ProjectWrapper = ({ children }) => {
   const HandleLogin = (email, pass, cb) => {
     processLogin(email, pass).then(results => {
       if (results.hasOwnProperty("userid")) {
+        setUserID(results.userid);
+        setAuthToken(results.access_token);
         // when we login update project visibility
-        processProjData(true, UserID, AuthToken).then(results => {
+        processProjData(true, results.userid, results.access_token).then(results => {
           setProjects(results);
         });
         // when we login update records visibility
-        processPntData(-1, UserID, true, AuthToken).then(results => {
+        processPntData(-1, results.userid, true, results.access_token).then(results => {
           setPoints(results);
         });
-        setUserID(results.userid);
-        setAuthToken(results.access_token);
         cb(false);
         NavigationService.navigate("Loading");
       } else {
@@ -355,12 +355,7 @@ export const ProjectWrapper = ({ children }) => {
               ? Projects.result
               : []
             : [],
-        Points:
-          typeof Points !== "undefined"
-            ? Points.hasOwnProperty("result")
-              ? Points.result
-              : []
-            : [],
+        Points,
         setProjectID: ID => {
           processPntData(ID, UserID, false, AuthToken).then(results => {
             setPoints(results);
