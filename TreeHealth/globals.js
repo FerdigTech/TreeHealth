@@ -17,7 +17,7 @@ const ENV = {
     return ENV.dev;
   } else if (env === 'staging') {
     return ENV.staging;
-  } else if (env === 'prod') {
+  } else {
     return ENV.prod;
   }
  };
