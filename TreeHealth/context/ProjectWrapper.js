@@ -224,6 +224,14 @@ export const ProjectWrapper = ({ children }) => {
             position: "top",
             duration: 3000
           });
+        } else if (results.hasOwnProperty("error")) {
+          Toast.show({
+            text: "Please verify your email before attempting to login.",
+            buttonText: "Okay",
+            type: "warning",
+            position: "top",
+            duration: 3000
+          });
         } else {
           Toast.show({
             text: "Wrong username or password!",
