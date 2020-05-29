@@ -217,7 +217,6 @@ const getPointData = async (
     // this is applied again because auth could be revoked
     .filter( points => points.ispublic || points.createdby == userID);
   } else {
-    console.log("AuthToken: ", AuthToken);
     let AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
       cache: "no-store",
       headers: {

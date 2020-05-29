@@ -28,6 +28,20 @@
       "bundleIdentifier": "com.KentState.TreeHealth",
       "config": {
         "googleMapsApiKey": "AIzaSyCfsvulkcZSsdXJmkgRfHnlP63GoeVsmL4"
+      },
+      "infoPlist": {
+        "NSCameraUsageDescription": "Tree Health Survey requires access to your camera to capture images of tree diseases only when submitting an image question type.",
+        "NSPhotoLibraryUsageDescription": "Tree Health Survey needs to access your camera roll in order to pull images the user may have taken of a tree disease. So that the user can upload images for the user or affliation to view at a later time.",
+        "NSPhotoLibraryAddUsageDescription": "Tree Health Survey needs to access your camera roll in order to pull images the user may have taken of a tree disease. So that the user can upload images for the user or affliation to view at a later time.",
+        "NSLocationWhenInUseUsageDescription": "Tree Health Survey Health Survey requires your location so that we can track the spread of tree disease. Preventing from further spread. Every location is given the option to be privately stored.",
+        "NSLocationAlwaysUsageDescription": "Tree Health Survey requires your location so that we can so that we can track the spread of tree disease. Preventing from further spread. Every location is given the option to be privately stored.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Tree Health Survey requires your location so that we can so that we can track the spread of tree disease. Preventing from further spread. Every location is given the option to be privately stored.",
+        "NSLocationUsageDescription": "Tree Health Survey requires your location so that we can so that we can track the spread of tree disease. Preventing from further spread. Every location is given the option to be privately stored.",
+        "NSCalendarsUsageDescription": "This permission is not needed by the app, but it is required by an underlying API. If you see this dialog, contact us.",
+        "NSContactsUsageDescription": "This permission is not needed by the app, but it is required by an underlying API. If you see this dialog, contact us.",
+        "NSMicrophoneUsageDescription": "This permission is not needed by the app, but it is required by an underlying API. If you see this dialog, contact us.",
+        "NSMotionUsageDescription": "This permission is not needed by the app, but it is required by an underlying API. If you see this dialog, contact us.",
+        "NSRemindersUsageDescription": "This permission is not needed by the app, but it is required by an underlying API. If you see this dialog, contact us."
       }
     },
     "android": {
