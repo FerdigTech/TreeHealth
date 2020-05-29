@@ -34,3 +34,19 @@ turtle build:android -u "REPLACE_WITH_EXPO_USER" -p "REPLACE_WITH_EXPO_PASS" \
   --type apk
   
 ```
+### To Update:
+When it comes to publishing the app, you can publish the binaries on the App Stores for each version. Or you can push an update through Over-The-Air (OTA) Updates. This is done by [publishing through Expo](https://docs.expo.io/workflow/publishing/), to do this you can run the following commands:
+
+For stage builds:
+```
+expo build:ios --release-channel staging
+expo build:android --release-channel staging
+expo publish --release-channel staging
+```
+
+For production builds:
+```
+expo build:ios --release-channel prod
+expo build:android --release-channel prod
+expo publish --release-channel prod
+```
