@@ -176,7 +176,7 @@ export const ProjectWrapper = ({ children }) => {
         if (results.result) {
           Toast.hide();
           Toast.show({
-            text: "Your account has successfully been created!",
+            text: "Account pending. Check email for verification.",
             buttonText: "Okay",
             type: "success",
             position: "top",
