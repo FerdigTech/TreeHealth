@@ -13,7 +13,6 @@ import * as Permissions from "expo-permissions";
 import { useNetInfo } from "@react-native-community/netinfo";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
-import { updateLocation } from "./../../../services/FetchService";
 
 export const AddPoint = props => {
   const [location, setLocation] = useState({
@@ -90,19 +89,9 @@ export const AddPoint = props => {
           longitude != location.coords.longitude ||
           latitude != location.coords.latitude
         ) {
-          // push this information to the server
-          const sucessUpdate = updateLocation(
-            location.coords.longitude.toString(),
-            location.coords.latitude.toString(),
-            locationID,
-            context.UserID,
-            context.AuthToken
-          );
-
-          if (sucessUpdate) {
             Toast.show({
               text:
-                "Your record location values have been adjusted and updated to the server.",
+                "Your record location values have been adjusted and will updated after you finalizing the questions.",
               buttonText: "Okay",
               type: "success",
               position: "top",
@@ -112,17 +101,6 @@ export const AddPoint = props => {
               locationid: locationID,
               location: location
             });
-          } else {
-            // let the user know to retry
-            Toast.show({
-              text:
-                "Attempting to update your record data on the server has failed, please try again in a moment.",
-              buttonText: "Okay",
-              type: "danger",
-              position: "top",
-              duration: 3000
-            });
-          }
         } else {
           // no data has changed and continue
           NavigationService.navigate("PointQuestions", {

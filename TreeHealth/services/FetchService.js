@@ -168,37 +168,6 @@ export const getRoles = async cb => {
 *   Location Route:
 */
 
-// for updating an existing record's location value
-export const updateLocation = async (
-  longitude,
-  latitude,
-  locationid,
-  userid,
-  JWT
-) => {
-  await fetch(globals.SERVER_URL.toString() + "/location/update", {
-    cache: "no-store",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${JWT}`
-    },
-    method: "POST",
-    body: JSON.stringify({
-      longitude,
-      latitude,
-      locationid,
-      userid
-    })
-  })
-    .then(res => {
-      return res.ok;
-    })
-    .catch(err => {
-      return false;
-    });
-};
-
 // try to get the  point data from cache, if not get from the site.
 const getPointData = async (
   ID,

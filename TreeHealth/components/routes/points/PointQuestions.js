@@ -27,11 +27,9 @@ import {
   CheckBox
 } from "native-base";
 import { QuestionModal } from "./QuestionModal";
-import globals from "../../../globals";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 import { ProgressBar } from "../../reusable/ProgessBar";
-import { AppLoading } from "expo";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from 'expo-permissions';
 import _ from "underscore";
