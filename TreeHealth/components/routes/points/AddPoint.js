@@ -97,17 +97,12 @@ export const AddPoint = props => {
               position: "top",
               duration: 3000
             });
-            NavigationService.navigate("PointQuestions", {
-              locationid: locationID,
-              location: location
-            });
-        } else {
-          // no data has changed and continue
+        }
           NavigationService.navigate("PointQuestions", {
             locationid: locationID,
-            location: location
+            location: location,
+            isPrivate: !(FilteredPoints.length >= 1 ? FilteredPoints[0].ispublic : false)
           });
-        }
       } else {
         // not editing
         NavigationService.navigate("PointQuestions", {

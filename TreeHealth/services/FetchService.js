@@ -329,19 +329,20 @@ export const processLocationID = (
   });
 };
 
-export const processLocationUpdate = async (answers, longitude, latitude, projectid, locationid, userid, AuthToken) => {
+export const processLocationUpdate = async (answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken) => {
   return new Promise(resolve => { resolve(
-    updateLocationID(answers, longitude, latitude, projectid, locationid, userid, AuthToken)
+    updateLocationID(answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken)
   )});
 };
 
-const updateLocationID = async(answers, longitude, latitude, projectid, locationid, userid, AuthToken) => {
+const updateLocationID = async(answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken) => {
   let formData = new FormData();
   formData.append('longitude', longitude.toString());
   formData.append('latitude', latitude.toString());
   formData.append('projectid', projectid);
   formData.append('locationid', locationid);
   formData.append('createdby', userid);
+  formData.append('ispublic', ispublic);
 
   const imageQuestions = answers.filter(answer => {
     return answer.answer.startsWith("file:/", 0)

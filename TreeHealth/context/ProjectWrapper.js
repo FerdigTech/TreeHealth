@@ -303,6 +303,7 @@ export const ProjectWrapper = ({ children }) => {
                   (answers = StateCopy.items[0].answers),
                   longitude,
                   latitude,
+                  (ispublic = StateCopy.items[0].ispublic),
                   (projectid = StateCopy.items[0].projectid),
                   (locationid = StateCopy.items[0].locationID),
                   (userid = UserID),

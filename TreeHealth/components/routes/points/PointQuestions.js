@@ -157,7 +157,8 @@ export const PointQuestions = props => {
         location: location,
         locationID: locationID,
         answers:  newAnswers.filter(answer => answer.answer != null),
-        projectid: context.ProjectID
+        projectid: context.ProjectID,
+        ispublic: !PrivatePoint
       });
 
     }
@@ -259,6 +260,9 @@ export const PointQuestions = props => {
   const loadAnswers = (QuestionAns) => {
     processAnswerData(locationID, context.AuthToken).then(results => {
       results.result.map(answerObj => {
+        
+        // if the private point value from location table, passed by navigation
+        setPrivatePoint(props.navigation.getParam("isPrivate", false));
 
         // set the answers for the user to edit
         let newAnswerObj = QuestionAns;
@@ -309,9 +313,9 @@ export const PointQuestions = props => {
           />
           <ProgressBar progress={width} />
           <ScrollView style={styles.questionList}>
-            {// during creation, we can allow for them to pick this date
-            locationID == null && (
               <React.Fragment>
+                {// during creation, we can allow for them to pick this date
+                locationID == null && (
                 <ListItem>
                   <Left>
                     <Text style={styles.questionDesc}>
@@ -332,6 +336,7 @@ export const PointQuestions = props => {
                     />
                   </Body>
                 </ListItem>
+                )}
                 <ListItem>
                   <Left>
                     <Text style={styles.questionDesc}>Do not make data visible to all users:</Text>
@@ -345,7 +350,6 @@ export const PointQuestions = props => {
                   </Body>
                 </ListItem>
               </React.Fragment>
-            )}
             {Questions.map((question, index) => {
               // cache the image, could be swapped out for a cache management to avoid flickering
               if (question.imageurl != "0" && Platform.OS !== 'ios')
