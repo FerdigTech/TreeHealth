@@ -50,9 +50,9 @@ const FifthStep = () => {
                   pointData={{
                     title: Moment(Moment.unix(1576456361)).format("LL"),
                     county: "Cuyahoga",
+                    approvalstatus: "Approved",
                     updateddate: Moment.unix(1576456361).toDate()
                   }}
-                  isDraft={false}
                 />
               </WalkthroughableView>
             </CopilotStep>
@@ -62,9 +62,9 @@ const FifthStep = () => {
               pointData={{
                 title: Moment(Moment.unix(1577925161)).format("LL"),
                 county: "Portage",
+                approvalstatus: "Approved",
                 updateddate: Moment.unix(1578702761).toDate()
               }}
-              isDraft={false}
             />
           </ScrollView>
         </Content>

@@ -112,7 +112,6 @@ export const RecordList = props => {
                   key={index}
                   indexVal={index}
                   pointData={point}
-                  isDraft={false}
                 />
               );
             })}

@@ -14,6 +14,7 @@ export const RecordItem = props => {
       locationid
     });
   };
+  const isPending = props.pointData.approvalstatus !== "Approved";
   return (
     <SwipeRow
       key={props.indexVal}
@@ -41,7 +42,7 @@ export const RecordItem = props => {
               { (props.pointData.title ? props.pointData.title : "no title") + " - " + props.pointData.county}
             </Text>
             <Text style={styles.itemDraft}>
-              {props.isDraft ? "Draft" : " "}
+              {isPending ? "Pending approval" : " "}
             </Text>
             <Text style={styles.itemUpdated} note>
               last updated{" "}
@@ -51,12 +52,12 @@ export const RecordItem = props => {
           <Right>
             <Button
               style={styles.lstIconBtn}
-              warning={props.isDraft}
-              success={!props.isDraft}
+              warning={isPending}
+              success={!isPending}
             >
               <Icon
                 style={styles.listIcon}
-                name={props.isDraft ? "create" : "checkmark"}
+                name={isPending ? "create" : "checkmark"}
               />
             </Button>
           </Right>
@@ -67,7 +68,6 @@ export const RecordItem = props => {
 };
 
 RecordItem.propTypes = {
-  isDraft: PropTypes.bool.isRequired,
   indexVal: PropTypes.number.isRequired,
   pointData: PropTypes.object.isRequired
 };
@@ -91,7 +91,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start"
   },
   itemDraft: {
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
+    fontWeight: "bold",
+    color: "red"
   },
   itemDate: {
     fontWeight: "bold",
