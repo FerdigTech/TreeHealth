@@ -191,7 +191,8 @@ export const MapDisplay = props => {
                     )}
                     onPress={() => setCurrentPoint(point.locationid)}
                     pinColor={
-                      point.affiliationid ? "blue" : "red"
+                      point.approvalstatus !== "Approved" ?
+                      "yellow" : (point.affiliationid ? "blue" : "red")
                     }
                     // TODO: once a user drags a point, it should bring them to the edit screen
                     // seems like there is no way to uniquely identify a point
