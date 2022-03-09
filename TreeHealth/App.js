@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { AppLoading } from "expo";
-import { ProjectWrapper } from "./context/ProjectWrapper";
+import React, {useEffect, useState} from "react";
+import {Text} from 'react-native';
+import AppLoading from 'expo-app-loading';
+import {ProjectWrapper} from "./context/ProjectWrapper";
 import NavigationService from "./services/NavigationService";
 import InitalNavigator from "./components/navagators/Navagators";
+import {useFonts} from 'expo-font';
+
 const App = () => {
-  const [isReady, setisReady] = useState(false);
 
-  useEffect(() => {
-    async function setupFonts() {
-      await Expo.Font.loadAsync({
-        Roboto: require("native-base/Fonts/Roboto.ttf"),
-        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
-      });
-      setisReady({ isReady: true });
-    }
+  const [loaded] = useFonts({
+    Roboto: require("native-base/Fonts/Roboto.ttf"),
+    Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+  });
 
-    setupFonts();
-  }, []);
-  if (!isReady) {
-    return <AppLoading />;
+  if (!loaded) {
+    return <AppLoading/>;
   }
 
   return (

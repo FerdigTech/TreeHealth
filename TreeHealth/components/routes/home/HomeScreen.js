@@ -1,14 +1,14 @@
 import React, { useContext } from "react";
 import { View, StyleSheet, Button, AsyncStorage } from "react-native";
 import { HomeList } from "./HomeList";
-import { LogoTitle } from "./../../reusable/LogoTitle";
+import { LogoTitle } from "../../reusable/LogoTitle";
 import NavigationService from "../../../services/NavigationService";
 import { ProjectContext } from "../../../context/ProjectProvider";
 
 export const HomeScreen = () => {
   const context = useContext(ProjectContext);
 
-  _signOutAsync = async () => {
+  const _signOutAsync = async () => {
     context.processLogout();
     await AsyncStorage.clear();
     NavigationService.navigate("Auth");
@@ -16,7 +16,7 @@ export const HomeScreen = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Button title="Logout" onPress={this._signOutAsync} />
+      <Button title="Logout" onPress={_signOutAsync} />
       <View style={styles.listLayout}>
         <HomeList
           menuAction={() => NavigationService.navigate("AboutUsScreen")}
@@ -25,7 +25,7 @@ export const HomeScreen = () => {
         />
         <HomeList
           menuAction={() => NavigationService.navigate("IntroScreen")}
-          iconName="hand"
+          iconName="ios-hand-left-sharp"
           menuName="Introduction"
         />
         <HomeList
