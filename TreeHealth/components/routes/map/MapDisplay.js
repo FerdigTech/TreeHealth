@@ -12,7 +12,7 @@ import { FooterTabs } from '../../reusable/FooterTabs';
 import { TitleDrop } from '../../reusable/TitleDrop';
 import { FilterModal } from '../../reusable/FilterModal';
 import NavigationService from '../../../services/NavigationService';
-import { ProjectCosumer } from '../../../context/ProjectProvider';
+import { ProjectConsumer } from '../../../context/ProjectProvider';
 import { AnswerModal } from '../../reusable/AnswerModal';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -119,7 +119,7 @@ export const MapDisplay = (props) => {
             cacheEnabled={true}
             onRegionChangeComplete={_onRegionChangeComplete}
           >
-            <ProjectCosumer>
+            <ProjectConsumer>
               {(context) => {
                 setPoints(context.Points);
                 tree.load(
@@ -133,7 +133,7 @@ export const MapDisplay = (props) => {
                   })
                 );
               }}
-            </ProjectCosumer>
+            </ProjectConsumer>
             {Points.filter((point) => !FilterAffilation || !point.affiliationid)
               .filter((point) => !OnlyAffilation || point.affiliationid)
               .filter(

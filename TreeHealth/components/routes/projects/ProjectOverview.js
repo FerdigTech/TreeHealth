@@ -1,19 +1,19 @@
-import React from "react";
+import React from 'react';
 import {
   ScrollView,
   RefreshControl,
   StyleSheet,
-  SafeAreaView
-} from "react-native";
-import { ProjectCard } from "./ProjectCard";
-import { ProjectCosumer } from "../../../context/ProjectProvider";
+  SafeAreaView,
+} from 'react-native';
+import { ProjectCard } from './ProjectCard';
+import { ProjectConsumer } from '../../../context/ProjectProvider';
 
 export const ProjectOverview = () => {
   const [refreshing, setRefreshing] = React.useState(false);
 
   // On the refresh we should update the projects
   const onRefresh = React.useCallback(
-    context => {
+    (context) => {
       setRefreshing(true);
       context.updateProjects();
       setRefreshing(false);
@@ -23,8 +23,8 @@ export const ProjectOverview = () => {
 
   return (
     <SafeAreaView>
-      <ProjectCosumer>
-        {context => {
+      <ProjectConsumer>
+        {(context) => {
           return (
             <ScrollView
               contentContainerStyle={styles.scrollView}
@@ -51,13 +51,13 @@ export const ProjectOverview = () => {
             </ScrollView>
           );
         }}
-      </ProjectCosumer>
+      </ProjectConsumer>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   scrollView: {
-    backgroundColor: "#ccc"
-  }
+    backgroundColor: '#ccc',
+  },
 });

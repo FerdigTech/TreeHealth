@@ -1,6 +1,6 @@
-import { createContext } from "react";
+import { createContext } from 'react';
 
 export const ProjectContext = createContext();
-export const ProjectCosumer = ProjectContext.Consumer;
+export const ProjectConsumer = ProjectContext.Consumer;
 
 export default ProjectContext;
