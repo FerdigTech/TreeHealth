@@ -31,7 +31,7 @@ const FirstStep = () => {
         <HomeList menuAction={() => {}} iconName="people" menuName="About Us" />
         <HomeList
           menuAction={() => {}}
-          iconName="hand"
+          iconName="ios-hand-left-sharp"
           menuName="Introduction"
         />
         <CopilotStep
