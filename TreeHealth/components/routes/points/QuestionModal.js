@@ -1,34 +1,52 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   View,
   ScrollView,
   Image,
   SafeAreaView,
-  TouchableHighlight
-} from "react-native";
-import { Button, Text, Icon, Form, Item, Picker, Textarea, CheckBox, ListItem, Left, Body } from "native-base";
-import { Modal } from "react-native";
-import ImageViewer from "react-native-image-zoom-viewer";
-import _ from "underscore";
+  TouchableHighlight,
+} from 'react-native';
+import {
+  Button,
+  Text,
+  Icon,
+  Form,
+  Item,
+  Picker,
+  Textarea,
+  CheckBox,
+  ListItem,
+  Left,
+  Body,
+} from 'native-base';
+import { Modal } from 'react-native';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import _ from 'underscore';
 
-const ImageAnswer = props => {
-  let imagePath = "";
-  if (props.savedValue != "") {
+const ImageAnswer = (props) => {
+  let imagePath = '';
+
+  if (props.savedValue != '') {
     // if it is a link
-    if (props.savedValue.startsWith("http", 0)) {
+    if (props.savedValue.startsWith('http', 0)) {
       Image.prefetch(props.savedValue);
       imagePath = props.savedValue;
     } else {
       imagePath = props.savedValue;
     }
   }
+
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+
   return (
     <View style={styles.ImageAnswer}>
-      {imagePath != "" && (
+      {imagePath != '' && (
         <Image
           source={{
-            uri: imagePath
+            uri: imagePath,
           }}
           // 3x4 since the pictures are 3x4
           style={styles.currentImg}
@@ -54,7 +72,7 @@ const ImageAnswer = props => {
         round
       >
         <Icon name="images" />
-        <Text>Select from gallary</Text>
+        <Text>Select from gallery</Text>
       </Button>
     </View>
   );
@@ -62,40 +80,48 @@ const ImageAnswer = props => {
 
 // if b is in array a, remove it.
 // if not add it
-const symetric_difference = (a,b) => {
-  return _.indexOf(a,b)==-1?_.union(a,[b]):_.without(a,b);
-}
+const symetric_difference = (a, b) => {
+  return _.indexOf(a, b) == -1 ? _.union(a, [b]) : _.without(a, b);
+};
 
-const MultipleChoice = props => {
+const MultipleChoice = (props) => {
   const { options, handleSave, savedValue } = props;
-  
+
   return (
     <React.Fragment>
-        {options.map((option, index)  => {
-          return (
-            <ListItem key={index} icon>
-              <Left>
+      {options.map((option, index) => {
+        return (
+          <ListItem key={index} icon>
+            <Left>
               <CheckBox
-                onPress={() => handleSave( symetric_difference(savedValue.split(','), option).join(",") )}
-                checked={savedValue != "" ? _.indexOf(savedValue.split(','), option) !== -1 : false}
+                onPress={() =>
+                  handleSave(
+                    symetric_difference(savedValue.split(','), option).join(',')
+                  )
+                }
+                checked={
+                  savedValue != ''
+                    ? _.indexOf(savedValue.split(','), option) !== -1
+                    : false
+                }
                 color="black"
-                style={{borderRadius: 0}}
+                style={{ borderRadius: 0 }}
               />
             </Left>
             <Body>
-              <Text>{ option }</Text>
+              <Text>{option}</Text>
             </Body>
           </ListItem>
-          );
-        })}
+        );
+      })}
     </React.Fragment>
   );
 };
 
-const TextInput = props => {
+const TextInput = (props) => {
   useEffect(() => {
-    if (props.savedValue.length <= 0 || props.savedValue == "") {
-      props.handleSave("");
+    if (props.savedValue.length <= 0 || props.savedValue == '') {
+      props.handleSave('');
     }
   }, []);
   return (
@@ -106,7 +132,7 @@ const TextInput = props => {
           rowSpan={5}
           bordered
           value={props.savedValue}
-          onChangeText={value => props.handleSave(value.toString())}
+          onChangeText={(value) => props.handleSave(value.toString())}
           placeholder="Type your answer"
         />
       </Item>
@@ -114,11 +140,11 @@ const TextInput = props => {
   );
 };
 
-const DropDown = props => {
+const DropDown = (props) => {
   const { options } = props;
   useEffect(() => {
-    if (props.savedValue == 0 || props.savedValue == "") {
-      props.handleSave("");
+    if (props.savedValue == 0 || props.savedValue == '') {
+      props.handleSave('');
     }
   }, []);
   return (
@@ -129,12 +155,16 @@ const DropDown = props => {
           iosIcon={<Icon name="arrow-down" />}
           style={{ width: undefined }}
           placeholder="Select your answer"
-          placeholderStyle={{ color: "#ccc" }}
+          placeholderStyle={{ color: '#ccc' }}
           placeholderIconColor="black"
           selectedValue={
-            props.savedValue == "" ? null : parseInt(options.findIndex(option => option == props.savedValue))
+            props.savedValue == ''
+              ? null
+              : parseInt(
+                  options.findIndex((option) => option == props.savedValue)
+                )
           }
-          onValueChange={value => props.handleSave(options[value])}
+          onValueChange={(value) => props.handleSave(options[value])}
         >
           <Picker.Item label={'Select your answer'} value={null} />
           {options.map((option, index) => {
@@ -152,38 +182,35 @@ const DropDown = props => {
   );
 };
 
-export const QuestionModal = props => {
-  const [Answer, setAnswer] = useState("");
+export const QuestionModal = (props) => {
+  const [Answer, setAnswer] = useState('');
   const [ImagleViewable, setImagleViewable] = useState(false);
   const { question, optionsarray, name, imageurl, questionid, ismandatory } =
     props.QuestionData.length > 0
       ? props.QuestionData[0]
       : {
-          question: "",
-          optionsarray: "",
-          name: "",
-          imageurl: "",
+          question: '',
+          optionsarray: '',
+          name: '',
+          imageurl: '',
           questionid: -1,
-          ismandatory: false
+          ismandatory: false,
         };
-  useEffect(
-    () => {
-      // on load, we should set the answer back to what we got previously
-      const indexOfQuestion = props.currentAnswers.findIndex(
-        answer => answer.questionid === questionid
-      );
-      if (props.ShowModal && indexOfQuestion !== -1) {
-        setAnswer(props.currentAnswers[indexOfQuestion].answer);
-      }
-    },
-    [props.ShowModal]
-  );
+  useEffect(() => {
+    // on load, we should set the answer back to what we got previously
+    const indexOfQuestion = props.currentAnswers.findIndex(
+      (answer) => answer.questionid === questionid
+    );
+    if (props.ShowModal && indexOfQuestion !== -1) {
+      setAnswer(props.currentAnswers[indexOfQuestion].answer);
+    }
+  }, [props.ShowModal]);
 
   const beforeClose = () => {
     // save the answer
     props.handleSave(Answer, ismandatory);
     // reset the value on head
-    setAnswer("");
+    setAnswer('');
   };
   return (
     <View style={{ flex: 1 }}>
@@ -210,10 +237,10 @@ export const QuestionModal = props => {
                   android="information"
                 />
               </Button>
-              {question != "" && (
+              {question != '' && (
                 <Text type={styles.QuestionTxt}>{question}</Text>
               )}
-              {name != "Image" && imageurl != "" &&  imageurl != "0" && (
+              {name != 'Image' && imageurl != '' && imageurl != '0' && (
                 <React.Fragment>
                   <Button
                     block
@@ -221,8 +248,8 @@ export const QuestionModal = props => {
                     style={styles.imageBtn}
                     onPress={() => setImagleViewable(!ImagleViewable)}
                   >
-                    <Text style={{ color: "white" }}>
-                      {ImagleViewable ? "Hide" : "View"} Image
+                    <Text style={{ color: 'white' }}>
+                      {ImagleViewable ? 'Hide' : 'View'} Image
                     </Text>
                   </Button>
                   <Modal
@@ -233,34 +260,36 @@ export const QuestionModal = props => {
                   >
                     <ImageViewer
                       imageUrls={[{ url: imageurl }]}
-                      renderHeader={() => <BackHeader close={() => setImagleViewable(false)}/> }
+                      renderHeader={() => (
+                        <BackHeader close={() => setImagleViewable(false)} />
+                      )}
                     />
                   </Modal>
                 </React.Fragment>
               )}
 
-              {(name == "Multiple choice" && (
+              {(name == 'Multiple choice' && (
                 <MultipleChoice
                   options={optionsarray}
                   savedValue={Answer}
                   handleSave={setAnswer}
                 />
               )) ||
-                (name == "Fill in" && (
+                (name == 'Fill in' && (
                   <TextInput
                     options={optionsarray}
                     savedValue={Answer}
                     handleSave={setAnswer}
                   />
                 )) ||
-                (name == "Single choice" && (
+                (name == 'Single choice' && (
                   <DropDown
                     options={optionsarray}
                     savedValue={Answer}
                     handleSave={setAnswer}
                   />
                 )) ||
-                (name == "Image" && (
+                (name == 'Image' && (
                   <ImageAnswer
                     handlePicker={props.handlePicker}
                     handleCamera={props.handleCamera}
@@ -284,72 +313,73 @@ const BackHeader = ({ close }) => {
         <Text style={styles.imgModalBack}>Close viewer</Text>
       </TouchableHighlight>
     </SafeAreaView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   ModalView: {
-    backgroundColor: "white",
-    height: "100%"
+    backgroundColor: 'white',
+    height: '100%',
   },
   QuestionIcon: {
-    backgroundColor: "blue",
-    color: "white",
+    backgroundColor: 'blue',
+    color: 'white',
     height: 48,
     width: 48,
     borderRadius: 48,
-    justifyContent: "center",
-    alignSelf: "center",
-    marginBottom: 10
+    justifyContent: 'center',
+    alignSelf: 'center',
+    marginBottom: 10,
   },
   QuestionIconTxt: {
     marginLeft: 0,
     marginRight: 0,
-    fontSize: 44
+    fontSize: 44,
   },
   imageBtn: {
-    justifyContent: "center",
+    justifyContent: 'center',
     margin: 10,
-    marginTop: 20
+    marginTop: 20,
   },
   QuestionTxt: {},
   ModalContent: {
-    margin: 10
+    margin: 10,
   },
   CloseBtnTxt: {
-    textAlign: "center",
-    color: "white"
+    textAlign: 'center',
+    color: 'white',
   },
   CloseBtn: {
-    marginBottom: 5
+    marginBottom: 5,
   },
   mainModal: {
     margin: 0,
-    zIndex: 5
+    zIndex: 5,
   },
   imgModal: {
-    zIndex: 10
+    zIndex: 10,
   },
   textInput: {
-    width: "100%"
+    width: '100%',
   },
   ImageAnswer: {
-    alignSelf: "center",
-    padding: 10
+    alignSelf: 'center',
+    padding: 10,
   },
   currentImg: {
     height: 300,
     width: 225,
-    marginBottom: 10
+    marginBottom: 10,
   },
   ImageAnsBtn: {
     marginBottom: 10,
-    marginTop: 10
+    marginTop: 10,
+    justifyContent: 'center',
   },
   imgModalBack: {
-    color: "white",
+    color: 'white',
     padding: 10,
     paddingTop: 0,
-    alignSelf: "flex-end"
-  }
+    alignSelf: 'flex-end',
+  },
 });

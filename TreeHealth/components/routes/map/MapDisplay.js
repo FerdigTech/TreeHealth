@@ -42,7 +42,7 @@ export const MapDisplay = (props) => {
   const dateFilter = props.navigation.getParam('dateFilter', '');
   const VisibleMarkers = props.navigation.getParam('VisibleMarkers', '');
 
-  _onRegionChangeComplete = (region) => {
+  const _onRegionChangeComplete = (region) => {
     let { width, height } = Dimensions.get('window');
     const ASPECT_RATIO = width / height;
     // Get points that are inside the region.
@@ -58,10 +58,11 @@ export const MapDisplay = (props) => {
     });
   };
 
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  const _getLocationAsync = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== 'granted') {
-      setError('Permission to access location was denied');
+      console.log('Permission to access location was denied');
+      return;
     } else {
       Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.High,
@@ -95,7 +96,7 @@ export const MapDisplay = (props) => {
     _getLocationAsync();
   }, []);
 
-  toggleDropVis = () => {
+  const toggleDropVis = () => {
     props.navigation.setParams({
       DropDownVisible: true,
     });

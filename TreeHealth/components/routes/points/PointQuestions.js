@@ -31,7 +31,7 @@ import NavigationService from '../../../services/NavigationService';
 import { ProjectContext } from '../../../context/ProjectProvider';
 import { ProgressBar } from '../../reusable/ProgessBar';
 import * as ImagePicker from 'expo-image-picker';
-import * as Permissions from 'expo-permissions';
+import { Camera, CameraType } from 'expo-camera';
 import _ from 'underscore';
 import Moment from 'moment';
 import {
@@ -50,11 +50,21 @@ export const PointQuestions = (props) => {
   const [PrivatePoint, setPrivatePoint] = useState(false);
   const [ShowModal, setShowModal] = useState(false);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
+
+  const [hasPermission, setHasPermission] = useState(null);
+
   let animation = useRef(new Animated.Value(0));
   const context = useContext(ProjectContext);
   const location = props.navigation.getParam('location', null);
   const locationID = props.navigation.getParam('locationid', null);
   const DatepickerRef = useRef(null);
+
+  useEffect(() => {
+    (async () => {
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
 
   const handleQuestion = (ID) => {
     // first we must pass to current question to the navigator
@@ -88,9 +98,7 @@ export const PointQuestions = (props) => {
   };
 
   const handleCamera = async (cb, ismandatory) => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    const CamRoll = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    if (status === 'granted') {
+    if (hasPermission) {
       const result = await ImagePicker.launchCameraAsync({
         base64: false,
       });
@@ -103,8 +111,7 @@ export const PointQuestions = (props) => {
   };
 
   const handlePicker = async (cb, ismandatory) => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    if (status === 'granted') {
+    if (hasPermission) {
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         base64: false,
@@ -299,6 +306,7 @@ export const PointQuestions = (props) => {
   const CurrentPointData = Questions.filter(
     (question) => question.questionid === CurrentQuestion
   );
+
   return (
     <SafeAreaView style={styles.container}>
       <Container>
