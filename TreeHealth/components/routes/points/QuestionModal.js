@@ -37,10 +37,6 @@ const ImageAnswer = (props) => {
     }
   }
 
-  if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
-  }
-
   return (
     <View style={styles.ImageAnswer}>
       {imagePath != '' && (
