@@ -19,6 +19,12 @@ const App = () => {
 
   return (
     <>
+      <StatusBar
+        animated={true}
+        barStyle={'light-content'}
+        showHideTransition={'fade'}
+        hidden={false}
+      />
       <SafeAreaView style={styles.container}>
         <ProjectWrapper>
           <InitalNavigator
