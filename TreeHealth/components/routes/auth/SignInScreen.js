@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useContext, Fragment } from "react";
-import { SafeAreaView, StyleSheet, ActivityIndicator } from "react-native";
-import { Button, Text, Form, Item, Input, Label, Container } from "native-base";
-import globals from "../../../globals";
-import NavigationService from "../../../services/NavigationService";
-import { LogoTitle } from "../../reusable/LogoTitle";
-import { ProjectContext } from "../../../context/ProjectProvider";
-import * as SecureStore from "expo-secure-store";
+import React, { useState, useEffect, useContext, Fragment } from 'react';
+import { SafeAreaView, StyleSheet, ActivityIndicator } from 'react-native';
+import { Button, Text, Form, Item, Input, Label, Container } from 'native-base';
+import globals from '../../../globals';
+import NavigationService from '../../../services/NavigationService';
+import { LogoTitle } from '../../reusable/LogoTitle';
+import { ProjectContext } from '../../../context/ProjectProvider';
+import * as SecureStore from 'expo-secure-store';
 
 export const SignInScreen = () => {
   const [Answers, setAnswers] = useState({});
@@ -14,19 +14,19 @@ export const SignInScreen = () => {
 
   useEffect(() => {
     setAnswers({
-      email: "",
-      password: ""
+      email: '',
+      password: '',
     });
   }, []);
 
   _signInTrial = async () => {
-    await SecureStore.setItemAsync("userAuth", "trial");
-    NavigationService.navigate("Loading");
+    await SecureStore.setItemAsync('userAuth', 'trial');
+    NavigationService.navigate('Loading');
   };
 
   _handleLogin = () => {
     setProcessing(true);
-    context.processLogin(Answers.email, Answers.password, status =>
+    context.processLogin(Answers.email, Answers.password, (status) =>
       setProcessing(status)
     );
   };
@@ -43,16 +43,16 @@ export const SignInScreen = () => {
             <Item floatingLabel>
               <Label>Email</Label>
               <Input
-                autoCompleteType={"email"}
-                keyboardType={"email-address"}
-                onChangeText={text => setAnswers({ ...Answers, email: text })}
+                autoCompleteType={'email'}
+                keyboardType={'email-address'}
+                onChangeText={(text) => setAnswers({ ...Answers, email: text })}
               />
             </Item>
             <Item floatingLabel last>
               <Label>Password</Label>
               <Input
                 secureTextEntry={true}
-                onChangeText={text =>
+                onChangeText={(text) =>
                   setAnswers({ ...Answers, password: text })
                 }
               />
@@ -60,7 +60,7 @@ export const SignInScreen = () => {
             <Container style={styles.signInBtns}>
               <Button
                 onPress={() =>
-                  NavigationService.navigate("Forget", { email: Answers.email })
+                  NavigationService.navigate('Forget', { email: Answers.email })
                 }
                 block
                 transparent
@@ -78,7 +78,7 @@ export const SignInScreen = () => {
 
           <Container style={styles.helpBtnsCtn}>
             <Button
-              onPress={() => NavigationService.navigate("Register")}
+              onPress={() => NavigationService.navigate('Register')}
               style={styles.helpBtns}
               rounded
               block
@@ -105,34 +105,34 @@ export const SignInScreen = () => {
 SignInScreen.navigationOptions = {
   // Use logo instead of text
   headerTitle: () => <LogoTitle />,
-  headerRight: null
+  headerRight: null,
 };
 
 const styles = StyleSheet.create({
   signInView: {
     flex: 1,
-    margin: 20
+    margin: 20,
   },
   signInForm: {
     padding: 5,
-    justifyContent: "center",
-    flex: 1
+    justifyContent: 'center',
+    flex: 1,
   },
   helpBtnsCtn: {
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
     padding: 10,
-    flex: 1
+    flex: 1,
   },
   helpBtns: {
-    margin: 15
+    margin: 15,
   },
   signInBtns: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    padding: 30
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 30,
   },
   loadingView: {
     flex: 1,
-    justifyContent: "center"
-  }
+    justifyContent: 'center',
+  },
 });

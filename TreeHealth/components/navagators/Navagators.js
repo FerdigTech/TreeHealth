@@ -1,30 +1,30 @@
-import React from "react";
-import { View } from "react-native";
-import { createAppContainer, createSwitchNavigator } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
-import { LoadingScreen } from "./../routes/auth/LoadingScreen";
-import { SignInScreen } from "./../routes/auth/SignInScreen";
-import { RegisterScreen } from "./../routes/auth/RegisterScreen";
-import { ForgotPwScreen } from "./../routes/auth/ForgotPwScreen";
-import { HomeScreen } from "./../routes/home/HomeScreen";
-import { AboutUsScreen } from "./../routes/home/AboutUsScreen";
-import { MapDisplay } from "./../routes/map/MapDisplay";
-import { RecordList } from "./../routes/records/RecordList";
-import { ProjectOverview } from "./../routes/projects/ProjectOverview";
-import { AddPoint } from "./../routes/points/AddPoint";
-import { PointQuestions } from "./../routes/points/PointQuestions";
-import IntroScreen from "./../routes/intro/IntroScreen";
-import SecondIntroScreen from "./../routes/intro/SecondIntroScreen";
-import ThirdIntroScreen from "./../routes/intro/ThirdIntroScreen";
-import FourthIntroScreen from "./../routes/intro/FourthIntroScreen";
-import FifthIntroScreen from "./../routes/intro/FifthIntroScreen";
-import globals from "./../../globals";
+import React from 'react';
+import { View } from 'react-native';
+import { createAppContainer, createSwitchNavigator } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
+import { LoadingScreen } from './../routes/auth/LoadingScreen';
+import { SignInScreen } from './../routes/auth/SignInScreen';
+import { RegisterScreen } from './../routes/auth/RegisterScreen';
+import { ForgotPwScreen } from './../routes/auth/ForgotPwScreen';
+import { HomeScreen } from './../routes/home/HomeScreen';
+import { AboutUsScreen } from './../routes/home/AboutUsScreen';
+import { MapDisplay } from './../routes/map/MapDisplay';
+import { RecordList } from './../routes/records/RecordList';
+import { ProjectOverview } from './../routes/projects/ProjectOverview';
+import { AddPoint } from './../routes/points/AddPoint';
+import { PointQuestions } from './../routes/points/PointQuestions';
+import IntroScreen from './../routes/intro/IntroScreen';
+import SecondIntroScreen from './../routes/intro/SecondIntroScreen';
+import ThirdIntroScreen from './../routes/intro/ThirdIntroScreen';
+import FourthIntroScreen from './../routes/intro/FourthIntroScreen';
+import FifthIntroScreen from './../routes/intro/FifthIntroScreen';
+import globals from './../../globals';
 
 const MainNavigator = createStackNavigator(
   {
     Home: HomeScreen,
     Map: {
-      screen: MapDisplay
+      screen: MapDisplay,
     },
     IntroScreen: IntroScreen,
     SecondIntroScreen: SecondIntroScreen,
@@ -34,77 +34,78 @@ const MainNavigator = createStackNavigator(
     RecordList: {
       screen: RecordList,
       navigationOptions: {
-        title: "Records"
-      }
+        title: 'Records',
+      },
     },
     AboutUsScreen: {
       screen: AboutUsScreen,
       navigationOptions: {
-        title: "About Us"
-      }
+        title: 'About Us',
+      },
     },
     AddPoint: {
       screen: AddPoint,
       navigationOptions: {
-        title: "Add Record"
-      }
+        title: 'Add Record',
+      },
     },
     PointQuestions: {
       screen: PointQuestions,
       navigationOptions: {
-        title: "Answer Questions"
-      }
+        title: 'Answer Questions',
+      },
     },
     ProjectOverview: {
       screen: ProjectOverview,
       navigationOptions: {
-        title: "Projects"
-      }
-    }
+        title: 'Projects',
+      },
+    },
   },
   {
-    initialRouteName: "Home",
+    initialRouteName: 'Home',
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: globals.COLOR.DARK_BLUE
+        backgroundColor: globals.COLOR.DARK_BLUE,
       },
       headerTitleStyle: {
         flex: 1,
-        textAlign: "center",
-        alignSelf: "center"
+        textAlign: 'center',
+        alignSelf: 'center',
       },
       // this is because the back button offsets by 40
       headerRight: <View />,
-      headerTintColor: "white"
-    }
+      headerTintColor: 'white',
+    },
   }
 );
 
 const AuthStack = createStackNavigator(
   {
     SignIn: {
-      screen: SignInScreen
+      screen: SignInScreen,
     },
     Register: {
-      screen: RegisterScreen
+      screen: RegisterScreen,
     },
     Forget: {
-      screen: ForgotPwScreen
-    }
+      screen: ForgotPwScreen,
+    },
   },
   {
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: globals.COLOR.DARK_BLUE
+        backgroundColor: globals.COLOR.DARK_BLUE,
+        // marginTop: 40,
       },
       headerTitleStyle: {
         flex: 1,
-        textAlign: "center",
-        alignSelf: "center"
+        textAlign: 'center',
+        alignSelf: 'center',
       },
-      headerTintColor: "white",
-      headerRight: <View />
-    }
+      headerTintColor: 'white',
+      headerRight: <View />,
+    },
   }
 );
 
@@ -113,10 +114,10 @@ const InitalNavigator = createAppContainer(
     {
       Loading: LoadingScreen,
       Home: MainNavigator,
-      Auth: AuthStack
+      Auth: AuthStack,
     },
     {
-      initialRouteName: "Loading"
+      initialRouteName: 'Loading',
     }
   )
 );
