@@ -16,6 +16,15 @@ import {
   processLocationUpdate
 } from "./../services/FetchService";
 
+// import * as FileSystem from 'expo-file-system';
+// // ExcelJS
+// import ExcelJS from 'exceljs';
+// // Share excel via share dialog
+// import * as Sharing from 'expo-sharing';
+// // From @types/node/buffer
+//import { Buffer as NodeBuffer } from 'buffer';
+
+
 const ProjectProvider = ProjectContext.Provider;
 
 // used to see if data is being loaded into stoage (critical area)
@@ -135,9 +144,103 @@ export const ProjectWrapper = ({ children }) => {
   const [ProjectName, setProjectName] = useState("");
 
   const PointsObj = usePoints(UserID, AuthToken);
-  
+  ///let PointsObjResult = processPntData.map(({ Object }) => Object)
+  //console.log("data---------------------------------------------------------", PointsObjResult);
+
+  //console.log("projects ==============================================", Projects);
+
+  // console.log("points objtec in wrapper class#####################-------------", PointsObj);
+
   const Points = PointsObj.Points;
   
+  // console.log("fields-----", fields);
+  // var dt="";
+  // var csv =Points.map(object=> {
+  //   //console.log("data------------------------",object);
+  //   // var csvContent = "data:text/csv;charset=utf-8,";
+  //   // csvContent += object;
+  //   // console.log("csvContent-----", csvContent);
+  //   dt+=object.affiliationid;
+  //   dt+=",";
+  //   dt+=object.approvalstatus;
+  //   dt+=",";
+  //   dt+=object.county;
+  //   dt+="\n";
+
+    
+  //   return dt;
+    
+  // })
+
+
+// //This returns a local uri that can be shared
+// const generateShareableExcel = async (): Promise<string> => {
+//   const now = new Date();
+//   const fileName = 'YourFilename.xlsx';
+//   const fileUri = FileSystem.cacheDirectory + fileName;
+//   return new Promise<string>((resolve, reject) => {
+//     const workbook = new ExcelJS.Workbook();
+//     workbook.creator = 'Me';
+//     workbook.created = now;
+//     workbook.modified = now;
+//     // Add a sheet to work on
+//     const worksheet = workbook.addWorksheet('My Sheet', {});
+//     // Just some columns as used on ExcelJS Readme
+//     worksheet.columns = [
+//       { header: 'Id', key: 'id', width: 10 },
+//       { header: 'Name', key: 'name', width: 32 },
+//       { header: 'D.O.B.', key: 'dob', width: 10, }
+//     ];
+//     // Add some test data
+//     Points.map(object=> {
+    
+//       worksheet.addRow({ id: object.affiliationid, name:object.approvalstatus, dob:object.county });
+  
+//     }) 
+
+//     // Test styling
+//     // Style first row
+//     worksheet.getRow(1).font = {
+//       name: 'Comic Sans MS', family: 4, size: 16, underline: 'double', bold: true
+//     };
+//     // Style second column
+//     worksheet.eachRow((row, rowNumber) => {
+//       row.getCell(2).font = {
+//         name: 'Arial Black',
+//         color: { argb: 'FF00FF00' },
+//         family: 2,
+//         size: 14,
+//         bold: true
+//       };
+//     });
+
+//     // Write to file
+//     workbook.xlsx.writeBuffer().then((buffer: ExcelJS.Buffer) => {
+//       // Do this to use base64 encoding
+//       const nodeBuffer = NodeBuffer.from(buffer);
+//       const bufferStr = nodeBuffer.toString('base64');
+//       FileSystem.writeAsStringAsync(fileUri, bufferStr, {
+//         encoding: FileSystem.EncodingType.Base64
+//       }).then(() => {
+//         resolve(fileUri);
+//       });
+//     });
+//   });
+// }
+
+// const shareExcel = async () => {
+//   console.log("calledddd---------------------");
+//   const shareableExcelUri: string = await generateShareableExcel();
+//   Sharing.shareAsync(shareableExcelUri, {
+//     mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // Android
+//     dialogTitle: 'Your dialog title here', // Android and Web
+//     UTI: 'com.microsoft.excel.xlsx' // iOS
+//   }).catch(error => {
+//     console.error('Error', error);
+//   }).then(() => {
+//     console.log('Return from sharing dialog');
+//   });
+// }
 
   const setPoints = PointsObj.setPoints;
   const [Update, TriggerUpdate] = useState(false);
@@ -217,8 +320,6 @@ export const ProjectWrapper = ({ children }) => {
         processPntData(-1, results.userid, true, results.access_token).then(results => {
           setPoints(results);
         });
-       // offlineQueueLoad();
-       
         cb(false);
         NavigationService.navigate("Loading");
       } else {
