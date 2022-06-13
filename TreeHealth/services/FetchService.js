@@ -204,9 +204,16 @@ const getPointData = async (
         },
       }
     )
-      .then(response => response.json())
+      .then(response => response.json()
+     // , console.log("response.json-------------------------",response.json())
+)
       .catch(err => {});
 
+      // console.log("pointsData---------------------------", pointsData);
+
+     //  console.log("All ponits---------------------------", AllPoints);
+
+     
       // format the data
       AllPoints = typeof AllPoints !== "undefined"
       ? AllPoints.hasOwnProperty("result")
@@ -216,6 +223,10 @@ const getPointData = async (
         : []
       : [];
 
+      AllPoints.hasOwnProperty("Object")
+     
+     // console.log("All ponits after format---------------------------", AllPoints);
+
       pointsData = typeof pointsData !== "undefined"
       ? pointsData.hasOwnProperty("result")
         ? pointsData.result
@@ -224,8 +235,14 @@ const getPointData = async (
         : []
       : [];
 
+    //  console.log("points data after format-----------------------------------------------",pointsData);
+
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
+
+  //  console.log("All ponits after stringify---------------------------", AllPoints);
+
   }
+   //console.log("points data before return-----------------------------------------------",pointsData);
 
   return pointsData
 };

@@ -166,6 +166,7 @@ RecordList.navigationOptions = ({ navigation, navigationOptions }) => ({
       />
     </TouchableOpacity>
   )
+
 });
 
 const styles = StyleSheet.create({
@@ -200,3 +201,4 @@ const styles = StyleSheet.create({
     padding: 5
   }
 });
+

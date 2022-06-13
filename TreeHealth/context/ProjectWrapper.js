@@ -26,6 +26,7 @@ const useProjects = (UserID, AuthToken) => {
   const [Projects, setProjects] = useState([]);
   useEffect(() => {
     processProjData(false, UserID, AuthToken).then(results => {
+     // console.log("results project------------------------------------------",results);
       setProjects(results);
     });
   }, []);
@@ -37,6 +38,7 @@ const usePoints = (userID, AuthToken) => {
   const [Points, setPoints] = useState([]);
   useEffect(() => {
     processPntData(-1, userID, false, AuthToken).then(results => {
+   // console.log("results hook------------------------------------------",results.data);
       setPoints(results);
     });
   }, []);
@@ -122,6 +124,7 @@ const loadStoredQueue = () => {
   });
 };
 
+
 // Build the provider
 export const ProjectWrapper = ({ children }) => {
   const ProjectsObj = useProjects(UserID, AuthToken);
@@ -132,7 +135,10 @@ export const ProjectWrapper = ({ children }) => {
   const [ProjectName, setProjectName] = useState("");
 
   const PointsObj = usePoints(UserID, AuthToken);
+  
   const Points = PointsObj.Points;
+  
+
   const setPoints = PointsObj.setPoints;
   const [Update, TriggerUpdate] = useState(false);
   const [OfflineStateQ, dispatcher] = useReducer(
@@ -211,6 +217,8 @@ export const ProjectWrapper = ({ children }) => {
         processPntData(-1, results.userid, true, results.access_token).then(results => {
           setPoints(results);
         });
+       // offlineQueueLoad();
+       
         cb(false);
         NavigationService.navigate("Loading");
       } else {
@@ -400,6 +408,8 @@ export const ProjectWrapper = ({ children }) => {
       }}
     >
       <Root>{children}</Root>
+      
     </ProjectProvider>
+    
   );
 };

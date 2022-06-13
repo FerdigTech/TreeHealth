@@ -37,6 +37,7 @@ import Moment from 'moment';
 import {
   processAnswerData,
   processQuestData,
+  getQuestionsData
 } from './../../../services/FetchService';
 
 export const PointQuestions = (props) => {
@@ -52,6 +53,9 @@ export const PointQuestions = (props) => {
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
 
   const [hasPermission, setHasPermission] = useState(null);
+
+  //const [QuestionsData, setQuestionsData] = useState([]);
+
 
   let animation = useRef(new Animated.Value(0));
   const context = useContext(ProjectContext);
@@ -253,6 +257,13 @@ export const PointQuestions = (props) => {
           loadAnswers(results);
         }
       });
+
+      // getQuestionsData(context.ProjectID, context.AuthToken).then((results) => {
+      //   setQuestionsData(results);
+       
+      
+      //   });
+
     }
   }, []);
 
@@ -363,6 +374,8 @@ export const PointQuestions = (props) => {
             </ListItem>
           </React.Fragment>
           {Questions.map((question, index) => {
+
+           // console.log("Question-----------------------------------------------------------------",question);
             // cache the image, could be swapped out for a cache management to avoid flickering
             if (question.imageurl != '0' && Platform.OS !== 'ios')
               Image.prefetch(question.imageurl).catch((err) => {
@@ -392,6 +405,10 @@ export const PointQuestions = (props) => {
                     {question.ismandatory && (
                       <Text style={styles.required}> *</Text>
                     )}
+                  </Text>
+                  <Text numberOfLines={1} style={styles.questionB}>
+                    {question.question}
+                    {question.ismandatory}
                   </Text>
                 </Body>
                 <Right
@@ -442,6 +459,9 @@ const styles = StyleSheet.create({
   questionDesc: {
     fontWeight: 'bold',
     padding: 5,
+  },
+  questionB: {
+    padding: 7,
   },
   answerBtn: {
     color: 'blue',
