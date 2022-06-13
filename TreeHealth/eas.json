@@ -8,5 +8,9 @@
       "distribution": "internal"
     },
     "production": {}
+  },
+  "cli": {
+    "version": ">= 0.53.1",
+    "requireCommit": true
   }
 }
