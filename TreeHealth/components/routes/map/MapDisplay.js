@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MapView, { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Marker, Callout, PROVIDER_GOOGLE } from 'react-native-maps';
 import {
   StyleSheet,
   View,
@@ -18,6 +18,8 @@ import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import Moment from 'moment';
 import RBush from 'rbush';
+import MapView from "react-native-map-clustering";
+
 
 export const MapDisplay = (props) => {
   const [showSearch, setShowSearch] = useState(false);
@@ -110,6 +112,7 @@ export const MapDisplay = (props) => {
             ref={(ref) => {
               mapRef = ref;
             }}
+            tracksViewChanges={false}
             provider={PROVIDER_GOOGLE}
             style={styles.mapStyle}
             initialRegion={zoomNEOhio.region}
@@ -165,6 +168,7 @@ export const MapDisplay = (props) => {
               .map((point, index) => {
                 return (
                   <Marker
+                  tracksViewChanges={false}
                     coordinate={{
                       longitude: parseFloat(point.longitude),
                       latitude: parseFloat(point.latitude),

@@ -289,6 +289,7 @@ const generateLocationID = async (
     return answer.answer.startsWith("file:/", 0)
   });
 
+  
   const otherAnswers = diffAnswerObj(answers, imageQuestions);
 
   formData.append('questionsAnswered', JSON.stringify(otherAnswers));
@@ -311,7 +312,7 @@ const generateLocationID = async (
       body: formData
     }
   )
-    .catch(err => {});
+    .catch(err => {console.log("errorr---------------------",err)});
 };
 
 export const processLocationID = (
