@@ -139,7 +139,6 @@ export const ProjectWrapper = ({ children }) => {
 
   const Points = PointsObj.Points;
   
- 
   const setPoints = PointsObj.setPoints;
   const [Update, TriggerUpdate] = useState(false);
   const [OfflineStateQ, dispatcher] = useReducer(
@@ -252,6 +251,10 @@ export const ProjectWrapper = ({ children }) => {
     });
   };
 
+ //NavigationService.navigate('ProfileScreen', {userid: UserID})
+   
+  //console.log("UserID-------------------",UserID);
+
   const HandleLogout = async () => {
     setUserID(null);
     setAuthToken(null);
@@ -272,6 +275,7 @@ export const ProjectWrapper = ({ children }) => {
   // TODO: Write a task to check this at intervals
   useLayoutEffect(() => {
     // if the user is logged in
+
     if (AuthToken != null && AuthToken != "trial") {
       // get the expiration date
       const { exp } = JSON.parse(decode(AuthToken.split(".")[1]));
@@ -370,7 +374,7 @@ export const ProjectWrapper = ({ children }) => {
     // if change in item queue or net connectivity try to do something
     [OfflineStateQ.items, netInfo.isConnected, Update]
   );
-
+               
   return (
     <ProjectProvider
       value={{

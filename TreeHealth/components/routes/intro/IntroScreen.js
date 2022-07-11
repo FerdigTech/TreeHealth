@@ -29,6 +29,7 @@ const FirstStep = () => {
       <Button title="Logout" />
       <View style={styles.listLayout}>
         <HomeList menuAction={() => {}} iconName="people" menuName="About Us" />
+        <HomeList menuAction={() => {}} iconName="people" menuName="Profile" />
         <HomeList
           menuAction={() => {}}
           iconName="ios-hand-left-sharp"

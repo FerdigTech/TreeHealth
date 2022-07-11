@@ -33,6 +33,11 @@ export const HomeScreen = () => {
           iconName="map"
           menuName="Projects"
         />
+         <HomeList
+          menuAction={() => NavigationService.navigate("ProfileScreen")}
+          iconName="people"
+          menuName="Profile"
+        />
       </View>
     </View>
   );

@@ -19,6 +19,8 @@ import ThirdIntroScreen from './../routes/intro/ThirdIntroScreen';
 import FourthIntroScreen from './../routes/intro/FourthIntroScreen';
 import FifthIntroScreen from './../routes/intro/FifthIntroScreen';
 import globals from './../../globals';
+import { ProfileScreen } from './../routes/home/ProfileScreen';
+
 
 const MainNavigator = createStackNavigator(
   {
@@ -41,6 +43,12 @@ const MainNavigator = createStackNavigator(
       screen: AboutUsScreen,
       navigationOptions: {
         title: 'About Us',
+      },
+    },
+    ProfileScreen: {
+      screen: ProfileScreen,
+      navigationOptions: {
+        title: 'Profile',
       },
     },
     AddPoint: {

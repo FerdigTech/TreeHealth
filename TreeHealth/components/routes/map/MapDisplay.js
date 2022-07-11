@@ -120,8 +120,11 @@ export const MapDisplay = (props) => {
             showsTraffic={false}
             mapType={mapType}
             loadingEnabled={true}
-            cacheEnabled={true}
+           // cacheEnabled={true}
             onRegionChangeComplete={_onRegionChangeComplete}
+            showsScale={true}
+            zoomControlEnabled={true}
+            zoomEnabled={true}
           >
             <ProjectConsumer>
               {(context) => {

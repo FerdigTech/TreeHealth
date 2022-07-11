@@ -3,7 +3,7 @@ import { Toast } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import globals from "./../globals";
 import _ from "underscore";
-
+import { cos } from "react-native-reanimated";
 
 /*
 *   User Route:
@@ -33,7 +33,7 @@ export const handlePassReset = async Email => {
         });
       }
     })
-    .catch(err => {});
+    .catch(err => { });
 };
 
 // create a new account
@@ -66,9 +66,10 @@ const generateUser = async (
     }
   )
     .then(res => res.json())
-    .catch(err => {});
+    .catch(err => { });
   return RequestResult;
 };
+
 
 export const processSignup = (name, email, pass, affiliationid, roleid) => {
   return new Promise(resolve => {
@@ -76,8 +77,11 @@ export const processSignup = (name, email, pass, affiliationid, roleid) => {
   });
 };
 
+
+
 // log the user in and store the information securely
-const generateUserToken = async (email, password) => {
+export const generateUserToken = async (email, password) => {
+ // console.log("url login----------------",globals.SERVER_URL.toString() + "/userAccount/validate");
   const UserData = await fetch(
     globals.SERVER_URL.toString() + "/userAccount/validate",
     {
@@ -94,10 +98,10 @@ const generateUserToken = async (email, password) => {
     }
   )
     // if 200 then it authed okay, if 403, it's an auth failure
-    .then(res => res.json() )
-    .then(res => { return res.hasOwnProperty("result") ? res.result[0] : {} } )
+    .then(res => res.json())
+    .then(res => { return res.hasOwnProperty("result") ? res.result[0] : {} })
     .catch(err => {
-      return { status: "offline"};
+      return { status: "offline" };
     });
 
   if (
@@ -110,7 +114,7 @@ const generateUserToken = async (email, password) => {
       UserData.access_token.toString()
     );
   }
-
+  //console.log("user dataaa------------",UserData);
   return UserData;
 };
 
@@ -118,6 +122,53 @@ export const processLogin = (email, password) => {
   return new Promise(resolve => {
     resolve(generateUserToken(email, password));
   });
+};
+
+//to delete user account
+export const deleteUser = async (AuthToken) => {
+  var token = `Bearer ${AuthToken}`
+  console.log("url", globals.SERVER_URL);
+  console.log('auth token again------ ', token);
+
+//https://dev.pinchof.tech/userAccount/delete
+
+  const deletedData = await fetch(globals.SERVER_URL.toString() + "/userAccount/delete", {
+    cache: "no-store",
+    headers: {
+      Authorization: token
+    },
+    method: "POST",
+  }) 
+  .then(response => response.json() )
+  .then(response => { 
+        console.log("response", response);
+        if (response.result == true) {
+          Toast.show({
+            text: "Your account has been deleted. Logout to test the changes!",
+            buttonText: "Okay",
+            type: "success",
+            position: "top",
+            duration: 3000
+          })
+        }
+        return response;
+    })
+    // .then(response => {
+    //   console.log("response", response);
+    //   return response;
+    // })
+    .catch(err => { console.log("errorrrr-------------------", err) });
+
+  // console.log("deleteddataaa-----------",deletedData);
+  // response Object {
+  //   "result": true,
+  // }
+
+  // if (response.status == 200)
+  // {
+  //   NavigationService.navigate('SignInScreen');
+  // }
+  return deletedData;
 };
 
 /*
@@ -183,8 +234,8 @@ const getPointData = async (
     pointsData = pointsData.filter(
       points => points.projectid == ID
     )
-    // this is applied again because auth could be revoked
-    .filter( points => points.ispublic || points.createdby == userID);
+      // this is applied again because auth could be revoked
+      .filter(points => points.ispublic || points.createdby == userID);
   } else {
     let AllPoints = await fetch(globals.SERVER_URL + "/locationByProject/", {
       cache: "no-store",
@@ -193,7 +244,7 @@ const getPointData = async (
       }
     })
       .then(response => response.json())
-      .catch(err => {});
+      .catch(err => { });
 
     pointsData = await fetch(
       globals.SERVER_URL + "/locationByProject/" + projectID,
@@ -205,33 +256,33 @@ const getPointData = async (
       }
     )
       .then(response => response.json()
-     // , console.log("response.json-------------------------",response.json())
-)
-      .catch(err => {});
+        // , console.log("response.json-------------------------",response.json())
+      )
+      .catch(err => { });
 
-      // console.log("pointsData---------------------------", pointsData);
+    // console.log("pointsData---------------------------", pointsData);
 
-     //  console.log("All ponits---------------------------", AllPoints);
+    //  console.log("All ponits---------------------------", AllPoints);
 
-     
-      // format the data
-      AllPoints = typeof AllPoints !== "undefined"
+
+    // format the data
+    AllPoints = typeof AllPoints !== "undefined"
       ? AllPoints.hasOwnProperty("result")
         ? AllPoints.result
-        // get all the points that are public or owned by that person
-        .filter( points => points.ispublic || points.createdby == userID)
+          // get all the points that are public or owned by that person
+          .filter(points => points.ispublic || points.createdby == userID)
         : []
       : [];
 
-      AllPoints.hasOwnProperty("Object")
-     
-     // console.log("All ponits after format---------------------------", AllPoints);
+    AllPoints.hasOwnProperty("Object")
 
-      pointsData = typeof pointsData !== "undefined"
+    // console.log("All ponits after format---------------------------", AllPoints);
+
+    pointsData = typeof pointsData !== "undefined"
       ? pointsData.hasOwnProperty("result")
         ? pointsData.result
-        // get all the points that are public or owned by that person
-        .filter( points => points.ispublic || points.createdby == userID)
+          // get all the points that are public or owned by that person
+          .filter(points => points.ispublic || points.createdby == userID)
         : []
       : [];
 
@@ -239,13 +290,14 @@ const getPointData = async (
 
     await AsyncStorage.setItem("Points", JSON.stringify(AllPoints));
 
-  //  console.log("All ponits after stringify---------------------------", AllPoints);
+    //  console.log("All ponits after stringify---------------------------", AllPoints);
 
   }
-   //console.log("points data before return-----------------------------------------------",pointsData);
+  //console.log("points data before return-----------------------------------------------",pointsData);
 
   return pointsData
 };
+
 
 export const processPntData = (ID, userID, forceUpdate = false, AuthToken) => {
   return new Promise(resolve => {
@@ -289,7 +341,7 @@ const generateLocationID = async (
     return answer.answer.startsWith("file:/", 0)
   });
 
-  
+
   const otherAnswers = diffAnswerObj(answers, imageQuestions);
 
   formData.append('questionsAnswered', JSON.stringify(otherAnswers));
@@ -298,7 +350,7 @@ const generateLocationID = async (
   // for each image we need to make a blob and answerid
   imageQuestions.map((questionObj, index) => {
     formData.append('answerID' + index, questionObj.questionid);
-    formData.append('answer' + index,  {uri: questionObj.answer, name: 'image.jpg', type: 'image/jpeg'});
+    formData.append('answer' + index, { uri: questionObj.answer, name: 'image.jpg', type: 'image/jpeg' });
   });
 
   return await fetch(
@@ -312,7 +364,7 @@ const generateLocationID = async (
       body: formData
     }
   )
-    .catch(err => {console.log("errorr---------------------",err)});
+    .catch(err => { console.log("errorr---------------------", err) });
 };
 
 export const processLocationID = (
@@ -348,12 +400,14 @@ export const processLocationID = (
 };
 
 export const processLocationUpdate = async (answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken) => {
-  return new Promise(resolve => { resolve(
-    updateLocationID(answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken)
-  )});
+  return new Promise(resolve => {
+    resolve(
+      updateLocationID(answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken)
+    )
+  });
 };
 
-const updateLocationID = async(answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken) => {
+const updateLocationID = async (answers, longitude, latitude, ispublic, projectid, locationid, userid, AuthToken) => {
   let formData = new FormData();
   formData.append('longitude', longitude.toString());
   formData.append('latitude', latitude.toString());
@@ -374,7 +428,7 @@ const updateLocationID = async(answers, longitude, latitude, ispublic, projectid
   // for each image we need to make a blob and answerid
   imageQuestions.map((questionObj, index) => {
     formData.append('answerID' + index, questionObj.answerID);
-    formData.append('answer' + index,  {uri: questionObj.answer, name: 'image.jpg', type: 'image/jpeg'});
+    formData.append('answer' + index, { uri: questionObj.answer, name: 'image.jpg', type: 'image/jpeg' });
   });
 
   return await fetch(
@@ -388,7 +442,7 @@ const updateLocationID = async(answers, longitude, latitude, ispublic, projectid
       body: formData
     }
   )
-    .catch(err => {});
+    .catch(err => { });
 }
 
 /*
@@ -415,7 +469,7 @@ const getQuestionsData = async (ID, AuthToken) => {
       }
     )
       .then(response => response.json())
-      .catch(err => {});
+      .catch(err => { });
 
     questionsData =
       questionsData !== "undefined"
@@ -457,7 +511,7 @@ const getAnswerData = async (ID, AuthToken) => {
     }
   )
     .then(response => response.json())
-    .catch(err => {});
+    .catch(err => { });
   return questionsData;
 };
 
@@ -491,7 +545,7 @@ export const updateAnswer = async (state, AuthToken) => {
         return { items: [...oldStateItems] };
       }
     })
-    .catch(err => {});
+    .catch(err => { });
 
   return state;
 };
@@ -518,7 +572,7 @@ const getProjectData = async (forceUpdate = false, UserID, AuthToken = "") => {
       },
     })
       .then(response => response.json())
-      .catch(err => {});
+      .catch(err => { });
     // TODO: if offline/fails, we should try return cache and that it failed to get updated data
     // Since AsyncStorage is immunitable, the projects object should be deleted before being set
     if (projectData !== null) {
