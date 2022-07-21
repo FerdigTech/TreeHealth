@@ -82,7 +82,7 @@ const MainNavigator = createStackNavigator(
         alignSelf: 'center',
       },
       // this is because the back button offsets by 40
-      headerRight: <View />,
+      headerRight: ()=> <View />,
       headerTintColor: 'white',
     },
   }
@@ -112,7 +112,7 @@ const AuthStack = createStackNavigator(
         alignSelf: 'center',
       },
       headerTintColor: 'white',
-      headerRight: <View />,
+      headerRight: ()=> <View />,
     },
   }
 );

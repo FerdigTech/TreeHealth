@@ -224,7 +224,7 @@ export const RegisterScreen = () => {
 };
 RegisterScreen.navigationOptions = {
   // Use logo instead of text
-  headerTitle: () => <LogoTitle />
+  headerTitle: () => <LogoTitle />,
 };
 
 const styles = StyleSheet.create({

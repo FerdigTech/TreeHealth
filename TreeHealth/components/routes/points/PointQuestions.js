@@ -306,6 +306,7 @@ export const PointQuestions = (props) => {
   // whenever progress is updated, we must Animate it
   useEffect(() => {
     Animated.timing(animation.current, {
+      useNativeDriver: false,
       toValue: progress,
       duration: 100,
     }).start();

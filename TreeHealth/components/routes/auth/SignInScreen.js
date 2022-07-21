@@ -105,7 +105,7 @@ export const SignInScreen = () => {
 SignInScreen.navigationOptions = {
   // Use logo instead of text
   headerTitle: () => <LogoTitle />,
-  headerRight: null,
+  headerRight: ()=> null,
 };
 
 const styles = StyleSheet.create({

@@ -15,6 +15,7 @@ export class LogoTitle extends React.Component {
 const styles = StyleSheet.create({
   titleImg: {
     height: 30,
+    width: "100%",
     marginLeft: "auto",
     marginRight: "auto"
   }
