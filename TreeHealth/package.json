@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "@expo-google-fonts/roboto": "^0.2.2",
+    "@react-native-community/datetimepicker": "3.5.2",
     "@react-native-community/netinfo": "6.0.2",
+    "@react-native-picker/picker": "^1.16.8",
     "@unimodules/core": "~7.2.0",
     "base-64": "^0.1.0",
     "exceljs": "^4.3.0",
@@ -38,6 +40,7 @@
     "react-native-map-clustering": "^3.4.2",
     "react-native-maps": "0.28.1",
     "react-native-modal": "^11.5.3",
+    "react-native-modal-datetime-picker": "^13.1.2",
     "react-native-reanimated": "~2.2.0",
     "react-native-screens": "~3.8.0",
     "react-native-svg": "12.1.1",

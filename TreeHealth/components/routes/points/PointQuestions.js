@@ -21,6 +21,7 @@ import {
   Left,
   Right,
   Body,
+  View,
   Thumbnail,
   Button,
   DatePicker,
@@ -39,6 +40,8 @@ import {
   processQuestData,
   getQuestionsData
 } from './../../../services/FetchService';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 export const PointQuestions = (props) => {
   const [Questions, setQuestions] = useState([]);
@@ -47,7 +50,7 @@ export const PointQuestions = (props) => {
   const [progress, setProgress] = useState(0);
   const [CompleteQuestions, setCompleteQuestions] = useState([]);
   const [CompleteManQuestions, setCompleteManQuestions] = useState([]);
-  const [CreationDate, setCreationDate] = useState(new Date());
+  const [creationDate, setCreationDate] = useState(new Date());
   const [PrivatePoint, setPrivatePoint] = useState(false);
   const [ShowModal, setShowModal] = useState(false);
   const [CurrentQuestion, setCurrentQuestion] = useState(-1);
@@ -55,6 +58,8 @@ export const PointQuestions = (props) => {
   const [hasPermission, setHasPermission] = useState(null);
 
   //const [QuestionsData, setQuestionsData] = useState([]);
+  //const [selectedDate, setSelectedDate] = useState(new Date());
+
 
 
   let animation = useRef(new Animated.Value(0));
@@ -77,9 +82,40 @@ export const PointQuestions = (props) => {
     setShowModal(true);
   };
 
-  const saveDate = (date) => {
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    // console.warn("A date has been picked: ", date);
+    hideDatePicker();
     setCreationDate(date);
   };
+
+
+  // const saveDate = (date) => {
+  //  // console.log("date-----inside savedate----", date);
+  //   setCreationDate(date);
+
+  // };
+  //console.log("date-----outside savedate----", CreationDate);
+
+
+
+  // const onChangeMINE = (event, selectedDate) => {
+  // //  console.log("Inside onChangeMINE.  selectedDate=" + selectedDate);
+  //   setSelectedDate(selectedDate);
+  // }
+
+  // console.log("selected dat------------", selectedDate);
+
 
   const saveAnswers = (answer, ismandatory) => {
     let newAnswerObj = Answers;
@@ -190,7 +226,7 @@ export const PointQuestions = (props) => {
           Math.round(
             ((CompleteManQuestions.length + 1) /
               Questions.filter((questions) => questions.ismandatory).length) *
-              100
+            100
           )
         );
       } else {
@@ -210,7 +246,7 @@ export const PointQuestions = (props) => {
           Math.round(
             ((CompleteManQuestions.length - 1) /
               Questions.filter((questions) => questions.ismandatory).length) *
-              100
+            100
           )
         );
       } else {
@@ -260,8 +296,8 @@ export const PointQuestions = (props) => {
 
       // getQuestionsData(context.ProjectID, context.AuthToken).then((results) => {
       //   setQuestionsData(results);
-       
-      
+
+
       //   });
 
     }
@@ -343,17 +379,52 @@ export const PointQuestions = (props) => {
                     </Text>
                   </Left>
                   <Body>
-                    <DatePicker
+
+
+                    <Button
+                      style={{
+                        padding: 20,
+                        flex: 1,
+                        display: 'flex',
+                        backgroundColor: 'white',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => {
+                        showDatePicker();
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'blue' }}>
+                        {creationDate ? creationDate.toLocaleDateString() : 'No date selected'}
+                      </Text>
+                      {/* <Text style={{ color: 'white' }}>Show Date</Text> */}
+                    </Button>
+
+                    <DateTimePickerModal
+                      isVisible={isDatePickerVisible}
+                      mode="date"
+                      date={creationDate}
+                      onConfirm={handleConfirm}
+                      onCancel={hideDatePicker}
+                    />
+
+
+                    {/* <DatePicker
+                      value={selectedDate}
                       defaultDate={new Date()}
                       locale={'en'}
+                     // date={selectedDate}
                       ref={DatepickerRef}
                       textStyle={{ color: 'blue' }}
                       animationType={'fade'}
                       formatChosenDate={(date) => {
                         return Moment(date).format('LL');
                       }}
+                     
                       onDateChange={saveDate}
-                    />
+                      onChange={onChangeMINE}
+                    /> */}
+
                   </Body>
                 </ListItem>
               )
@@ -375,7 +446,7 @@ export const PointQuestions = (props) => {
           </React.Fragment>
           {Questions.map((question, index) => {
 
-           // console.log("Question-----------------------------------------------------------------",question);
+            // console.log("Question-----------------------------------------------------------------",question);
             // cache the image, could be swapped out for a cache management to avoid flickering
             if (question.imageurl != '0' && Platform.OS !== 'ios')
               Image.prefetch(question.imageurl).catch((err) => {
@@ -417,7 +488,7 @@ export const PointQuestions = (props) => {
                     {
                       borderColor:
                         CompleteQuestions.includes(question.questionid) ||
-                        CompleteManQuestions.includes(question.questionid)
+                          CompleteManQuestions.includes(question.questionid)
                           ? 'green'
                           : 'red',
                     },

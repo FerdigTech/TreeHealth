@@ -14,6 +14,8 @@ import {
 } from "native-base";
 import Modal from "react-native-modal";
 import Moment from "moment";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+
 
 export const FilterModal = props => {
   // reset the settings
@@ -75,6 +77,43 @@ export const FilterModal = props => {
   const EndDateFilter = props.navigation.getParam("EndDateFilter", "");
   const dateFilter = props.navigation.getParam("dateFilter", "");
 
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedEndDate, setSelectedEndDate] = useState(new Date());
+  const [isDateEndPickerVisible, setDateEndPickerVisibility] = useState(false);
+
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+   // console.warn("A date has been picked: ", date);
+    hideDatePicker();
+    setSelectedDate(date);
+  };
+
+  const showDatePickerEndDate = () => {
+    setDateEndPickerVisibility(true);
+  };
+
+  const hideDatePickerEndDate = () => {
+    setDateEndPickerVisibility(false);
+  };
+
+  const handleConfirmEndDate = date => {
+    // console.warn("A date has been picked: ", date);
+    hideDatePickerEndDate();
+     setSelectedEndDate(date);
+   };
+ 
+
+
   const DatePickerRef = useCallback(
     datepicker => {
       if (datepicker != null) {
@@ -124,11 +163,53 @@ export const FilterModal = props => {
               <ListItem itemDivider>
                 <Text style={styles.divingTxt}>Filter By Date:</Text>
               </ListItem>
-              <ListItem>
-                <Text>
-                  {Operator == "range" ? "Start Date: " : "Date Selected: "}
-                </Text>
-                <DatePicker
+                  <ListItem>
+                    <Text>
+                      {Operator == "range" ? "Start Date: " : "Date Selected: "}
+                    </Text>
+                    <Button
+                      style={{
+                        padding: 20,
+                        flex: 1,
+                        display: 'flex',
+                        backgroundColor: 'white',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => {
+                        showDatePicker();
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, color: 'black' }}>
+                        {selectedDate ? selectedDate.toLocaleDateString() : 'No date selected'}
+                      </Text>
+                      {/* <Text style={{ color: 'white' }}>Show Date</Text> */}
+                    </Button>
+                    <DateTimePickerModal
+                      isVisible={isDatePickerVisible}
+                      mode="date"
+                      date={selectedDate}
+                      onConfirm={handleConfirm}
+                      onCancel={hideDatePicker}
+                      dateFilter={dateFilter}
+                      ref={DatePickerRef}
+                      androidMode={"dafault"}
+                      placeHolderText="Select a date"
+                      placeHolderTextStyle={{ color: "#d3d3d3" }}
+                      onDateChange={setDateFilter}
+                      modalTransparent={false}
+                      animationType={"fade"}
+                      // to make sure they can't select a day past the endDate
+                      maximumDate={
+                        Operator == "range"
+                          ? EndDateFilter != "" && EndDateFilter != null
+                            ? EndDateFilter
+                            : new Date()
+                          : new Date()
+                      }
+                    />
+
+                    {/* <DatePicker
                   dateFilter={dateFilter}
                   ref={DatePickerRef}
                   locale={"en"}
@@ -149,35 +230,77 @@ export const FilterModal = props => {
                   formatChosenDate={date => {
                     return Moment(date).format("ll");
                   }}
-                />
-              </ListItem>
-              {Operator == "range" && (
-                <ListItem>
-                  <Text>End Date: </Text>
-                  <DatePicker
-                    EndDateFilter={EndDateFilter}
-                    ref={EndDatePickerRef}
-                    locale={"en"}
-                    modalTransparent={false}
-                    animationType={"fade"}
-                    androidMode={"default"}
-                    placeHolderText="Select a date"
-                    placeHolderTextStyle={{ color: "#d3d3d3" }}
-                    onDateChange={setEndDateFilter}
-                    minimumDate={
-                      dateFilter != "" && dateFilter != null
-                        ? dateFilter
-                        : new Date()
-                    }
-                    // to make sure they can't select a date before startDate
-                    disabled={dateFilter == "" || dateFilter == null}
-                    maximumDate={new Date()}
-                    formatChosenDate={date => {
-                      return Moment(date).format("ll");
-                    }}
-                  />
-                </ListItem>
-              )}
+                /> */}
+                  </ListItem>
+                  {Operator == "range" && (
+                    <ListItem>
+                      <Text>End Date: </Text>
+
+                      <Button
+                      style={{
+                        padding: 20,
+                        flex: 1,
+                        display: 'flex',
+                        backgroundColor: 'white',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                      onPress={() => {
+                        showDatePickerEndDate();
+                      }}
+                    >
+                      <Text style={{ fontSize: 15, color: 'black' }}>
+                        {selectedEndDate ? selectedEndDate.toLocaleDateString() : 'No date selected'}
+                      </Text>
+                    </Button>
+
+                    <DateTimePickerModal
+                      isVisible={isDateEndPickerVisible}
+                      mode="date"
+                      date={selectedEndDate}
+                      onConfirm={handleConfirmEndDate}
+                      onCancel={hideDatePickerEndDate}
+                      EndDateFilter={EndDateFilter}
+                      ref={EndDatePickerRef}
+                      locale={"en"}
+                      modalTransparent={false}
+                      animationType={"fade"}
+                      androidMode={"default"}
+                      onDateChange={setEndDateFilter}
+                        minimumDate={
+                          dateFilter != "" && dateFilter != null
+                            ? dateFilter
+                            : new Date()
+                        }
+                        // to make sure they can't select a date before startDate
+                        disabled={dateFilter == "" || dateFilter == null}
+                       // maximumDate={new Date()}                       
+                    />
+
+                      {/* <DatePicker
+                        EndDateFilter={EndDateFilter}
+                        ref={EndDatePickerRef}
+                        locale={"en"}
+                        modalTransparent={false}
+                        animationType={"fade"}
+                        androidMode={"default"}
+                        placeHolderText="Select a date"
+                        placeHolderTextStyle={{ color: "#d3d3d3" }}
+                        onDateChange={setEndDateFilter}
+                        minimumDate={
+                          dateFilter != "" && dateFilter != null
+                            ? dateFilter
+                            : new Date()
+                        }
+                        // to make sure they can't select a date before startDate
+                        disabled={dateFilter == "" || dateFilter == null}
+                        maximumDate={new Date()}
+                        formatChosenDate={date => {
+                          return Moment(date).format("ll");
+                        }}
+                      /> */}
+                    </ListItem>
+                  )}
               <ListItem>
                 <Text>Date Operator: </Text>
                 <Item picker>
