@@ -46,7 +46,7 @@
     },
     "android": {
       "package": "com.KentState.TreeHealth",
-      "versionCode": 20,
+      "versionCode": 22,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyCTJKUZtc2ttbq6T9u3MVqFKgA3VR1duyM"
