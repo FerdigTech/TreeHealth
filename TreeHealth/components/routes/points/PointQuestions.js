@@ -172,9 +172,9 @@ export const PointQuestions = (props) => {
         answers: Answers.filter((answer) => answer.answer != null),
         // converts the date to a standard epoch time
         createddate:
-          typeof CreationDate == 'number'
-            ? CreationDate
-            : new Date(CreationDate).getTime(),
+          typeof creationDate == 'number'
+            ? creationDate
+            : new Date(creationDate).getTime(),
         projectid: context.ProjectID,
         ispublic: !PrivatePoint,
       });
