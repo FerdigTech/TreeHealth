@@ -212,7 +212,8 @@ export const RegisterScreen = () => {
             style={styles.SignUpBtn}
             rounded
             block
-            light
+            primary={!notValid}
+            light={notValid}
             disabled={notValid}
           >
             <Text> Create an Account </Text>

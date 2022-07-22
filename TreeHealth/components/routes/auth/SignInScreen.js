@@ -82,7 +82,7 @@ export const SignInScreen = () => {
               style={styles.helpBtns}
               rounded
               block
-              light
+              primary
             >
               <Text> Create an Account </Text>
             </Button>
@@ -90,7 +90,7 @@ export const SignInScreen = () => {
               style={styles.helpBtns}
               rounded
               block
-              light
+              warning
               onPress={_signInTrial}
             >
               <Text> Try Us Out! </Text>
@@ -111,7 +111,8 @@ SignInScreen.navigationOptions = {
 const styles = StyleSheet.create({
   signInView: {
     flex: 1,
-    margin: 20,
+    padding: 20,
+    backgroundColor: "white",
   },
   signInForm: {
     padding: 5,
