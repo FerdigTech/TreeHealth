@@ -77,7 +77,7 @@ export const processSignup = (name, email, pass, affiliationid, roleid) => {
   });
 };
 
-
+console.log("server url-----------------",globals.SERVER_URL);
 
 // log the user in and store the information securely
 export const generateUserToken = async (email, password) => {
